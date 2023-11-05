@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 
-public class Calender {
+public class Calendar {
     private String[] days;
     private String doctor;
 
-    public Calender(String doctor) {
+    public Calendar(String doctor) {
         this.days = new String[31];
         for (int i = 0; i < 31; i++) {
             int dayNumber = i++;
