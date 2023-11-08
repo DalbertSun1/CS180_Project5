@@ -39,6 +39,17 @@ public class Doctor {
         return false;
     }
 
+    public Appointment findAppointment(String customerName) { // returns the appointment of a given customer
+        // assumes there is only one appointment for each customer name
+        // returns null if there is no such appoinment with given customer name
+        for (Appointment appointment : appointments) {
+            if (customerName.equalsIgnoreCase(appointment.getCustomerName())) {
+                return appointment;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return name;
