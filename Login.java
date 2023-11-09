@@ -19,7 +19,7 @@ public class Login {
 
             switch (login) {
                 case 1 : // log in
-                    System.out.println("Choose an option to create a new account\n1. Patient\n2. Doctor");
+                    System.out.println("Log in as\n1. Patient\n2. Doctor");
                     int identity2 = scan.nextInt();
                     scan.nextLine();
                     System.out.println("Enter your user name:");
@@ -29,7 +29,7 @@ public class Login {
                     login(identity2, username2, password2);
                     break;
                 case 2 : // create an account
-                    System.out.println("Choose an option to create a new account\n1. Patient\n2. Doctor");
+                    System.out.println("Create an account as\n1. Patient\n2. Doctor");
                     int identity = scan.nextInt();
                     scan.nextLine();
                     System.out.println("Enter your full name:");
