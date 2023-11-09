@@ -27,24 +27,26 @@ public class DentistOffice {
         return "Succesfully removed Doctor " + doctor.getName() + " from " + this.name;
     }
     public String getCustomerStatistics() {
-        String output;
-        for (Doctor doctor: DoctorList) {
+        String output = "";
+        for (Doctor doctor : DoctorList) {
             HashMap<String, Integer> customerData = doctor.getStatistics()[0]; // a hashmap with key = customerName, value = # of appointments per customer
             // iterate over keys in customerData
             for (String customerName : customerData.keySet()) {
                 output += customerName + " : " + customerData.get(customerName);
             }
 
+        }
         return output;
     }
     public String getTimeStatistics() {
-        String output;
-        for (Doctor doctor: DoctorList) {
+        String output = "";
+        for (Doctor doctor : DoctorList) {
             HashMap<Time, Integer> timeData = doctor.getStatistics()[1]; // a hashmap with key = Time, value = # of appointments at this time
             // iterate over keys in customerData
             for (Time time : timeData.keySet()) {
                 output += time.getTimeslot() + " : " + timeData.get(time);
             }
+        }
 
         return output;
     }
