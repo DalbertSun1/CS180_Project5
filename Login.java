@@ -18,14 +18,17 @@ public class Login {
             scan.nextLine();
 
             switch (login) {
-                case 1 :
+                case 1 : // log in
+                    System.out.println("Choose an option to create a new account\n1. Patient\n2. Doctor");
+                    int identity2 = scan.nextInt();
+                    scan.nextLine();
                     System.out.println("Enter your user name:");
                     String username2 = scan.nextLine();
                     System.out.println("Enter your password:");
                     String password2 = scan.nextLine();
-                    login(username2, password2);
+                    login(identity2, username2, password2);
                     break;
-                case 2 :
+                case 2 : // create an account
                     System.out.println("Choose an option to create a new account\n1. Patient\n2. Doctor");
                     int identity = scan.nextInt();
                     scan.nextLine();
@@ -41,7 +44,7 @@ public class Login {
                     String phoneNumber = scan.nextLine();
                     createAccount(identity, fullName, username, password, email, phoneNumber);
                     break;
-                default :
+                default : // invalid choice
                     System.out.println("Please enter a valid choice.");
                     menu1 = true;
                     break;
