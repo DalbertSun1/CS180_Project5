@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.util.*;
 
 public class Login {
+    private String name;
+    
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Welcome to the Dentist's Office!");
@@ -33,7 +35,7 @@ public class Login {
                     int identity = scan.nextInt();
                     scan.nextLine();
                     System.out.println("Enter your full name:");
-                    String fullName = scan.nextLine();
+                    name = scan.nextLine();
                     System.out.println("Enter a user name:");
                     String username = scan.nextLine();
                     System.out.println("Enter a password:");
@@ -61,7 +63,8 @@ public class Login {
             do {
                 switch (identity) {
                     case 1:
-                        // continue as a patient
+                        Patient p = new Patient(name); // continue as a patient
+                        p.go(scan);
                         break;
                     case 2:
                         // continue as a doctor
