@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  *  A DentistOffice is our equivalent of a seller. It holds Doctors, each of which has a room
  *  contains the following methods: Add, Delete, getStatistics, 
@@ -5,9 +6,15 @@
  */
  import java.util.ArrayList;
  import java.util.HashMap;
+=======
+import java.util.ArrayList;
+import java.util.Arrays;
+
+>>>>>>> 5d84cdb0540533b9edd726ebc9a356d1ed52c963
 public class DentistOffice {
     private String name;
-    private ArrayList<Doctor> DoctorList = new ArrayList<>();
+    private ArrayList<Doctor> doctorList = new ArrayList<>();
+
     public DentistOffice(String name) {
         this.name = name;
     }
@@ -16,40 +23,52 @@ public class DentistOffice {
         return this.name;
     }
 
-    public String Add(Doctor doctor) { // add a Doctor to this office
-        // returns a success message, otherwise throws exception
-        DoctorList.add(doctor);
-        return "Succesfully added Doctor " + doctor.getName() + " to " + this.name;
+    public String add(Doctor doctor) {
+        if (!doctorList.contains(doctor)) {
+            doctorList.add(doctor);
+            return "Successfully added Doctor " + doctor.getName() + " to " + this.name;
+        } else {
+            return "Doctor " + doctor.getName() + " is already in " + this.name;
+        }
     }
-    public String Delete(Doctor doctor) { // remove a Doctor from this office
-        // returns a success message, otherwise throws exception
-        DoctorList.remove(doctor);
-        return "Succesfully removed Doctor " + doctor.getName() + " from " + this.name;
-    }
+<<<<<<< HEAD
+
     public String getCustomerStatistics() {
-        String output = "";
+        StringBuilder statistics = new StringBuilder();
         for (Doctor doctor : DoctorList) {
             HashMap<String, Integer> customerData = doctor.getStatistics()[0]; // a hashmap with key = customerName, value = # of appointments per customer
             // iterate over keys in customerData
             for (String customerName : customerData.keySet()) {
-                output += customerName + " : " + customerData.get(customerName);
+                statistics += customerName + " : " + customerData.get(customerName);
             }
 
         }
-        return output;
+        return statistics.toString();
     }
     public String getTimeStatistics() {
-        String output = "";
+        StringBuilder statistics = new StringBuilder();
         for (Doctor doctor : DoctorList) {
             HashMap<Time, Integer> timeData = doctor.getStatistics()[1]; // a hashmap with key = Time, value = # of appointments at this time
             // iterate over keys in customerData
             for (Time time : timeData.keySet()) {
-                output += time.getTimeslot() + " : " + timeData.get(time);
+                statistics += time.getTimeslot() + " : " + timeData.get(time);
             }
         }
 
-        return output;
+        return statistics.toString();
     }
     
+=======
+>>>>>>> 5d84cdb0540533b9edd726ebc9a356d1ed52c963
+
+    public String delete(Doctor doctor) {
+        if (doctorList.contains(doctor)) {
+            doctorList.remove(doctor);
+            return "Successfully removed Doctor " + doctor.getName() + " from " + this.name;
+        } else {
+            return "Doctor " + doctor.getName() + " is not in " + this.name;
+        }
+    }
+
 
 }
