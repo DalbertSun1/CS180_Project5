@@ -35,7 +35,7 @@ public class DentistOffice {
 
     public String getCustomerStatistics() {
         StringBuilder statistics = new StringBuilder();
-        for (Doctor doctor : DoctorList) {
+        for (Doctor doctor : doctorList) {
             HashMap<String, Integer> customerData = doctor.getStatistics()[0]; // a hashmap with key = customerName, value = # of appointments per customer
             // iterate over keys in customerData
             for (String customerName : customerData.keySet()) {
@@ -47,7 +47,7 @@ public class DentistOffice {
     }
     public String getTimeStatistics() {
         StringBuilder statistics = new StringBuilder();
-        for (Doctor doctor : DoctorList) {
+        for (Doctor doctor : doctorList) {
             HashMap<Time, Integer> timeData = doctor.getStatistics()[1]; // a hashmap with key = Time, value = # of appointments at this time
             // iterate over keys in customerData
             for (Time time : timeData.keySet()) {
