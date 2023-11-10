@@ -29,6 +29,25 @@ public class Day {
         doctors.remove(doctor);
     }
 
+    public Doctor getIndividualDoctor(int index) {
+    	return doctors.get(index);
+    }
+    
+    public String showDoctorList() {
+    	String result = "";
+    	
+    	if (doctors.size() == 0) {
+    		return "Sorry! No Doctors Available for this day.";
+    	}
+    	
+    	for (int i = 0; i < doctors.size(); i++) {
+    		result += "[" + (i + 1) + "] Dr. " + doctors.get(i).getName() + "\n\n";
+    		
+    	}
+    	
+    	return result;
+    }
+
     @Override
     public String toString() {
         return date;
