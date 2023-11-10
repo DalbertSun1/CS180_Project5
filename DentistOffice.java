@@ -1,12 +1,10 @@
-/**
- *  A DentistOffice is our equivalent of a seller. It holds Doctors, each of which has a room
- *  contains the following methods: Add, Delete, getStatistics, Reschedule
- * 
- */
- import java.util.ArrayList;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class DentistOffice {
     private String name;
-    private ArrayList<Doctor> DoctorList = new ArrayList<>();
+    private ArrayList<Doctor> doctorList = new ArrayList<>();
+
     public DentistOffice(String name) {
         this.name = name;
     }
@@ -15,19 +13,29 @@ public class DentistOffice {
         return this.name;
     }
 
-    public String Add(Doctor doctor) { // add a Doctor to this office
-        // returns a success message, otherwise throws exception
-        DoctorList.add(doctor);
-        return "Succesfully added Doctor " + doctor.getName() + " to " + this.name;
+    public String add(Doctor doctor) {
+        if (!doctorList.contains(doctor)) {
+            doctorList.add(doctor);
+            return "Successfully added Doctor " + doctor.getName() + " to " + this.name;
+        } else {
+            return "Doctor " + doctor.getName() + " is already in " + this.name;
+        }
     }
-    public String Delete(Doctor doctor) { // remove a Doctor from this office
-        // returns a success message, otherwise throws exception
-        DoctorList.remove(doctor);
-        return "Succesfully removed Doctor " + doctor.getName() + " from " + this.name;
-    }
-    public String getStatistics() {
-        return "";
-    }
-    
 
+    public String delete(Doctor doctor) {
+        if (doctorList.contains(doctor)) {
+            doctorList.remove(doctor);
+            return "Successfully removed Doctor " + doctor.getName() + " from " + this.name;
+        } else {
+            return "Doctor " + doctor.getName() + " is not in " + this.name;
+        }
+    }
+
+    public String getStatistics() {
+        StringBuilder statistics = new StringBuilder();
+        for (Doctor doctor : doctorList) {
+            statistics.append(Arrays.toString(doctor.getStatistics())).append("\n");
+        }
+        return statistics.toString();
+    }
 }
