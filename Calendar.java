@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Calendar {
+public class MyCalendar {
     private Day[] days;
     //private String doctor; <- why tf do we need this
 
@@ -11,7 +11,7 @@ public class Calendar {
 //            this.days[i] = String.format("%02d", dayNumber);
 //        }
 //    }
-    public Calendar(int howManyDays) {
+    public MyCalendar(int howManyDays) {
     	days = new Day[howManyDays];
     	for (int i = 1; i <= howManyDays; i++) {
     		days[i - 1] = new Day(i);
