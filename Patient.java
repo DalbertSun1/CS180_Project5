@@ -4,7 +4,7 @@ public class Patient {
     private String name; // Customer's name
     private ArrayList<Appointment> appointments; // List of customer's appointments
 
-    public Customer(String name) {
+    public Patient(String name) {
         this.name = name;
         this.appointments = new ArrayList<>();
     }
