@@ -1,28 +1,39 @@
 import java.util.ArrayList;
 
 public class Calendar {
-    private String[] days;
-    private String doctor;
+    private Day[] days;
+    //private String doctor; <- why tf do we need this
 
-    public Calendar(String doctor) {
-        this.days = new String[31];
-        for (int i = 0; i < 31; i++) {
-            int dayNumber = i++;
-            this.days[i] = String.format("%02d", dayNumber);
-        }
+//    public Calendar(String doctor) {
+//        this.days = new String[31];
+//        for (int i = 0; i < 31; i++) {
+//            int dayNumber = i++;
+//            this.days[i] = String.format("%02d", dayNumber);
+//        }
+//    }
+    public Calendar(int howManyDays) {
+    	days = new Day[howManyDays];
+    	for (int i = 1; i <= howManyDays; i++) {
+    		days[i - 1] = new Day(i);
+    	}
+    	
     }
 
-    public String[] getDays() {
+    public Day[] getDays() {
         return days;
     }
-
-    public String getDoctor() {
-        return doctor;
+    
+    public Day getIndividualDay(int day) {
+    	return days[day + 1];
     }
 
-    public void setDoctor(String doctor) {
-        this.doctor = doctor;
-    }
+//    public String getDoctor() {
+//        return doctor;
+//    }
+//
+//    public void setDoctor(String doctor) {
+//        this.doctor = doctor;
+//    }
 
     public String viewCalendar() {
         String result = "";
@@ -41,14 +52,16 @@ public class Calendar {
 
     }
 
-    public void initializeDay(int dayIndex) {
-        if (dayIndex >= 0 && dayIndex <= days.length) {
-            String selectedDay = days[dayIndex];
-            showDoctor(selectedDay);
-        } else {
-            System.out.println("Invalid day selection");
-        }
-    }
+//    public void initializeDay(int dayIndex) {
+//        if (dayIndex >= 0 && dayIndex <= days.length) {
+//            String selectedDay = days[dayIndex];
+//            showDoctor(selectedDay);
+//        } else {
+//            System.out.println("Invalid day selection");
+//        }
+//    }
+    
+    
 
     public void showDoctor(String selectedDay) {
         System.out.println("The doctors avaliabile on " + selectedDay + ":");
