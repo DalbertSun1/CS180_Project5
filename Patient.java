@@ -41,4 +41,58 @@ public class Patient {
     public String toString() {
         return name;
     }
+
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        boolean menu2 = false;
+        do {
+            System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments");
+            int choice = scan.nextInt();
+            scan.nextLine();
+            switch (choice) {
+                case 1:
+                    // display calendar - to do
+                    System.out.println("Enter the date:");
+                    int date = scan.nextInt();
+                    scan.nextLine();
+                    //display doctor list - to do
+                    System.out.println("Choose a doctor:");
+                    int doctor = scan.nextInt();
+                    scan.nextLine();
+                    // display available time slots - to do
+                    System.out.println("Enter a time:");
+                    int time = scan.nextInt();
+                    scan.nextLine();
+                    makeAppointment(date, doctor, time);
+                    break;
+                case 2:
+                    //display approved appointments arraylist with numbers
+                    System.out.println("Choose an appointment:");
+                    int cancel = scan.nextInt();
+                    scan.nextLine();
+                    cancelAppointment(cancel);
+                    break;
+                case 3:
+                    //display approved appointments
+                    viewAppointment();
+                    break;
+                default:
+                    System.out.println("Please enter a valid choice.");
+                    menu2 = true;
+                    break;
+            }
+        } while (menu2);
+    }
+
+    public static void makeAppointment(int date, int doctor, int time) {
+
+    }
+
+    public static void cancelAppointment(int cancel) {
+
+    }
+
+    public static void viewAppointment() {
+
+    }
 }
