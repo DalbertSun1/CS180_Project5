@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Customer {
+public class Patient {
     private String name; // Customer's name
     private ArrayList<Appointment> appointments; // List of customer's appointments
 
