@@ -56,9 +56,12 @@ public class Login {
 
     public static void login(String fullName, int identity, String username, String password, Scanner scan) throws IOException {
         // TODO: Read pending.txt and approved.txt and assign arraylist of appointments and doctors
-        ArrayList<Doctor> readDoctorList = new ArrayList<>();
+        DentistOffice d = new DentistOffice("My Dentist Office");
 
-        DentistOffice d = new DentistOffice("My Dentist Office", readDoctorList);
+        ArrayList<Doctor> readDoctorList;
+        readDoctorList = d.readDoctors();
+
+        d.setDoctorList(readDoctorList);
 
         if (checkAccount(username, password)) {
             System.out.println("Welcome!");
@@ -114,7 +117,34 @@ public class Login {
 
                                     d.declineAppointment(declineNum);
                                     break;
-                                case 7:
+                              case 7:
+                                    System.out.println("Enter the doctor name");
+                                    doctorName = scan.nextLine();
+
+                                    // Find the doctor from the list to reschedule their appointment
+                                    Doctor doctorReschedule = null;
+                                    for (Doctor doctor : d.getDoctorList()) {
+                                        if (doctor.getName().equalsIgnoreCase(doctorName)) {
+                                            doctorReschedule = doctor;
+                                            break;
+                                        }
+                                    }
+
+                                    if (doctorReschedule != null) {
+                                        System.out.println("Enter the old appointment:");
+                                        String oldAppointment = scan.nextLine();
+                                        System.out.println("Enter the new appointment:");
+                                        String newAppointment = scan.nextLine();
+
+                                        d.rescheduleAppointmentForSeller(doctorName, oldAppointment, newAppointment);
+
+                                    } else {
+                                        System.out.println("Doctor " + doctorName + " not found.");
+                                    }
+                                    break;
+
+
+                                case 8:
                                     System.out.println("Exit");
                                     menu3 = false;
 

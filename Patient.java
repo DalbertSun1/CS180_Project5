@@ -51,7 +51,7 @@ public class Patient {
         return name;
     }
 
-    public void go(Scanner scan) {
+    public void go(Scanner scan, ArrayList<Doctor> doctors) {
         boolean menu2 = false;
         boolean menu3 = false;
         MyCalendar cal = new MyCalendar(31);
@@ -61,19 +61,18 @@ public class Patient {
             scan.nextLine();
             switch (choice) {
                 case 1:
-
                     System.out.println(cal.viewCalendar()); // display calendar
                     System.out.println("Select a day to view available doctors:");
                     int date = scan.nextInt();
                     scan.nextLine();
 
 
-                    Day selectedDay = cal.getIndividualDay(date);
-
+                    Day selectedDay = new Day(cal.getIndividualDay(date).getDate());
+                    selectedDay.setDoctors(doctors);
 
                     System.out.println(selectedDay.showDoctorList() + "\n"); //display doctor list
 
-                    while (selectedDay.getDoctors().size() == 0) {
+                    while (selectedDay.getDoctors().isEmpty()) {
                         System.out.println(cal.viewCalendar());
                         System.out.println("Select another day to view available doctors:");
                         date = scan.nextInt();
@@ -230,6 +229,7 @@ public class Patient {
             return null;
         }
     }
+
     public void rescheduleAppointmentForCustomer(Doctor currentDoctor, Time currentSlot, Doctor newDoctor, Time newSlot) {
         Appointment currentApt = currentDoctor.findAppointment(String.valueOf(currentSlot));
 
