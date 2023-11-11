@@ -1,37 +1,142 @@
-<<<<<<< HEAD
-/**
- *  A DentistOffice is our equivalent of a seller. It holds Doctors, each of which has a room
- *  contains the following methods: Add, Delete, getStatistics, 
- * 
- */
- import java.util.ArrayList;
- import java.util.HashMap;
-=======
+import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
->>>>>>> 5d84cdb0540533b9edd726ebc9a356d1ed52c963
 public class DentistOffice {
     private String name;
     private ArrayList<Doctor> doctorList = new ArrayList<>();
 
-    public DentistOffice(String name) {
+    public DentistOffice(String name, ArrayList<Doctor> doctorList) {
         this.name = name;
+        this.doctorList = doctorList;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public String add(Doctor doctor) {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ArrayList<Doctor> getDoctorList() {
+        return doctorList;
+    }
+
+    public void setDoctorList(ArrayList<Doctor> doctorList) {
+        this.doctorList = doctorList;
+    }
+
+    public ArrayList<Doctor> readDoctors() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            Doctor doctor = new Doctor(line);
+            doctorList.add(doctor);
+        }
+        return doctorList;
+    }
+
+    public String addDoctor(Doctor doctor) throws IOException {
         if (!doctorList.contains(doctor)) {
             doctorList.add(doctor);
+            BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt"));
+            writer.write(String.valueOf(doctor));
+
             return "Successfully added Doctor " + doctor.getName() + " to " + this.name;
         } else {
             return "Doctor " + doctor.getName() + " is already in " + this.name;
         }
     }
-<<<<<<< HEAD
+
+    public String deleteDoctor(Doctor doctor) {
+        if (doctorList.contains(doctor)) {
+            doctorList.remove(doctor);
+            return "Successfully removed Doctor " + doctor.getName() + " from " + this.name;
+        } else {
+            return "Doctor " + doctor.getName() + " is not in " + this.name;
+        }
+    }
+
+    // displays approved appointments
+    public void viewApproved() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
+        String line;
+        int num = 1;
+
+        while ((line = reader.readLine()) != null) {
+            System.out.println(num + ": " + line);
+        }
+    }
+
+    //displays pending appointments
+    public void viewPending() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
+        String line;
+        int num = 1;
+
+        while ((line = reader.readLine()) != null) {
+            System.out.println(num + ": " + line);
+        }
+    }
+
+    // TODO: Implement storage of doctor names as well
+    public void approveAppointment(int line) throws IOException {
+        List<String> pendingAppointments = new ArrayList<>();
+
+        try (BufferedWriter approvedWriter = new BufferedWriter(new FileWriter("approved.txt", true));
+             BufferedReader pendingReader = new BufferedReader(new FileReader("pending.txt"))) {
+
+            String line1;
+            int lineNum = 1;
+
+            while ((line1 = pendingReader.readLine()) != null) {
+                if (lineNum == line) {
+                    // Process the approved appointment
+                    approvedWriter.write(line1);
+                } else {
+                    // Add non-approved appointments to the temporary list
+                    pendingAppointments.add(line1);
+                }
+                lineNum++;
+            }
+        }
+
+        // Write the updated pending appointments back to "pending.txt"
+        try (BufferedWriter pendingWriter = new BufferedWriter(new FileWriter("pending.txt"))) {
+            for (String appointment : pendingAppointments) {
+                pendingWriter.write(appointment);
+                pendingWriter.newLine();
+            }
+        }
+    }
+
+    public void declineAppointment(int line) throws IOException {
+        List<String> pendingAppointments = new ArrayList<>();
+
+        try (BufferedReader pendingReader = new BufferedReader(new FileReader("pending.txt"))) {
+
+            String line1;
+            int lineNum = 1;
+
+            while ((line1 = pendingReader.readLine()) != null) {
+                if (!(lineNum == line)) {
+                    pendingAppointments.add(line1);
+                }
+                lineNum++;
+            }
+        }
+
+        // Write the updated pending appointments back to "pending.txt"
+        try (BufferedWriter pendingWriter = new BufferedWriter(new FileWriter("pending.txt"))) {
+            for (String appointment : pendingAppointments) {
+                pendingWriter.write(appointment);
+                pendingWriter.newLine();
+            }
+        }
+    }
 
     public String getCustomerStatistics() {
         StringBuilder statistics = new StringBuilder();
@@ -39,7 +144,7 @@ public class DentistOffice {
             HashMap<String, Integer> customerData = doctor.getStatistics()[0]; // a hashmap with key = customerName, value = # of appointments per customer
             // iterate over keys in customerData
             for (String customerName : customerData.keySet()) {
-                statistics += customerName + " : " + customerData.get(customerName);
+                statistics.append(customerName).append(" : ").append(customerData.get(customerName));
             }
 
         }
@@ -51,24 +156,10 @@ public class DentistOffice {
             HashMap<Time, Integer> timeData = doctor.getStatistics()[1]; // a hashmap with key = Time, value = # of appointments at this time
             // iterate over keys in customerData
             for (Time time : timeData.keySet()) {
-                statistics += time.getTimeslot() + " : " + timeData.get(time);
+                statistics.append(time.getTimeslot()).append(" : ").append(timeData.get(time));
             }
         }
 
         return statistics.toString();
     }
-    
-=======
->>>>>>> 5d84cdb0540533b9edd726ebc9a356d1ed52c963
-
-    public String delete(Doctor doctor) {
-        if (doctorList.contains(doctor)) {
-            doctorList.remove(doctor);
-            return "Successfully removed Doctor " + doctor.getName() + " from " + this.name;
-        } else {
-            return "Doctor " + doctor.getName() + " is not in " + this.name;
-        }
-    }
-
-
 }

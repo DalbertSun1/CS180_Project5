@@ -7,9 +7,10 @@ import java.io.FileReader;
 import java.util.*;
 
 public class Login {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner scan = new Scanner(System.in);
         System.out.println("Welcome to the Dentist's Office!");
+        String fullName = "";
 
         boolean menu1 = false; //counter to rerun the loop if invalid choice is entered
         do {
@@ -26,14 +27,14 @@ public class Login {
                     String username2 = scan.nextLine();
                     System.out.println("Enter your password:");
                     String password2 = scan.nextLine();
-                    login(identity2, username2, password2);
+                    login(fullName, identity2, username2, password2, scan);
                     break;
                 case 2 : // create an account
                     System.out.println("Create an account as\n1. Patient\n2. Doctor");
                     int identity = scan.nextInt();
                     scan.nextLine();
                     System.out.println("Enter your full name:");
-                    String fullName = scan.nextLine();
+                    fullName = scan.nextLine();
                     System.out.println("Enter a user name:");
                     String username = scan.nextLine();
                     System.out.println("Enter a password:");
@@ -42,7 +43,7 @@ public class Login {
                     String email = scan.nextLine();
                     System.out.println("Enter your phone number:");
                     String phoneNumber = scan.nextLine();
-                    createAccount(identity, fullName, username, password, email, phoneNumber);
+                    createAccount(identity, fullName, username, password, email, phoneNumber, scan);
                     break;
                 default : // invalid choice
                     System.out.println("Please enter a valid choice.");
@@ -53,7 +54,12 @@ public class Login {
 
     }
 
-    public static void login(int identity, String username, String password) {
+    public static void login(String fullName, int identity, String username, String password, Scanner scan) throws IOException {
+        // TODO: Read pending.txt and approved.txt and assign arraylist of appointments and doctors
+        ArrayList<Doctor> readDoctorList = new ArrayList<>();
+
+        DentistOffice d = new DentistOffice("My Dentist Office", readDoctorList);
+
         if (checkAccount(username, password)) {
             System.out.println("Welcome!");
             // continue as a doctor or patient
@@ -61,16 +67,75 @@ public class Login {
             do {
                 switch (identity) {
                     case 1:
-                        // continue as a patient
+                        Patient p = new Patient(fullName); // continue as a patient
+                        p.go(scan);
                         break;
                     case 2:
                         // continue as a doctor
+                        String doctorName;
+                        boolean menu3 = true;
+
+                        do {
+                            System.out.println("1. Add Doctor \n2. Remove Doctor \n3. View Approved Appointments " +
+                                    "\n4. View Pending Appointments \n5. Approve Appointment \n6. Decline Appointment");
+                            int choice = scan.nextInt();
+                            scan.nextLine();
+
+                            switch (choice) {
+                                case 1:
+                                    System.out.println("Enter the new doctor's full name: ");
+                                    doctorName = scan.nextLine();
+                                    Doctor addDoctor = new Doctor(doctorName);
+                                    d.addDoctor(addDoctor);
+                                    break;
+                                case 2:
+                                    System.out.println("Enter the doctor's full name: ");
+                                    doctorName = scan.nextLine();
+                                    Doctor deleteDoctor = new Doctor(doctorName);
+                                    d.deleteDoctor(deleteDoctor);
+                                    break;
+                                case 3:
+                                    d.viewApproved();
+                                    break;
+                                case 4:
+                                    d.viewPending();
+                                    break;
+                                case 5:
+                                    System.out.println("Enter appointment number to approve: ");
+                                    int approveNum = scan.nextInt();
+                                    scan.nextLine();
+
+                                    d.approveAppointment(approveNum);
+                                    break;
+                                case 6:
+                                    System.out.println("Enter appointment number to decline: ");
+                                    int declineNum = scan.nextInt();
+                                    scan.nextLine();
+
+                                    d.declineAppointment(declineNum);
+                                    break;
+                                case 7:
+                                    System.out.println("Exit");
+                                    menu3 = false;
+
+                                    // TODO: Write new doctors and appointments to pending.txt and approved.txt from arraylist of doctors and appointments
+
+                                    break;
+                                default:
+                                    System.out.println("Please enter a valid choice.");
+                                    break;
+                            }
+                        } while (menu3);
+
                         break;
                     default:
                         System.out.println("Please enter a valid choice.");
                         menu2 = true;
                         break;
                 }
+
+                // TODO: Write new doctors and appointments to pending.txt and approved.txt from arraylist of doctors and appointments
+
             } while (menu2);
         } else {
             System.out.println("Error! Account does not exist");
@@ -80,7 +145,7 @@ public class Login {
     //creates a new account
     //prints error if account already exists - to do
     public static void createAccount(int identity, String fullName, String username,
-                                     String password, String email, String phoneNumber) {
+                                     String password, String email, String phoneNumber, Scanner scan) {
         try {
             File f = new File("accounts.txt"); //creates accounts file
             FileOutputStream fos = new FileOutputStream(f, true);
@@ -94,7 +159,7 @@ public class Login {
                 System.out.println("Account successfully created!");
             }
             pw.close();
-            login(identity, username, password);
+            login(fullName, identity, username, password, scan);
 
         } catch (IOException e) {
             e.printStackTrace();

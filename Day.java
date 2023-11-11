@@ -1,19 +1,19 @@
 import java.util.ArrayList;
 
 public class Day {
-    private String date; // Date of the day
+    private int date; // Date of the day
     private ArrayList<Doctor> doctors; // List of doctors available on the day
 
-    public Day(String date) {
+    public Day(int date) {
         this.date = date;
         this.doctors = new ArrayList<>();
     }
 
-    public String getDate() {
+    public int getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(int date) {
         this.date = date;
     }
 
@@ -28,7 +28,6 @@ public class Day {
     public void removeDoctor(Doctor doctor) {
         doctors.remove(doctor);
     }
-
     public Doctor getIndividualDoctor(int index) {
     	return doctors.get(index);
     }
@@ -50,6 +49,8 @@ public class Day {
 
     @Override
     public String toString() {
-        return date;
+    	String a = "";
+    	a += date;
+        return a;
     }
 }
