@@ -7,9 +7,8 @@ public class DentistOffice {
     private String name;
     private ArrayList<Doctor> doctorList = new ArrayList<>();
 
-    public DentistOffice(String name, ArrayList<Doctor> doctorList) {
+    public DentistOffice(String name) {
         this.name = name;
-        this.doctorList = doctorList;
     }
 
     public String getName() {
@@ -36,27 +35,48 @@ public class DentistOffice {
             Doctor doctor = new Doctor(line);
             doctorList.add(doctor);
         }
+        reader.close();
         return doctorList;
     }
 
-    public String addDoctor(Doctor doctor) throws IOException {
-        if (!doctorList.contains(doctor)) {
+    public void addDoctor(Doctor doctor) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", true));
+        if (!(doctorList.contains(doctor))) {
             doctorList.add(doctor);
-            BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt"));
-            writer.write(String.valueOf(doctor));
+            writer.write(String.valueOf(doctor) + "\n");
 
-            return "Successfully added Doctor " + doctor.getName() + " to " + this.name;
+            System.out.println("Successfully added doctor " + doctor.getName() + " to " + this.name);
         } else {
-            return "Doctor " + doctor.getName() + " is already in " + this.name;
+            System.out.println("Doctor " + doctor.getName() + " is already in " + this.name);
         }
+        writer.close();
     }
 
-    public String deleteDoctor(Doctor doctor) {
-        if (doctorList.contains(doctor)) {
-            doctorList.remove(doctor);
-            return "Successfully removed Doctor " + doctor.getName() + " from " + this.name;
-        } else {
-            return "Doctor " + doctor.getName() + " is not in " + this.name;
+    public void deleteDoctor(Doctor doctor) throws IOException {
+        boolean repeat = false;
+        int doctorNum = -1;
+
+        for (int i = 0; i < doctorList.size(); i++) {
+            if (String.valueOf(doctorList.get(i)).equals(String.valueOf(doctor))) {
+                repeat = true;
+                doctorNum = i;
+            }
+        }
+        if (repeat) {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", false));
+
+            doctorList.remove(doctorNum);
+            for (Doctor s : doctorList) {
+                writer.write(String.valueOf(s));
+                writer.newLine();
+            }
+
+            writer.close();
+
+            System.out.println("Successfully removed doctor " + doctor.getName() + " from " + this.name);
+        }
+        else {
+            System.out.println("Doctor " + doctor.getName() + " is not in " + this.name);
         }
     }
 
@@ -69,6 +89,7 @@ public class DentistOffice {
         while ((line = reader.readLine()) != null) {
             System.out.println(num + ": " + line);
         }
+        reader.close();
     }
 
     //displays pending appointments
@@ -80,6 +101,7 @@ public class DentistOffice {
         while ((line = reader.readLine()) != null) {
             System.out.println(num + ": " + line);
         }
+        reader.close();
     }
 
     // TODO: Implement storage of doctor names as well
@@ -162,6 +184,7 @@ public class DentistOffice {
 
         return statistics.toString();
     }
+
     public void rescheduleAppointmentForSeller(String doctorName, String oldAppointment, String newAppointment) {
         for (Doctor doctor : doctorList) {
             if (doctor.getName().equals(doctorName)) {
@@ -195,9 +218,4 @@ public class DentistOffice {
         }
         System.out.println("Doctor " + doctorName + " not found.");
     }
-
-
-
-
-
 }
