@@ -54,7 +54,7 @@ public class CalendarFile {
             while ((line = reader.readLine()) != null) { // while there are days left
                 //"dayIndex, date, startDoctor, doctorName, startApt, time, isAvailable, isBooked, customerName, endApt, endDoctor,;
                 ArrayList<String> values = new ArrayList<>(Arrays.asList(line.split(",")));
-                Day thisDay = new Day(values.get(1)); // initialized day with String date
+                Day thisDay = new Day(Integer.parseInt(values.get(1))); // initialized day with
 
 
                 days.add(thisDay);
