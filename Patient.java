@@ -1,5 +1,13 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 public class Patient {
     private String name; // Customer's name
@@ -45,6 +53,7 @@ public class Patient {
 
     public void go(Scanner scan) {
         boolean menu2 = false;
+        boolean menu3 = false;
         MyCalendar cal = new MyCalendar(31);
         do {
             System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments");
@@ -52,66 +61,79 @@ public class Patient {
             scan.nextLine();
             switch (choice) {
                 case 1:
-                   
-                	System.out.println(cal.viewCalendar()); // display calendar
+
+                    System.out.println(cal.viewCalendar()); // display calendar
                     System.out.println("Select a day to view available doctors:");
                     int date = scan.nextInt();
                     scan.nextLine();
-                    
-                    
+
+
                     Day selectedDay = cal.getIndividualDay(date);
-                    
-                    
+
+
                     System.out.println(selectedDay.showDoctorList() + "\n"); //display doctor list
-                    
+
                     while (selectedDay.getDoctors().size() == 0) {
-                    	System.out.println(cal.viewCalendar());
-                    	System.out.println("Select another day to view available doctors:");
-                    	date = scan.nextInt();
-                    	scan.nextLine();
-                    	selectedDay = cal.getIndividualDay(date);
-                        
-                        
+                        System.out.println(cal.viewCalendar());
+                        System.out.println("Select another day to view available doctors:");
+                        date = scan.nextInt();
+                        scan.nextLine();
+                        selectedDay = cal.getIndividualDay(date);
+
+
                         System.out.println(selectedDay.showDoctorList() + "\n");
-                        
+
                     }
                     System.out.println("Choose a doctor to view available appointments:");
-                    
-                    
+
+
                     int doctor = scan.nextInt();
                     scan.nextLine();
-                    
+
                     Doctor doc = selectedDay.getIndividualDoctor(doctor - 1);
                     System.out.println("\nDr. " + doc.getName());
                     for (int i = 0; i < doc.getAppointments().size(); i++) { // display available time slots
-                    	System.out.println("[" + (i + 1) + "] " + doc.getAppointments().get(i).toString());
+                        System.out.println("[" + (i + 1) + "] " + doc.getAppointments().get(i).toString());
                     }
-                    
+
                     System.out.println("Select a time:");
                     int appt = scan.nextInt();
-            		scan.nextLine();
-            		
-            		if (doc.getAppointments().get(appt - 1).isBooked()) {
-            			System.out.println("Sorry! thats already booked");
-            			
-            		} else {
-            			System.out.println("Enter your name");
-            			doc.getAppointments().get(appt - 1).bookAppointment(scan.nextLine());
-            			System.out.println("\nAppointment Booked!");
-            		}
+                    scan.nextLine();
+
+                    if (doc.getAppointments().get(appt - 1).isBooked()) {
+                        System.out.println("Sorry! thats already booked");
+
+                    } else {
+                        System.out.println("Enter your name");
+                        doc.getAppointments().get(appt - 1).bookAppointment(scan.nextLine());
+                        System.out.println("\nAppointment Booked!");
+                    }
                     Time time = doc.getAppointments().get(appt).getTime();
                     makeAppointment(date, doc, time);
                     break;
                 case 2:
-                    //display approved appointments arraylist with numbers
-                    System.out.println("Choose an appointment:");
-                    int cancel = scan.nextInt();
-                    scan.nextLine();
-                    cancelAppointment(cancel);
+                    do {
+                        String[] a = readFile(); //display approved appointments
+                        System.out.println("Choose an appointment:");
+                        int cancel = scan.nextInt();
+                        scan.nextLine();
+                        //checking for valid choice
+                        int counter = 1;
+                        for (int i = 1; i <= a.length; i++) {
+                            if (cancel == i) {
+                                counter = 0;
+                            }
+                        }
+                        if (counter == 0) {
+                            cancelAppointment(cancel);
+                        } else {
+                            System.out.println("Please enter a valid choice.");
+                            menu3 = true;
+                        }
+                    } while (menu3);
                     break;
                 case 3:
-                    //display approved appointments
-                    viewAppointment();
+                    readFile(); //displays approved appointments
                     break;
                 default:
                     System.out.println("Please enter a valid choice.");
@@ -121,15 +143,133 @@ public class Patient {
         } while (menu2);
     }
 
-    public static void makeAppointment(int date, Doctor doctor, Time time) {
-
+    public void makeAppointment(int date, Doctor doctor, Time time) {
+        try {
+            File f = new File("pending.txt"); //creates pending appointments file
+            FileOutputStream fos = new FileOutputStream(f, true);
+            PrintWriter pw = new PrintWriter(fos);
+            pw.println(this.name + "," + date + "," + time + "," + doctor);
+            System.out.println("Appointment made successfully!");
+            pw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void cancelAppointment(int cancel) {
+    public void cancelAppointment(int cancel) {
+        try {
+            String[] list = readFile();
+            ArrayList<String> list1 = new ArrayList<String>();
+            BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
+            String line = bfr.readLine();
+            int counter = 1;
+            while (line != null) {
+                counter++;
+                if (counter != cancel) {
+                    list1.add(line);
+                }
+            }
+            bfr.close();
 
+            File f = new File("approved.txt");
+            FileOutputStream fos = new FileOutputStream(f);
+            PrintWriter pw = new PrintWriter(fos);
+            for (int i = 0; i < list1.size(); i++) {
+                pw.println(list1.get(i));
+            }
+            pw.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void viewAppointment() {
 
+    public String[] readFile() {
+        try {
+            ArrayList<String[]> list = new ArrayList<String[]>();
+            ArrayList<String> list2 = new ArrayList<String>(); // stores each line of the file, only for printing purposes
+
+            BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
+            String line = bfr.readLine();
+            // creates array to store each approved appointment separately
+            String[] commas = new String[4];
+
+            while (line != null) {
+                list2.add(line);
+                commas = line.split(",", 4);
+                list.add(commas);
+                line = bfr.readLine();
+            }
+            bfr.close();
+
+            //splits list into each parameter
+            String[] names = new String[list.size()];
+            String[] dates = new String[list.size()];
+            String[] times = new String[list.size()];
+            String[] doctors = new String[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                names[i] = list.get(i)[0];
+                dates[i] = list.get(i)[1];
+                times[i] = list.get(i)[2];
+                doctors[i] = list.get(i)[3];
+            }
+
+            //displays the approved appointments
+            String[] printList = new String[list2.size()];
+            System.out.println("Approved appointments:");
+            for (int i = 0; i < printList.length; i++) {
+                printList[i] = list2.get(i);
+                System.out.println((i + 1) + ". " + printList[i]);
+            }
+
+            return printList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+    public void rescheduleAppointmentForCustomer(Doctor currentDoctor, Time currentSlot, Doctor newDoctor, Time newSlot) {
+        Appointment currentApt = currentDoctor.findAppointment(String.valueOf(currentSlot));
+
+        // cancel the current appointment
+        if (currentApt != null) {
+            currentApt.cancelAppointment();
+            currentApt.setCustomerName(null);
+
+            // Create a new appointment
+            Appointment newApt = newDoctor.findAppointment(String.valueOf(newSlot));
+            if (newApt == null || !newApt.isBooked()) {
+                if (newApt == null) {
+                    // Create a new appointment in desired slot
+                    newApt = new Appointment(newSlot);
+                    newDoctor.addAppointment(newApt);
+                }
+                // Book the new appointment
+                newApt.bookAppointment(this.name);
+                newApt.getTime().setAvailable(false); // update doctors avaliability
+            } else {
+                System.out.println("New appointment slot is not available.");
+            }
+
+            // Remove appointment from patient's list
+            this.appointments.remove(currentApt);
+            // Add new appointment to patient's list
+            this.appointments.add(newApt);
+
+            System.out.println("Updated schedule for " + currentDoctor.getName() + ":");
+            for (Appointment appointment : currentDoctor.getAppointments()) {
+                System.out.println(appointment.toString());
+            }
+
+            System.out.println("Updated schedule for " + newDoctor.getName() + ":");
+            for (Appointment appointment : newDoctor.getAppointments()) {
+                System.out.println(appointment.toString());
+            }
+        } else {
+            System.out.println("Current appointment not found for " + this.name);
+        }
+    }
+
 }
