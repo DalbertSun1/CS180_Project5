@@ -230,5 +230,46 @@ public class Patient {
             return null;
         }
     }
+    public void rescheduleAppointmentForCustomer(Doctor currentDoctor, Time currentSlot, Doctor newDoctor, Time newSlot) {
+        Appointment currentApt = currentDoctor.findAppointment(String.valueOf(currentSlot));
+
+        // cancel the current appointment
+        if (currentApt != null) {
+            currentApt.cancelAppointment();
+            currentApt.setCustomerName(null);
+
+            // Create a new appointment
+            Appointment newApt = newDoctor.findAppointment(String.valueOf(newSlot));
+            if (newApt == null || !newApt.isBooked()) {
+                if (newApt == null) {
+                    // Create a new appointment in desired slot
+                    newApt = new Appointment(newSlot);
+                    newDoctor.addAppointment(newApt);
+                }
+                // Book the new appointment
+                newApt.bookAppointment(this.name);
+                newApt.getTime().setAvailable(false); // update doctors avaliability
+            } else {
+                System.out.println("New appointment slot is not available.");
+            }
+
+            // Remove appointment from patient's list
+            this.appointments.remove(currentApt);
+            // Add new appointment to patient's list
+            this.appointments.add(newApt);
+
+            System.out.println("Updated schedule for " + currentDoctor.getName() + ":");
+            for (Appointment appointment : currentDoctor.getAppointments()) {
+                System.out.println(appointment.toString());
+            }
+
+            System.out.println("Updated schedule for " + newDoctor.getName() + ":");
+            for (Appointment appointment : newDoctor.getAppointments()) {
+                System.out.println(appointment.toString());
+            }
+        } else {
+            System.out.println("Current appointment not found for " + this.name);
+        }
+    }
 
 }
