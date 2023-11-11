@@ -162,4 +162,42 @@ public class DentistOffice {
 
         return statistics.toString();
     }
+    public void rescheduleAppointmentForSeller(String doctorName, String oldAppointment, String newAppointment) {
+        for (Doctor doctor : doctorList) {
+            if (doctor.getName().equals(doctorName)) {
+                Appointment oldApt = doctor.findAppointment(oldAppointment);
+                if (oldApt != null) {
+                    Appointment newApt = doctor.findAppointment(newAppointment);
+                    if (newApt == null || !newApt.isBooked()) {
+                        oldApt.cancelAppointment();
+                        oldApt.setCustomerName(null);
+                        oldApt.getTime().setAvailable(true);
+
+                        if (newApt != null) {
+                            newApt.cancelAppointment();
+                            newApt.setCustomerName(oldApt.getCustomerName());
+                            newApt.bookAppointment(oldApt.getCustomerName());
+                            newApt.getTime().setAvailable(false);
+                        } else {
+                            Time newTimeSlot = new Time("New Time Slot", false);
+                            doctor.addAppointment(new Appointment(newTimeSlot));
+                            doctor.findAppointment(newAppointment).bookAppointment(oldApt.getCustomerName());
+                        }
+
+                        // Display the updated schedule after rescheduling
+                        for (Appointment appointment : doctor.getAppointments()) {
+                            System.out.println(appointment.toString());
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+        System.out.println("Doctor " + doctorName + " not found.");
+    }
+
+
+
+
+
 }
