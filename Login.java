@@ -62,15 +62,15 @@ public class Login {
         readDoctorList = d.readDoctors();
 
         for (Doctor value : readDoctorList) {
-            value.addAppointment(new Appointment("9:00 AM"));
-            value.addAppointment(new Appointment("10:00 AM"));
-            value.addAppointment(new Appointment("11:00 AM"));
-            value.addAppointment(new Appointment("12:00 PM"));
-            value.addAppointment(new Appointment("1:00 PM"));
-            value.addAppointment(new Appointment("2:00 PM"));
-            value.addAppointment(new Appointment("3:00 PM"));
-            value.addAppointment(new Appointment("4:00 PM"));
-            value.addAppointment(new Appointment("5:00 PM"));
+            value.addAppointment(new Appointment("9:00 AM - 10:00 AM"));
+            value.addAppointment(new Appointment("10:00 AM - 11:00 AM"));
+            value.addAppointment(new Appointment("11:00 AM - 12:00 PM"));
+            value.addAppointment(new Appointment("12:00 PM - 1:00 PM"));
+            value.addAppointment(new Appointment("1:00 PM - 2:00 PM"));
+            value.addAppointment(new Appointment("2:00 PM - 3:00 PM"));
+            value.addAppointment(new Appointment("3:00 PM - 4:00 PM"));
+            value.addAppointment(new Appointment("4:00 PM - 5:00 PM"));
+            value.addAppointment(new Appointment("5:00 PM - 6:00 PM"));
         }
 
         d.setDoctorList(readDoctorList);
