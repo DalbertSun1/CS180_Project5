@@ -8,12 +8,12 @@ import java.util.Map;
 public class Statistics { // handles the statistics section of our projection
 
     public void DentistOfficeDashboard(DentistOffice dentistOffice) {
-        HashMap<String, Integer> patientFrequency = new HashMap<>();
-        HashMap<Doctor, Time> doctorTimeData = new HashMap<>();
+        HashMap<String, Integer> patientFrequency = new HashMap<>(); // maps patient names to # of apts
+        HashMap<Doctor, String> doctorTimeData = new HashMap<>(); // maps Doctors to their most frequent time
 
         for (Doctor doctor : dentistOffice.getDoctorList()) {
             HashMap<String, Integer> patientData; // maps patient names to integer # of appointments
-            HashMap<Time, Integer> timeData; // maps Times to frequency of appointment slot
+            HashMap<String, Integer> timeData; // maps string time to frequency of appointment slot
 
             patientData = doctor.getStatistics()[0];
             timeData = doctor.getStatistics()[1];
@@ -29,8 +29,8 @@ public class Statistics { // handles the statistics section of our projection
             }
 
             // sort through Times to find the most frequent one
-            Time mostFrequent = timeData.keySet().iterator().next();
-            for (Time thisTime : timeData.keySet()) {
+            String mostFrequent = timeData.keySet().iterator().next();
+            for (String thisTime : timeData.keySet()) {
                 if (timeData.get(thisTime) > timeData.get(mostFrequent)) {
                     mostFrequent = thisTime;
                 }
@@ -38,6 +38,7 @@ public class Statistics { // handles the statistics section of our projection
             doctorTimeData.put(doctor, mostFrequent);
 
         }
+        printDentistOfficeDashboard(patientFrequency, doctorTimeData);
 
 
         // Data will include a list of patients with the number of approved appointments they made
@@ -46,14 +47,25 @@ public class Statistics { // handles the statistics section of our projection
         // Sellers can choose to sort the dashboard.
 
     }
-    private void printDentistOfficeDashboard(HashMap<String, Integer> patientFrequency, HashMap<Doctor, Time> doctorTimeData) {
+    private void printDentistOfficeDashboard(HashMap<String, Integer> patientFrequency, HashMap<Doctor, String> doctorTimeData) {
         boolean printing = true;
         int userChoice = 0;
         Scanner scanner = new Scanner(System.in);
         List<String> patientList = new ArrayList<>(patientFrequency.keySet());
+
+        List<Doctor> doctorList = new ArrayList<>(doctorTimeData.keySet());
+        doctorList.sort(Comparator.comparing(Doctor::getName));
+
         List<Map.Entry<String, Integer>> sortedPatientEntries = new ArrayList<>(patientFrequency.entrySet());
         do {
             StringBuilder output = new StringBuilder();
+            // first, add doctor | most frequent time
+            output.append("Doctor Name | Most Frequent Apt. Time");
+            for (Doctor doctor : doctorList) {
+                output.append(doctor.getName() + " | " + doctorTimeData.get(doctor) + "\n");
+            }
+
+
             output.append("Patient Name | # of Appointments\n");
             if (userChoice == 2) { // if sorted by # of appointments
                 for (Map.Entry<String, Integer> entry : sortedPatientEntries) {
@@ -125,11 +137,11 @@ public class Statistics { // handles the statistics section of our projection
         // Customers can choose to sort the dashboard.
 
         // get necessary data
-        HashMap<Doctor, Integer> doctorPatientData = new HashMap<>();
-        HashMap<Doctor, Time> doctorTimeData = new HashMap<>();
+        HashMap<Doctor, Integer> doctorPatientData = new HashMap<>(); // maps Doctors to # of patients
+        HashMap<Doctor, String> doctorTimeData = new HashMap<>(); // maps Doctors to most frequent time
         for (Doctor doctor : dentistOffice.getDoctorList()) {
             HashMap<String, Integer> patientData; // maps patient names to integer # of appointments
-            HashMap<Time, Integer> timeData; // maps Times to frequency of appointment slot
+            HashMap<String, Integer> timeData; // maps String time to frequency of appointment slot
 
             patientData = doctor.getStatistics()[0];
             timeData = doctor.getStatistics()[1];
@@ -138,8 +150,8 @@ public class Statistics { // handles the statistics section of our projection
             doctorPatientData.put(doctor, patientData.keySet().size());
 
             // sort through Times to find the most frequent one
-            Time mostFrequent = timeData.keySet().iterator().next();
-            for (Time thisTime : timeData.keySet()) {
+            String mostFrequent = timeData.keySet().iterator().next();
+            for (String thisTime : timeData.keySet()) {
                 if (timeData.get(thisTime) > timeData.get(mostFrequent)) {
                     mostFrequent = thisTime;
                 }
@@ -162,7 +174,7 @@ public class Statistics { // handles the statistics section of our projection
     }
 
 
-    private void printPatientDashboard(HashMap<Doctor, Integer> doctorPatientData, HashMap<Doctor, Time> doctorTimeData) {
+    private void printPatientDashboard(HashMap<Doctor, Integer> doctorPatientData, HashMap<Doctor, String> doctorTimeData) {
         boolean printing = true;
         int userChoice = 0;
         Scanner scanner = new Scanner(System.in);
@@ -181,7 +193,7 @@ public class Statistics { // handles the statistics section of our projection
                     output.append(numPatients);
                     if (numPatients == 1) { output.append(" patient | ");} else {output.append(" patients | ");}
 
-                    String timeString = doctorTimeData.get(doctor).toString();
+                    String timeString = doctorTimeData.get(doctor);
                     output.append(timeString + "\n");
 
                 }
@@ -194,7 +206,7 @@ public class Statistics { // handles the statistics section of our projection
                     output.append(numPatients);
                     if (numPatients == 1) { output.append(" patient | ");} else {output.append(" patients | ");}
 
-                    String timeString = doctorTimeData.get(doctor).toString();
+                    String timeString = doctorTimeData.get(doctor);
                     output.append(timeString + "\n");
 
                 }
