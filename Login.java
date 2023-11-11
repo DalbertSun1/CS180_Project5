@@ -56,9 +56,12 @@ public class Login {
 
     public static void login(String fullName, int identity, String username, String password, Scanner scan) throws IOException {
         // TODO: Read pending.txt and approved.txt and assign arraylist of appointments and doctors
-        ArrayList<Doctor> readDoctorList = new ArrayList<>();
+        DentistOffice d = new DentistOffice("My Dentist Office");
 
-        DentistOffice d = new DentistOffice("My Dentist Office", readDoctorList);
+        ArrayList<Doctor> readDoctorList;
+        readDoctorList = d.readDoctors();
+
+        d.setDoctorList(readDoctorList);
 
         if (checkAccount(username, password)) {
             System.out.println("Welcome!");
