@@ -1,4 +1,4 @@
-public class Time {
+/*public class Time {
     private String timeslot; // The time slot, e.g., "9:00 AM"
     private boolean available; // Indicates whether the time slot is available
 
@@ -32,4 +32,4 @@ public class Time {
             return timeslot + " (Not Available)";
         }
     }
-}
+}*/
