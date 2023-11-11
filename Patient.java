@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -44,7 +45,7 @@ public class Patient {
         return name;
     }
 
-    public void go(Scanner scan, ArrayList<Doctor> doctors) {
+    public void go(Scanner scan, ArrayList<Doctor> doctors) throws IOException {
         boolean menu2 = false;
         boolean menu3 = false;
         MyCalendar cal = new MyCalendar(31);
@@ -126,7 +127,28 @@ public class Patient {
                     } while (menu3);
                     break;
                 case 3:
-                    readFile(); //displays approved appointments
+                    System.out.println("Enter your name: ");
+                    String checkName = scan.nextLine();
+                    BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
+                    String line;
+                    int num = 1;
+                    boolean found = false;
+
+                    while((line = reader.readLine()) != null) {
+                        String[] confirmName = line.split(",");
+                        if (confirmName[0].equals(checkName)) {
+                            System.out.println(num + ": " + line);
+                            num++;
+                            found = true;
+                        }
+                    }
+
+                    if (!found) {
+                        System.out.println("You have no approved appointments at this time.");
+                    }
+
+                    reader.close();
+
                     break;
                 default:
                     System.out.println("Please enter a valid choice.");
@@ -252,8 +274,24 @@ public class Patient {
 
     // TODO: Method to read appointments from approved and pending, assigning each appointment to isBooked
     // Used so appointments that have already been booked don't show up again
+    // Needs work
     public void readAppointments() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
+        String line;
+        int num = 0;
+
+        while((line = reader.readLine()) != null) {
+            String[] split = line.split(",");
+            Day day = new Day(Integer.parseInt(split[0]));
+            ArrayList<Doctor> doctors = new ArrayList<>();
+            Doctor doctor = new Doctor(split[1]);
+            doctors.add(doctor);
+            Appointment appointment = new Appointment(split[2]);
+
+            day.setDoctors(doctors);
+            doctor.addAppointment(appointment);
+            appointment.setIsBooked(true);
+        }
 
         reader.close();
     }
