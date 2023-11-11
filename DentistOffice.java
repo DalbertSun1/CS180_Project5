@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -8,17 +7,44 @@ public class DentistOffice {
     private String name;
     private ArrayList<Doctor> doctorList = new ArrayList<>();
 
-    public DentistOffice(String name) {
+    public DentistOffice(String name, ArrayList<Doctor> doctorList) {
         this.name = name;
+        this.doctorList = doctorList;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public String addDoctor(Doctor doctor) {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ArrayList<Doctor> getDoctorList() {
+        return doctorList;
+    }
+
+    public void setDoctorList(ArrayList<Doctor> doctorList) {
+        this.doctorList = doctorList;
+    }
+
+    public ArrayList<Doctor> readDoctors() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            Doctor doctor = new Doctor(line);
+            doctorList.add(doctor);
+        }
+        return doctorList;
+    }
+
+    public String addDoctor(Doctor doctor) throws IOException {
         if (!doctorList.contains(doctor)) {
             doctorList.add(doctor);
+            BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt"));
+            writer.write(String.valueOf(doctor));
+
             return "Successfully added Doctor " + doctor.getName() + " to " + this.name;
         } else {
             return "Doctor " + doctor.getName() + " is already in " + this.name;
@@ -56,6 +82,7 @@ public class DentistOffice {
         }
     }
 
+    // TODO: Implement storage of doctor names as well
     public void approveAppointment(int line) throws IOException {
         List<String> pendingAppointments = new ArrayList<>();
 
