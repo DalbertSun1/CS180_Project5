@@ -71,7 +71,7 @@ public class Login {
                 switch (identity) {
                     case 1:
                         Patient p = new Patient(fullName); // continue as a patient
-                        p.go(scan);
+                        p.go(scan, readDoctorList);
                         break;
                     case 2:
                         // continue as a doctor
