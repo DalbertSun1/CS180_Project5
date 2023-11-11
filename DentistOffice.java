@@ -28,6 +28,12 @@ public class DentistOffice {
     }
 
     public ArrayList<Doctor> readDoctors() throws IOException {
+        File f = new File("doctors.txt");
+        if(!f.exists()) {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt"));
+            writer.write("");
+            writer.close();
+        }
         BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
         String line;
 
