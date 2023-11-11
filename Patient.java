@@ -104,11 +104,12 @@ public class Patient {
 
                     } else {
                         System.out.println("Enter your name");
-                        doc.getAppointments().get(appt - 1).bookAppointment(scan.nextLine());
+                        this.name = scan.nextLine();
+                        doc.getAppointments().get(appt - 1).bookAppointment(name);
                         System.out.println("\nAppointment Booked!");
                     }
-                    Time time = doc.getAppointments().get(appt).getTime();
-                    makeAppointment(date, doc, time);
+                    Appointment appointment = doc.getAppointments().get(appt - 1);
+                    makeAppointment(date, doc, appointment);
                     break;
                 case 2:
                     do {
@@ -142,12 +143,12 @@ public class Patient {
         } while (menu2);
     }
 
-    public void makeAppointment(int date, Doctor doctor, Time time) {
+    public void makeAppointment(int date, Doctor doctor, Appointment appointment) {
         try {
             File f = new File("pending.txt"); //creates pending appointments file
             FileOutputStream fos = new FileOutputStream(f, true);
             PrintWriter pw = new PrintWriter(fos);
-            pw.println(this.name + "," + date + "," + time + "," + doctor);
+            pw.println(name + "," + date + "," + appointment.getTime() + "," + doctor);
             System.out.println("Appointment made successfully!");
             pw.close();
         } catch (IOException e) {
@@ -229,8 +230,10 @@ public class Patient {
             return null;
         }
     }
+    
+    // Small bugs in reschedule appointment, TODO: implement properly without Time class
 
-    public void rescheduleAppointmentForCustomer(Doctor currentDoctor, Time currentSlot, Doctor newDoctor, Time newSlot) {
+    /*public void rescheduleAppointmentForCustomer(Doctor currentDoctor, Time currentSlot, Doctor newDoctor, Time newSlot) {
         Appointment currentApt = currentDoctor.findAppointment(String.valueOf(currentSlot));
 
         // cancel the current appointment
@@ -270,6 +273,6 @@ public class Patient {
         } else {
             System.out.println("Current appointment not found for " + this.name);
         }
-    }
+    }*/
 
 }
