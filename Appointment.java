@@ -24,6 +24,10 @@ public class Appointment {
     public boolean isBooked() {
         return isBooked;
     }
+    
+    public void setIsBooked(boolean isBooked) {
+        this.isBooked = isBooked;
+    }
 
     public void bookAppointment(String customerName) {
         this.customerName = customerName;
