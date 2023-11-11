@@ -230,49 +230,31 @@ public class Patient {
             return null;
         }
     }
-    
-    // Small bugs in reschedule appointment, TODO: implement properly without Time class
 
-    /*public void rescheduleAppointmentForCustomer(Doctor currentDoctor, Time currentSlot, Doctor newDoctor, Time newSlot) {
-        Appointment currentApt = currentDoctor.findAppointment(String.valueOf(currentSlot));
+    public void rescheduleAppointmentForCustomer(Doctor currentDoctor, Appointment currentAppointment, Doctor newDoctor, Appointment newAppointment) {
+        // Cancel the current appointment
+        currentAppointment.cancelAppointment();
 
-        // cancel the current appointment
-        if (currentApt != null) {
-            currentApt.cancelAppointment();
-            currentApt.setCustomerName(null);
+        // Remove appointment from patient's list
+        this.appointments.remove(currentAppointment);
 
-            // Create a new appointment
-            Appointment newApt = newDoctor.findAppointment(String.valueOf(newSlot));
-            if (newApt == null || !newApt.isBooked()) {
-                if (newApt == null) {
-                    // Create a new appointment in desired slot
-                    newApt = new Appointment(newSlot);
-                    newDoctor.addAppointment(newApt);
-                }
-                // Book the new appointment
-                newApt.bookAppointment(this.name);
-                newApt.getTime().setAvailable(false); // update doctors avaliability
-            } else {
-                System.out.println("New appointment slot is not available.");
-            }
+        // Book a new appointment with the new doctor
+        newAppointment.bookAppointment(this.name);
 
-            // Remove appointment from patient's list
-            this.appointments.remove(currentApt);
-            // Add new appointment to patient's list
-            this.appointments.add(newApt);
+        // Add the new appointment to the patient's list
+        this.appointments.add(newAppointment);
 
-            System.out.println("Updated schedule for " + currentDoctor.getName() + ":");
-            for (Appointment appointment : currentDoctor.getAppointments()) {
-                System.out.println(appointment.toString());
-            }
-
-            System.out.println("Updated schedule for " + newDoctor.getName() + ":");
-            for (Appointment appointment : newDoctor.getAppointments()) {
-                System.out.println(appointment.toString());
-            }
-        } else {
-            System.out.println("Current appointment not found for " + this.name);
+        // Update schedule for current doctor
+        System.out.println("Updated schedule for " + currentDoctor.getName() + ":");
+        for (Appointment appointment : currentDoctor.getAppointments()) {
+            System.out.println(appointment.toString());
         }
-    }*/
+
+        // Update schedule for new doctor
+        System.out.println("Updated schedule for " + newDoctor.getName() + ":");
+        for (Appointment appointment : newDoctor.getAppointments()) {
+            System.out.println(appointment.toString());
+        }
+    }
 
 }
