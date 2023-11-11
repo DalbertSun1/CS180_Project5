@@ -106,6 +106,7 @@ public class DentistOffice {
 
         while ((line = reader.readLine()) != null) {
             System.out.println(num + ": " + line);
+            num++;
         }
         reader.close();
     }
@@ -166,30 +167,32 @@ public class DentistOffice {
         }
     }
 
-//    public String getCustomerStatistics() {
-//        StringBuilder statistics = new StringBuilder();
-//        for (Doctor doctor : doctorList) {
-//            HashMap<String, Integer> customerData = doctor.getStatistics()[0]; // a hashmap with key = customerName, value = # of appointments per customer
-//            // iterate over keys in customerData
-//            for (String customerName : customerData.keySet()) {
-//                statistics.append(customerName).append(" : ").append(customerData.get(customerName));
-//            }
-//
-//        }
-//        return statistics.toString();
-//    }
-//    public String getTimeStatistics() {
-//        StringBuilder statistics = new StringBuilder();
-//        for (Doctor doctor : doctorList) {
-//            HashMap<Time, Integer> timeData = doctor.getStatistics()[1]; // a hashmap with key = Time, value = # of appointments at this time
-//            // iterate over keys in customerData
-//            for (Time time : timeData.keySet()) {
-//                statistics.append(time.getTimeslot()).append(" : ").append(timeData.get(time));
-//            }
-//        }
-//
-//        return statistics.toString();
-//    }
+    // TODO: Statistics need to be implemented without Time class
+
+    /*public String getCustomerStatistics() {
+        StringBuilder statistics = new StringBuilder();
+        for (Doctor doctor : doctorList) {
+            HashMap<String, Integer> customerData = doctor.getStatistics()[0]; // a hashmap with key = customerName, value = # of appointments per customer
+            // iterate over keys in customerData
+            for (String customerName : customerData.keySet()) {
+                statistics.append(customerName).append(" : ").append(customerData.get(customerName));
+            }
+
+        }
+        return statistics.toString();
+    }
+    public String getTimeStatistics() {
+        StringBuilder statistics = new StringBuilder();
+        for (Doctor doctor : doctorList) {
+            HashMap<Time, Integer> timeData = doctor.getStatistics()[1]; // a hashmap with key = Time, value = # of appointments at this time
+            // iterate over keys in customerData
+            for (Time time : timeData.keySet()) {
+                statistics.append(time.getTimeslot()).append(" : ").append(timeData.get(time));
+            }
+        }
+
+        return statistics.toString();
+    }*/
 
     public void rescheduleAppointmentForSeller(String doctorName, String oldAppointment, String newAppointment) {
         for (Doctor doctor : doctorList) {
@@ -206,12 +209,13 @@ public class DentistOffice {
                             newApt.cancelAppointment();
                             newApt.setCustomerName(oldApt.getCustomerName());
                             newApt.bookAppointment(oldApt.getCustomerName());
+                            newApt.setIsBooked(true);
                         } else {
                             newApt = new Appointment(newAppointment);
                             doctor.addAppointment(newApt);
                         }
 
-                        // Displyed updated schedule
+                        // Display the updated schedule after rescheduling
                         for (Appointment appointment : doctor.getAppointments()) {
                             System.out.println(appointment.toString());
                         }
