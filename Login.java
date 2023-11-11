@@ -55,14 +55,25 @@ public class Login {
     }
 
     public static void login(String fullName, int identity, String username, String password, Scanner scan) throws IOException {
-        // TODO: Read pending.txt and approved.txt and assign arraylist of appointments and doctors
+        // TODO: Read pending.txt and approved.txt and assign arraylist of appointments
         DentistOffice d = new DentistOffice("My Dentist Office");
 
         ArrayList<Doctor> readDoctorList;
         readDoctorList = d.readDoctors();
 
-        d.setDoctorList(readDoctorList);
+        for (Doctor value : readDoctorList) {
+            value.addAppointment(new Appointment("9:00 AM"));
+            value.addAppointment(new Appointment("10:00 AM"));
+            value.addAppointment(new Appointment("11:00 AM"));
+            value.addAppointment(new Appointment("12:00 PM"));
+            value.addAppointment(new Appointment("1:00 PM"));
+            value.addAppointment(new Appointment("2:00 PM"));
+            value.addAppointment(new Appointment("3:00 PM"));
+            value.addAppointment(new Appointment("4:00 PM"));
+            value.addAppointment(new Appointment("5:00 PM"));
+        }
 
+        d.setDoctorList(readDoctorList);
         if (checkAccount(username, password)) {
             System.out.println("Welcome!");
             // continue as a doctor or patient
@@ -80,7 +91,7 @@ public class Login {
 
                         do {
                             System.out.println("1. Add Doctor \n2. Remove Doctor \n3. View Approved Appointments " +
-                                    "\n4. View Pending Appointments \n5. Approve Appointment \n6. Decline Appointment");
+                                    "\n4. View Pending Appointments \n5. Approve Appointment \n6. Decline Appointment \n7. Reschedule Appointment");
                             int choice = scan.nextInt();
                             scan.nextLine();
 
@@ -117,7 +128,7 @@ public class Login {
 
                                     d.declineAppointment(declineNum);
                                     break;
-                              case 7:
+                                case 7:
                                     System.out.println("Enter the doctor name");
                                     doctorName = scan.nextLine();
 
@@ -142,8 +153,6 @@ public class Login {
                                         System.out.println("Doctor " + doctorName + " not found.");
                                     }
                                     break;
-
-
                                 case 8:
                                     System.out.println("Exit");
                                     menu3 = false;
