@@ -1,13 +1,6 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 
 public class Patient {
     private String name; // Customer's name
@@ -148,7 +141,7 @@ public class Patient {
             File f = new File("pending.txt"); //creates pending appointments file
             FileOutputStream fos = new FileOutputStream(f, true);
             PrintWriter pw = new PrintWriter(fos);
-            pw.println(name + "," + date + "," + appointment.getTime() + "," + doctor);
+            pw.println(name + "," + date + "," + appointment.getTime() + "," + doctor.getName());
             System.out.println("Appointment made successfully!");
             pw.close();
         } catch (IOException e) {
@@ -255,6 +248,14 @@ public class Patient {
         for (Appointment appointment : newDoctor.getAppointments()) {
             System.out.println(appointment.toString());
         }
+    }
+
+    // TODO: Method to read appointments from approved and pending, assigning each appointment to isBooked
+    // Used so appointments that have already been booked don't show up again
+    public void readAppointments() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
+
+        reader.close();
     }
 
 }
