@@ -200,20 +200,18 @@ public class DentistOffice {
                     if (newApt == null || !newApt.isBooked()) {
                         oldApt.cancelAppointment();
                         oldApt.setCustomerName(null);
-                        oldApt.getTime().setAvailable(true);
+                        oldApt.setIsBooked(false);
 
                         if (newApt != null) {
                             newApt.cancelAppointment();
                             newApt.setCustomerName(oldApt.getCustomerName());
                             newApt.bookAppointment(oldApt.getCustomerName());
-                            newApt.getTime().setAvailable(false);
                         } else {
-                            Time newTimeSlot = new Time("New Time Slot", false);
-                            doctor.addAppointment(new Appointment(newTimeSlot));
-                            doctor.findAppointment(newAppointment).bookAppointment(oldApt.getCustomerName());
+                            newApt = new Appointment(newAppointment);
+                            doctor.addAppointment(newApt);
                         }
 
-                        // Display the updated schedule after rescheduling
+                        // Displyed updated schedule
                         for (Appointment appointment : doctor.getAppointments()) {
                             System.out.println(appointment.toString());
                         }
