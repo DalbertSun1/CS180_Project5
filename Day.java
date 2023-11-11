@@ -36,7 +36,36 @@ public class Day {
     public Doctor getIndividualDoctor(int index) {
         return doctors.get(index);
     }
+    public ArrayList<String> listAppts() {
+    	
+    	ArrayList<String> list = new ArrayList<String>();
+    	
+    	for (int i = 0; i < doctors.size(); i++) {
+    		for (int j = 0; j < doctors.get(i).getAppointments().size(); j++) {
+    			String a = doctors.get(i).getAppointments().get(j).getTime().getTimeslot();
+    			String d = "";
+    			if (doctors.get(i).getName().length() > 9) {
+    				d+= doctors.get(i).getName().substring(0,9) + ": " + a.substring(0, a.indexOf('-')-1);
+    			} else {
+    				String b = doctors.get(i).getName() + ": " + a.substring(0, a.indexOf('-')-1);
+    				if (b.length() < 19) {
+    					d+= b;
+    					for (int k = 0; k < 19-b.length(); k++) {
+    						d += " ";
+    					}
+    				} else {
 
+        				d+= doctors.get(i).getName() + ": " + a.substring(0, a.indexOf('-')-1);
+    				}
+    			}
+    			
+    			list.add(d);
+    			
+    		}
+    	}
+    	
+    	return list;
+    }
     public String showDoctorList() {
         String result = "";
 
