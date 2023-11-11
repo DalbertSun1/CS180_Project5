@@ -21,6 +21,10 @@ public class Day {
         return doctors;
     }
 
+    public void setDoctors(ArrayList<Doctor> doctors) {
+        this.doctors = doctors;
+    }
+
     public void addDoctor(Doctor doctor) {
         doctors.add(doctor);
     }
@@ -28,29 +32,23 @@ public class Day {
     public void removeDoctor(Doctor doctor) {
         doctors.remove(doctor);
     }
+
     public Doctor getIndividualDoctor(int index) {
-    	return doctors.get(index);
-    }
-    
-    public String showDoctorList() {
-    	String result = "";
-    	
-    	if (doctors.size() == 0) {
-    		return "Sorry! No Doctors Available for this day.";
-    	}
-    	
-    	for (int i = 0; i < doctors.size(); i++) {
-    		result += "[" + (i + 1) + "] Dr. " + doctors.get(i).getName() + "\n\n";
-    		
-    	}
-    	
-    	return result;
+        return doctors.get(index);
     }
 
-    @Override
-    public String toString() {
-    	String a = "";
-    	a += date;
-        return a;
+    public String showDoctorList() {
+        String result = "";
+
+        if (doctors.size() == 0) {
+            return "Sorry! No Doctors Available for this day.";
+        }
+
+        for (int i = 0; i < doctors.size(); i++) {
+            result += "[" + (i + 1) + "] Dr. " + doctors.get(i).getName() + "\n\n";
+
+        }
+
+        return result;
     }
 }
