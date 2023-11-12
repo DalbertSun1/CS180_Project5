@@ -461,32 +461,4 @@ public class Patient {
         reader.close();
         return returnList;
     }
-
-    // TODO: Method to read appointments from approved and pending, assigning each appointment to isBooked
-    // Used so appointments that have already been booked don't show up again
-    // Needs work
-
-    /*
-    public void readAppointments() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
-        String line;
-        int num = 0;
-
-        while((line = reader.readLine()) != null) {
-            String[] split = line.split(",");
-            Day day = new Day(Integer.parseInt(split[0]));
-            ArrayList<Doctor> doctors = new ArrayList<>();
-            Doctor doctor = new Doctor(split[1]);
-            doctors.add(doctor);
-            Appointment appointment = new Appointment(split[2]);
-
-            day.setDoctors(doctors);
-            doctor.addAppointment(appointment);
-            appointment.setIsBooked(true);
-        }
-
-        reader.close();
-    }
-     */
-
 }
