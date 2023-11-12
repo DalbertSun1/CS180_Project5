@@ -87,7 +87,8 @@ public class Login {
 
         ArrayList<Doctor> readDoctorList;
         readDoctorList = d.readDoctors();
-
+        
+        /* No use for now
         for (Doctor value : readDoctorList) {
             value.addAppointment(new Appointment("9:00 AM - 10:00 AM"));
             value.addAppointment(new Appointment("10:00 AM - 11:00 AM"));
@@ -99,6 +100,7 @@ public class Login {
             value.addAppointment(new Appointment("4:00 PM - 5:00 PM"));
             value.addAppointment(new Appointment("5:00 PM - 6:00 PM"));
         }
+        */
 
         d.setDoctorList(readDoctorList);
         if (checkAccount(username, password)) {
