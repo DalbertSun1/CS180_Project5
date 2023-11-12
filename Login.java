@@ -120,7 +120,9 @@ public class Login {
 
                         do {
                             System.out.println("1. Add Doctor \n2. Remove Doctor \n3. View Approved Appointments " +
-                                    "\n4. View Pending Appointments \n5. Approve Appointment \n6. Decline Appointment \n7. Reschedule Appointment \n8. Log out");
+                                    "\n4. View Pending Appointments \n5. Approve Appointment \n" +
+                                    "6. Decline Appointment \n7. Reschedule Appointment \n8. View Statistics\n" +
+                                    "9. Log out");
                             int choice = scan.nextInt();
                             scan.nextLine();
 
@@ -163,6 +165,9 @@ public class Login {
                                     d.rescheduleAppointment(scan);
                                     break;
                                 case 8:
+                                    OurStatistics.dentistOfficeDashboard(d, scan);
+                                    break;
+                                case 9:
                                     System.out.println("You have logged out.");
                                     menu(scan);
                                     menu3 = false;
