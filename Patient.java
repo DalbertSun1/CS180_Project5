@@ -50,7 +50,7 @@ public class Patient {
         boolean menu3 = false;
         MyCalendar cal = new MyCalendar(31);
         do {
-            System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments\n4. Log out");
+            System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments\n4. Reschedule an appointment\n5. Log out");
             int choice = scan.nextInt();
             scan.nextLine();
             switch (choice) {
@@ -156,7 +156,11 @@ public class Patient {
                     reader.close();
                     menu2 = true;
                     break;
-                case 4: //log out
+                case 4:
+                    rescheduleAppointment(scan);
+                    menu2 = true;
+                    break;
+                case 5: //log out
                     System.out.println("You have logged out.");
                     Login l = new Login();
                     l.menu(scan);
