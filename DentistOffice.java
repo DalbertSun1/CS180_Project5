@@ -161,6 +161,7 @@ public class DentistOffice {
                 if (lineNum == line) {
                     // Process the approved appointment
                     approvedWriter.write(line1);
+                    approvedWriter.newLine();
                 } else {
                     // Add non-approved appointments to the temporary list
                     pendingAppointments.add(line1);
