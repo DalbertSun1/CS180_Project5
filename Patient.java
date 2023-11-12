@@ -119,7 +119,7 @@ public class Patient {
                             }
                         }
                         if (counter == 0) {
-                            cancelAppointment(cancel);
+                            cancelAppointment(cancel, a);
                         } else {
                             System.out.println("Please enter a valid choice.");
                             menu3 = true;
@@ -164,16 +164,14 @@ public class Patient {
             FileOutputStream fos = new FileOutputStream(f, true);
             PrintWriter pw = new PrintWriter(fos);
             pw.println(name + "," + date + "," + appointment.getTime() + "," + doctor.getName());
-            System.out.println("Appointment made successfully!");
             pw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void cancelAppointment(int cancel) {
+    public void cancelAppointment(int cancel, String[] list) {
         try {
-            String[] list = readFile();
             ArrayList<String> list1 = new ArrayList<String>();
             BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
             String line = bfr.readLine();
