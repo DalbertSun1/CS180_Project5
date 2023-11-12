@@ -30,7 +30,7 @@ public class Login {
                 case 1 : // log in
                     boolean menu2 = false;
                     do {
-                        System.out.println("Log in as\n1. Patient\n2. Doctor\n3. Back");
+                        System.out.println("Log in as\n1. Patient\n2. Dentist Office\n3. Back");
                         int identity2 = scan.nextInt();
                         scan.nextLine();
                         if (identity2 == 1 || identity2 == 2) {
