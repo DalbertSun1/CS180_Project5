@@ -214,6 +214,142 @@ public class Patient {
         }
     }
 
+    public void rescheduleAppointment(Scanner scan) throws IOException {
+
+
+
+        BufferedReader reader1 = new BufferedReader(new FileReader("approved.txt"));
+
+        int currentLine = 1;
+        boolean found1 = false;
+        String line;
+        ArrayList<String> lines = new ArrayList<>();
+        String[] lineSplit;
+
+        System.out.println("Enter your name: ");
+        String checkName = scan.nextLine();
+
+
+        while ((line = reader1.readLine()) != null) {
+            lines.add(line);
+            lineSplit = line.split(",");
+            if (lineSplit[0].equals(checkName)) {
+                System.out.println(currentLine + ": " + line);
+                currentLine++;
+                found1 = true;
+            }
+        }
+
+        if (!found1) {
+            System.out.println("You have no approved appointments at this time.");
+        } else {
+            System.out.println("Which appointment would you like to change?");
+            int userIndex = scan.nextInt() - 1;
+            scan.nextLine();
+            boolean timeIsBooked = false;
+            do {
+                System.out.println("What day would you like to change it to?");
+                int newDay = scan.nextInt();
+                String newTime = "";
+                int newTimeInt;
+                do {
+
+                    System.out.println("What time would you like to change it to?");
+
+                    System.out.println("1. 9:00 AM - 10:00 AM");
+                    System.out.println("2. 10:00 AM - 11:00 AM");
+                    System.out.println("3. 11:00 AM - 12:00 PM");
+                    System.out.println("4. 12:00 PM - 1:00 PM");
+                    System.out.println("5. 1:00 PM - 2:00 PM");
+                    System.out.println("6. 2:00 PM - 3:00 PM");
+                    System.out.println("7. 3:00 PM - 4:00 PM");
+                    System.out.println("8. 4:00 PM - 5:00 PM");
+                    System.out.println("9. 5:00 PM - 6:00 PM");
+                    newTimeInt = scan.nextInt();
+                    scan.nextLine();
+                    switch (newTimeInt) {
+                        case 1 -> {
+                            newTime = "9:00 AM - 10:00 AM";
+                        }
+                        case 2 -> {
+                            newTime = "10:00 AM - 11:00 AM";
+                        }
+                        case 3 -> {
+                            newTime = "11:00 AM - 12:00 PM";
+                        }
+                        case 4 -> {
+                            newTime = "12:00 PM - 1:00 PM";
+                        }
+                        case 5 -> {
+                            newTime = "1:00 PM - 2:00 PM";
+                        }
+                        case 6 -> {
+                            newTime = "2:00 PM - 3:00 PM";
+                        }
+                        case 7 -> {
+                            newTime = "3:00 PM - 4:00 PM";
+                        }
+                        case 8 -> {
+                            newTime = "4:00 PM - 5:00 PM";
+                        }
+                        case 9 -> {
+                            newTime = "5:00 PM - 6:00 PM";
+                        }
+                        default -> {
+                            System.out.println("You typed an incorrect choice. ");
+                        }
+                    }
+                } while (newTimeInt < 1 || newTimeInt > 9);
+
+
+                // check if given time is already taken
+                line = lines.get(userIndex);
+                lineSplit = line.split(",");
+                // get this line, turn into a list, switch
+
+                String doctorName = lineSplit[3];
+
+
+
+                for (String thisLine : lines) {
+                    lineSplit = thisLine.split(",");
+                    if (lineSplit[3].equals(doctorName)) {
+                        if (lineSplit[1].equals(Integer.toString(newDay))) {
+                            if (lineSplit[2].equals(newTime)) {
+                                System.out.println("Time unavailable. Try again.");
+                                timeIsBooked = true;
+                            }
+                        }
+                    }
+                }
+
+                if (!timeIsBooked) {
+                    lineSplit[2] = newTime;
+                    lineSplit[1] = Integer.toString(newDay);
+                    String newApt = "";
+                    for (String x : lineSplit) {
+                        newApt += x + ",";
+                    }
+                    newApt = newApt.substring(0, newApt.length() - 1);
+                    lines.set(userIndex, newApt);
+                    BufferedWriter writer1 = new BufferedWriter(new FileWriter("approved.txt"));
+                    for (String thisLine : lines) {
+                        writer1.write(thisLine + "\n");
+                    }
+                    writer1.close();
+
+
+                }
+
+
+            } while (timeIsBooked);
+        }
+
+
+        reader1.close();
+
+    }
+
 
     public String[] readFile() {
         try {
