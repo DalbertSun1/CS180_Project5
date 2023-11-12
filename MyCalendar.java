@@ -153,7 +153,7 @@ public class MyCalendar {
     
     
     public Day getIndividualDay(int day) {
-    	return days[day + 1];
+    	return days[day - 1];
     	
     }
     
