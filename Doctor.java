@@ -53,6 +53,32 @@ public class Doctor { // a doctor is equivalent to a store in the project handou
         }
         return null;
     }
+    public void loadBookedAppointments() {
+        try {
+
+            String[] lineSplit;
+            String time;
+            String doctorName;
+            String patientName;
+
+            for (String thisAptLine : DentistOffice.getAppointments()) {
+                lineSplit = thisAptLine.split(",");
+
+                patientName = lineSplit[0];
+                time = lineSplit[2];
+                doctorName = lineSplit[3];
+
+                if (this.name.equals(doctorName)) {
+                    Appointment newApt = new Appointment(time);
+                    newApt.bookAppointment(patientName);
+                    bookedAppointments.add(newApt);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public HashMap[] getStatistics() {
         // returns an array of two hashmaps.
