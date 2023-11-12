@@ -1,9 +1,11 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.io.IOException;
 
 public class Doctor { // a doctor is equivalent to a store in the project handout
     private String name; // Doctor's name
     private ArrayList<Appointment> appointments; // List of appointments for the doctor
+    private ArrayList<Appointment> bookedAppointments = new ArrayList<>(); // list of appointments, loaded from approved.txt
 
 
     public Doctor(String name) {
@@ -56,11 +58,12 @@ public class Doctor { // a doctor is equivalent to a store in the project handou
         // returns an array of two hashmaps.
         // Map 1: a list of customers and corresponding # of appointments per customer
         // Map 2: a list of String time and corresponding # of appointments
+        this.loadBookedAppointments();
 
         HashMap<String, Integer> customerData = new HashMap<String, Integer>(); // maps customer names to integer # of appointments
         HashMap<String, Integer> timeData = new HashMap<String, Integer>(); // maps times to frequency of appointment slot
 
-        for (Appointment apt : appointments) {
+        for (Appointment apt : bookedAppointments) {
             String cusName = apt.getCustomerName();
             String thisTime = apt.getTime();
             if (apt.isBooked()) {
