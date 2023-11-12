@@ -179,10 +179,11 @@ public class Patient {
             String line = bfr.readLine();
             int counter = 1;
             while (line != null) {
-                counter++;
                 if (counter != cancel) {
                     list1.add(line);
                 }
+                line = bfr.readLine();
+                counter++;
             }
             bfr.close();
 
