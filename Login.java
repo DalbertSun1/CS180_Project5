@@ -163,9 +163,7 @@ public class Login {
                                 case 8:
                                     System.out.println("You have logged out.");
                                     menu(scan);
-
-                                    // TODO: Write new doctors and appointments to pending.txt and approved.txt from arraylist of doctors and appointments
-
+                                    menu3 = false;
                                     break;
                                 default:
                                     System.out.println("Please enter a valid choice.");
