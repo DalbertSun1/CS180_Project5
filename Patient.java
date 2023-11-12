@@ -212,7 +212,6 @@ public class Patient {
 
     public String[] readFile() {
         try {
-            ArrayList<String[]> list = new ArrayList<String[]>();
             ArrayList<String> list2 = new ArrayList<String>(); // stores each line of the file, only for printing purposes
 
             BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
@@ -223,22 +222,9 @@ public class Patient {
             while (line != null) {
                 list2.add(line);
                 commas = line.split(",", 4);
-                list.add(commas);
                 line = bfr.readLine();
             }
             bfr.close();
-
-            //splits list into each parameter
-            String[] names = new String[list.size()];
-            String[] dates = new String[list.size()];
-            String[] times = new String[list.size()];
-            String[] doctors = new String[list.size()];
-            for (int i = 0; i < list.size(); i++) {
-                names[i] = list.get(i)[0];
-                dates[i] = list.get(i)[1];
-                times[i] = list.get(i)[2];
-                doctors[i] = list.get(i)[3];
-            }
 
             //displays the approved appointments
             String[] printList = new String[list2.size()];
