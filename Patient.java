@@ -48,13 +48,14 @@ public class Patient {
     public void go(Scanner scan, ArrayList<Doctor> doctors) throws IOException {
         boolean menu2 = false;
         boolean menu3 = false;
+        int sum = 1;
         MyCalendar cal = new MyCalendar(31);
         do {
             System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments\n4. Reschedule an appointment\n5. Log out");
             int choice = scan.nextInt();
             scan.nextLine();
             switch (choice) {
-                case 1: //create appointment
+                case 1:
                     System.out.println(cal.viewCalendar()); // display calendar
                     System.out.println("Select a day to view available doctors:");
                     int date = scan.nextInt();
@@ -77,6 +78,7 @@ public class Patient {
                         System.out.println(selectedDay.showDoctorList() + "\n");
 
                     }
+
                     System.out.println("Choose a doctor to view available appointments:");
 
 
@@ -85,28 +87,30 @@ public class Patient {
 
                     Doctor doc = selectedDay.getIndividualDoctor(doctor - 1);
                     System.out.println("\nDr. " + doc.getName());
-                    for (int i = 0; i < doc.getAppointments().size(); i++) { // display available time slots
-                        System.out.println("[" + (i + 1) + "] " + doc.getAppointments().get(i).toString());
+
+
+                    ArrayList<String> show = printAppointments(selectedDay, doc);
+                    for (int i = 0; i < show.size(); i++) {
+                        System.out.println(sum + ": " + show.get(i));
+                        sum++;
                     }
 
                     System.out.println("Select a time:");
                     int appt = scan.nextInt();
                     scan.nextLine();
+                    String chosenTime = show.get(appt - 1);
 
-                    if (doc.getAppointments().get(appt - 1).isBooked()) {
-                        System.out.println("Sorry! That's already booked");
 
-                    } else {
-                        System.out.println("Enter your name");
-                        this.name = scan.nextLine();
-                        doc.getAppointments().get(appt - 1).bookAppointment(name);
-                        System.out.println("\nAppointment booked!");
-                    }
-                    Appointment appointment = doc.getAppointments().get(appt - 1);
+                    System.out.println("Enter your name:");
+                    this.name = scan.nextLine();
+                    Appointment appointment = new Appointment(chosenTime);
+                    appointment.bookAppointment(name);
+                    System.out.println("\nAppointment Booked!");
+
                     makeAppointment(date, doc, appointment);
                     menu2 = true;
                     break;
-                case 2: //cancel appointment
+                case 2:
                     do {
                         String[] a = readFile(); //display approved appointments
                         if (a.length == 0) {
@@ -123,7 +127,7 @@ public class Patient {
                                 }
                             }
                             if (counter == 0) {
-                                cancelAppointment(cancel);
+                                cancelAppointment(cancel, a);
                             } else {
                                 System.out.println("Please enter a valid choice.");
                                 menu3 = true;
@@ -132,7 +136,7 @@ public class Patient {
                     } while (menu3);
                     menu2 = true;
                     break;
-                case 3: //view approved appointments
+                case 3:
                     System.out.println("Enter your name: ");
                     String checkName = scan.nextLine();
                     BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
@@ -160,7 +164,7 @@ public class Patient {
                     rescheduleAppointment(scan);
                     menu2 = true;
                     break;
-                case 5: //log out
+                case 5:
                     System.out.println("You have logged out.");
                     Login l = new Login();
                     l.menu(scan);
@@ -185,9 +189,8 @@ public class Patient {
         }
     }
 
-    public void cancelAppointment(int cancel) {
+    public void cancelAppointment(int cancel, String[] list) {
         try {
-
             ArrayList<String> list1 = new ArrayList<String>();
             BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
             String line = bfr.readLine();
@@ -211,6 +214,53 @@ public class Patient {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    public String[] readFile() {
+        try {
+            ArrayList<String[]> list = new ArrayList<String[]>();
+            ArrayList<String> list2 = new ArrayList<String>(); // stores each line of the file, only for printing purposes
+
+            BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
+            String line = bfr.readLine();
+            // creates array to store each approved appointment separately
+            String[] commas = new String[4];
+
+            while (line != null) {
+                list2.add(line);
+                commas = line.split(",", 4);
+                list.add(commas);
+                line = bfr.readLine();
+            }
+            bfr.close();
+
+            //splits list into each parameter
+            String[] names = new String[list.size()];
+            String[] dates = new String[list.size()];
+            String[] times = new String[list.size()];
+            String[] doctors = new String[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                names[i] = list.get(i)[0];
+                dates[i] = list.get(i)[1];
+                times[i] = list.get(i)[2];
+                doctors[i] = list.get(i)[3];
+            }
+
+            //displays the approved appointments
+            String[] printList = new String[list2.size()];
+            System.out.println("Approved appointments:");
+            for (int i = 0; i < printList.length; i++) {
+                printList[i] = list2.get(i);
+                System.out.println((i + 1) + ". " + printList[i]);
+            }
+
+            return printList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -350,37 +400,93 @@ public class Patient {
 
     }
 
+    private ArrayList<String> printAppointments(Day day, Doctor doctor) throws IOException {
+        ArrayList<String> isBookedAppointmentList = new ArrayList<>();
+        ArrayList<String> returnList = new ArrayList<>();
+        ArrayList<Integer> dayList = new ArrayList<>();
+        ArrayList<String> timeList = new ArrayList<>();
+        ArrayList<String> doctorList = new ArrayList<>();
+        ArrayList<String> fullList = new ArrayList<>();
 
-    public String[] readFile() {
-        try {
-            ArrayList<String> list2 = new ArrayList<String>(); // stores each line of the file, only for printing purposes
-
-            BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
-            String line = bfr.readLine();
-            // creates array to store each approved appointment separately
-            String[] commas = new String[4];
-
-            while (line != null) {
-                list2.add(line);
-                commas = line.split(",", 4);
-                line = bfr.readLine();
-            }
-            bfr.close();
-
-            //displays the approved appointments
-            String[] printList = new String[list2.size()];
-            System.out.println("Approved appointments:");
-            for (int i = 0; i < printList.length; i++) {
-                printList[i] = list2.get(i);
-                System.out.println((i + 1) + ". " + printList[i]);
-            }
-
-            return printList;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
+        String line1;
+        while ((line1 = reader.readLine()) != null) {
+            fullList.add(line1);
         }
+
+        reader = new BufferedReader(new FileReader("approved.txt"));
+        String line2;
+        while ((line2 = reader.readLine()) != null) {
+            fullList.add(line2);
+        }
+
+        for (int i = 0; i < fullList.size(); i++) {
+            String[] split = fullList.get(i).split(",");
+            dayList.add(Integer.parseInt(split[1]));
+            timeList.add(split[2]);
+            doctorList.add(split[3]);
+        }
+
+        for (int i = 0; i < dayList.size(); i++) {
+            if (day.getDate() == dayList.get(i) && doctor.getName().equals(doctorList.get(i))) {
+                System.out.println("This time must not be shown: " + timeList.get(i));
+                isBookedAppointmentList.add(timeList.get(i));
+            }
+        }
+
+        System.out.println(isBookedAppointmentList);
+
+        for (int i = 0; i < 9; i++) {
+            String printAppointment;
+            if (i <= 1) {
+                printAppointment = (i + 9) + ":00 AM" + " - " + (i + 10) + ":00 AM";
+            }
+            else if (i == 2) {
+                printAppointment = (i + 9) + ":00 AM" + " - " + (i + 10) + ":00 PM";
+            }
+            else if (i == 3) {
+                printAppointment = (i + 9) + ":00 PM" + " - " + (i - 2) + ":00 PM";
+            }
+            else {
+                printAppointment = (i - 3) + ":00 PM" + " - " + (i - 2) + ":00 PM";
+            }
+
+            returnList.add(printAppointment);
+
+        }
+        for (int j = 0; j < isBookedAppointmentList.size(); j++) {
+            returnList.remove(isBookedAppointmentList.get(j));
+        }
+
+        reader.close();
+        return returnList;
     }
+
+    // TODO: Method to read appointments from approved and pending, assigning each appointment to isBooked
+    // Used so appointments that have already been booked don't show up again
+    // Needs work
+
+    /*
+    public void readAppointments() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
+        String line;
+        int num = 0;
+
+        while((line = reader.readLine()) != null) {
+            String[] split = line.split(",");
+            Day day = new Day(Integer.parseInt(split[0]));
+            ArrayList<Doctor> doctors = new ArrayList<>();
+            Doctor doctor = new Doctor(split[1]);
+            doctors.add(doctor);
+            Appointment appointment = new Appointment(split[2]);
+
+            day.setDoctors(doctors);
+            doctor.addAppointment(appointment);
+            appointment.setIsBooked(true);
+        }
+
+        reader.close();
+    }
+     */
 
 }
