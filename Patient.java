@@ -45,13 +45,14 @@ public class Patient {
         return name;
     }
 
-    public void go(Scanner scan, ArrayList<Doctor> doctors) throws IOException {
+    public void go(Scanner scan, ArrayList<Doctor> doctors, DentistOffice d) throws IOException {
         boolean menu2 = false;
         boolean menu3 = false;
         int sum = 1;
         MyCalendar cal = new MyCalendar(31);
         do {
-            System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments\n4. Reschedule an appointment\n5. Log out");
+            System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments\n4. Reschedule an appointment\n" +
+                    "5. View Statistics\n6. Log out");
             int choice = scan.nextInt();
             scan.nextLine();
             switch (choice) {
@@ -165,6 +166,9 @@ public class Patient {
                     menu2 = true;
                     break;
                 case 5:
+                    OurStatistics.patientDashboard(d, scan);
+                    break;
+                case 6:
                     System.out.println("You have logged out.");
                     Login l = new Login();
                     l.menu(scan);
