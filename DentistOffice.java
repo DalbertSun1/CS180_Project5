@@ -89,7 +89,7 @@ public class DentistOffice {
 
     // displays approved appointments
    
-    public String[] getAppointments() throws IOException {
+    public String[] static getAppointments() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
         ArrayList<String> appointmentsList = new ArrayList<>();
 
