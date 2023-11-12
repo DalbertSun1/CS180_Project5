@@ -50,7 +50,7 @@ public class Day {
     	
     	for (int i = 0; i < doctors.size(); i++) {
     		for (int j = 0; j < doctors.get(i).getAppointments().size(); j++) {
-    			String a = doctors.get(i).getAppointments().get(j).getTime().getTimeslot();
+    			String a = doctors.get(i).getAppointments().get(j).getTime();
     			String d = "";
     			if (doctors.get(i).getName().length() > 9) {
     				d+= doctors.get(i).getName().substring(0,9) + ": " + a.substring(0, a.indexOf('-')-1);
