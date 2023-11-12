@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 
-public class Statistics { // handles the statistics section of our projection
+public class OurStatistics { // handles the statistics section of our projection
 
-    public void DentistOfficeDashboard(DentistOffice dentistOffice) {
+    public static void dentistOfficeDashboard(DentistOffice dentistOffice) {
         HashMap<String, Integer> patientFrequency = new HashMap<>(); // maps patient names to # of apts
         HashMap<Doctor, String> doctorTimeData = new HashMap<>(); // maps Doctors to their most frequent time
 
@@ -47,7 +47,7 @@ public class Statistics { // handles the statistics section of our projection
         // Sellers can choose to sort the dashboard.
 
     }
-    private void printDentistOfficeDashboard(HashMap<String, Integer> patientFrequency, HashMap<Doctor, String> doctorTimeData) {
+    private static void printDentistOfficeDashboard(HashMap<String, Integer> patientFrequency, HashMap<Doctor, String> doctorTimeData) {
         boolean printing = true;
         int userChoice = 0;
         Scanner scanner = new Scanner(System.in);
@@ -132,7 +132,7 @@ public class Statistics { // handles the statistics section of our projection
 
 
 
-    public void PatientDashboard(DentistOffice dentistOffice) {
+    public static void patientDashboard(DentistOffice dentistOffice) {
     // Data will include a list of Doctors by number of patients and the most popular appointment windows by Doctor.
         // Customers can choose to sort the dashboard.
 
@@ -174,7 +174,7 @@ public class Statistics { // handles the statistics section of our projection
     }
 
 
-    private void printPatientDashboard(HashMap<Doctor, Integer> doctorPatientData, HashMap<Doctor, String> doctorTimeData) {
+    private static void printPatientDashboard(HashMap<Doctor, Integer> doctorPatientData, HashMap<Doctor, String> doctorTimeData) {
         boolean printing = true;
         int userChoice = 0;
         Scanner scanner = new Scanner(System.in);
