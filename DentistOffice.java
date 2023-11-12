@@ -109,10 +109,14 @@ public class DentistOffice {
         try {
             String[] appointments = getAppointments();
             // Now you have the appointments in the 'appointments' array
-            for (int i = 0; i < appointments.length; i++) {
+            if (appointments.length == 0) {
+                System.out.println("You have no approved appointments.");
+            } else {
+                for (int i = 0; i < appointments.length; i++) {
 
-                System.out.println((i + 1) + ": " + appointments[i]);
+                    System.out.println((i + 1) + ": " + appointments[i]);
 
+                }
             }
         } catch (IOException e) {
             e.printStackTrace(); // Handle the IOException appropriately
@@ -122,18 +126,24 @@ public class DentistOffice {
     public void viewApproved() {
         viewApprovedAppointments();
     }
+    
+
 
     //displays pending appointments
     public void viewPending() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
-        String line;
+        String line = reader.readLine();
         int num = 1;
-
-        while ((line = reader.readLine()) != null) {
-            System.out.println(num + ": " + line);
-            num++;
+        if (line == null) {
+            System.out.println("You have no pending appointments.");
+        } else {
+            while (line != null) {
+                System.out.println(num + ": " + line);
+                num++;
+                line = reader.readLine();
+            }
+            reader.close();
         }
-        reader.close();
     }
 
     // TODO: Implement storage of doctor names as well
