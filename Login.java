@@ -144,6 +144,7 @@ public class Login {
                                     d.viewPending();
                                     break;
                                 case 5:
+                                    d.viewPending();
                                     System.out.println("Enter appointment number to approve: ");
                                     int approveNum = scan.nextInt();
                                     scan.nextLine();
@@ -151,6 +152,7 @@ public class Login {
                                     d.approveAppointment(approveNum);
                                     break;
                                 case 6:
+                                    d.viewPending();
                                     System.out.println("Enter appointment number to decline: ");
                                     int declineNum = scan.nextInt();
                                     scan.nextLine();
