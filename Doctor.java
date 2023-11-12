@@ -31,10 +31,10 @@ public class Doctor { // a doctor is equivalent to a store in the project handou
         appointments.remove(appointment);
     }
 
-    public boolean isAvailable(String time) {
+    public boolean isAvailable(Appointment appointmentTime) {
         // Check if the doctor has an available appointment slot at the specified time
         for (Appointment appointment : appointments) {
-            if (appointment.getTime().equals(time) && !appointment.isBooked()) {
+            if (appointment.getTime().equals(appointmentTime.getTime()) && !appointment.isBooked()) {
                 return true;
             }
         }
@@ -52,11 +52,11 @@ public class Doctor { // a doctor is equivalent to a store in the project handou
         return null;
     }
 
-    public HashMap[] getStatistics() { 
-        // returns an array of two hashmaps. 
+    public HashMap[] getStatistics() {
+        // returns an array of two hashmaps.
         // Map 1: a list of customers and corresponding # of appointments per customer
         // Map 2: a list of String time and corresponding # of appointments
-       
+
         HashMap<String, Integer> customerData = new HashMap<String, Integer>(); // maps customer names to integer # of appointments
         HashMap<String, Integer> timeData = new HashMap<String, Integer>(); // maps times to frequency of appointment slot
 
@@ -74,11 +74,11 @@ public class Doctor { // a doctor is equivalent to a store in the project handou
                 } else { // add time to database
                     timeData.put(thisTime, 1);
                 }
-                
+
             }
         }
         HashMap[] output = {customerData, timeData};
-        return output; 
+        return output;
 
     }
 
