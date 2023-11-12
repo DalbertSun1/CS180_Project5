@@ -12,7 +12,15 @@ public class Day {
     public int getDate() {
         return date;
     }
-
+    public int getIndividualDoctorIndex(String doctor) {
+    	int j = -1;
+    	for (int i = 0; i < doctors.size(); i++) {
+    		if (doctors.get(i).getName().equals(doctor)) {
+    			return i;
+    		}
+    	}
+    	return j;
+    }
     public void setDate(int date) {
         this.date = date;
     }
