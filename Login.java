@@ -1,3 +1,8 @@
+// TODO: Make it so that appointments that have already been booked don't show up again
+// TODO: Finish calendar csv file stuff
+// TODO: Finish update appointment method for both patient and dentist office
+
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
