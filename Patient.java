@@ -157,6 +157,7 @@ public class Patient {
                     menu2 = true;
                     break;
                 case 4: //log out
+                    System.out.println("You have logged out.");
                     Login l = new Login();
                     l.menu(scan);
                     break;
