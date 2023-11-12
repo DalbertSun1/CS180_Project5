@@ -110,9 +110,9 @@ public class Patient {
                     do {
                         String[] a = readFile(); //display approved appointments
                         if (a.length == 0) {
-                            System.out.println("You have no approved appointments.");
+                            System.out.println("You have no approved appointments to cancel.");
                         } else {
-                            System.out.println("Choose an appointment:");
+                            System.out.println("Choose an appointment to cancel:");
                             int cancel = scan.nextInt();
                             scan.nextLine();
                             //checking for valid choice
