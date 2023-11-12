@@ -50,11 +50,11 @@ public class Patient {
         boolean menu3 = false;
         MyCalendar cal = new MyCalendar(31);
         do {
-            System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments");
+            System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments\n4. Log out");
             int choice = scan.nextInt();
             scan.nextLine();
             switch (choice) {
-                case 1:
+                case 1: //create appointment
                     System.out.println(cal.viewCalendar()); // display calendar
                     System.out.println("Select a day to view available doctors:");
                     int date = scan.nextInt();
@@ -94,18 +94,19 @@ public class Patient {
                     scan.nextLine();
 
                     if (doc.getAppointments().get(appt - 1).isBooked()) {
-                        System.out.println("Sorry! thats already booked");
+                        System.out.println("Sorry! That's already booked");
 
                     } else {
                         System.out.println("Enter your name");
                         this.name = scan.nextLine();
                         doc.getAppointments().get(appt - 1).bookAppointment(name);
-                        System.out.println("\nAppointment Booked!");
+                        System.out.println("\nAppointment booked!");
                     }
                     Appointment appointment = doc.getAppointments().get(appt - 1);
                     makeAppointment(date, doc, appointment);
+                    menu2 = true;
                     break;
-                case 2:
+                case 2: //cancel appointment
                     do {
                         String[] a = readFile(); //display approved appointments
                         System.out.println("Choose an appointment:");
@@ -125,8 +126,9 @@ public class Patient {
                             menu3 = true;
                         }
                     } while (menu3);
+                    menu2 = true;
                     break;
-                case 3:
+                case 3: //view approved appointments
                     System.out.println("Enter your name: ");
                     String checkName = scan.nextLine();
                     BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
@@ -148,7 +150,11 @@ public class Patient {
                     }
 
                     reader.close();
-
+                    menu2 = true;
+                    break;
+                case 4: //log out
+                    Login l = new Login();
+                    l.menu(scan);
                     break;
                 default:
                     System.out.println("Please enter a valid choice.");
@@ -172,6 +178,7 @@ public class Patient {
 
     public void cancelAppointment(int cancel, String[] list) {
         try {
+
             ArrayList<String> list1 = new ArrayList<String>();
             BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
             String line = bfr.readLine();
