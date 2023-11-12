@@ -15,13 +15,16 @@ public class Login {
     public static void main(String[] args) throws IOException {
         Scanner scan = new Scanner(System.in);
         System.out.println("Welcome to the Dentist's Office!");
-        String fullName = "";
+        menu(scan);
+    }
 
+    public static void menu(Scanner scan) throws IOException {
         boolean menu1 = false; //counter to rerun the loop if invalid choice is entered
         do {
             System.out.println("Menu\n1. Log in\n2. Create an account");
             int login = scan.nextInt();
             scan.nextLine();
+            String fullName = "";
 
             switch (login) {
                 case 1 : // log in
@@ -56,7 +59,6 @@ public class Login {
                     break;
             }
         } while (menu1);
-
     }
 
     public static void login(String fullName, int identity, String username, String password, Scanner scan) throws IOException {
