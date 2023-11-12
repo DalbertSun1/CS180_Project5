@@ -28,30 +28,50 @@ public class Login {
 
             switch (login) {
                 case 1 : // log in
-                    System.out.println("Log in as\n1. Patient\n2. Doctor");
-                    int identity2 = scan.nextInt();
-                    scan.nextLine();
-                    System.out.println("Enter your user name:");
-                    String username2 = scan.nextLine();
-                    System.out.println("Enter your password:");
-                    String password2 = scan.nextLine();
-                    login(fullName, identity2, username2, password2, scan);
+                    boolean menu2 = false;
+                    do {
+                        System.out.println("Log in as\n1. Patient\n2. Doctor\n3. Back");
+                        int identity2 = scan.nextInt();
+                        scan.nextLine();
+                        if (identity2 == 1 || identity2 == 2) {
+                            System.out.println("Enter your user name:");
+                            String username2 = scan.nextLine();
+                            System.out.println("Enter your password:");
+                            String password2 = scan.nextLine();
+                            login(fullName, identity2, username2, password2, scan);
+                        } else if (identity2 == 3) {
+                            menu1 = true;
+                        } else {
+                            System.out.println("Please enter a valid choice.");
+                            menu2 = true;
+                        }
+                    } while (menu2);
                     break;
                 case 2 : // create an account
-                    System.out.println("Create an account as\n1. Patient\n2. Doctor");
-                    int identity = scan.nextInt();
-                    scan.nextLine();
-                    System.out.println("Enter your full name:");
-                    fullName = scan.nextLine();
-                    System.out.println("Enter a user name:");
-                    String username = scan.nextLine();
-                    System.out.println("Enter a password:");
-                    String password = scan.nextLine();
-                    System.out.println("Enter your email:");
-                    String email = scan.nextLine();
-                    System.out.println("Enter your phone number:");
-                    String phoneNumber = scan.nextLine();
-                    createAccount(identity, fullName, username, password, email, phoneNumber, scan);
+                    boolean menu3 = false;
+                    do {
+                        System.out.println("Create an account as\n1. Patient\n2. Doctor\3. Back");
+                        int identity = scan.nextInt();
+                        scan.nextLine();
+                        if (identity == 1 || identity == 2) {
+                            System.out.println("Enter your full name:");
+                            fullName = scan.nextLine();
+                            System.out.println("Enter a user name:");
+                            String username = scan.nextLine();
+                            System.out.println("Enter a password:");
+                            String password = scan.nextLine();
+                            System.out.println("Enter your email:");
+                            String email = scan.nextLine();
+                            System.out.println("Enter your phone number:");
+                            String phoneNumber = scan.nextLine();
+                            createAccount(identity, fullName, username, password, email, phoneNumber, scan);
+                        } else if (identity == 3) {
+                            menu1 = true;
+                        } else {
+                            System.out.println("Please enter a valid choice.");
+                            menu3 = true;
+                        }
+                    } while (menu3);
                     break;
                 default : // invalid choice
                     System.out.println("Please enter a valid choice.");
@@ -170,7 +190,6 @@ public class Login {
                                     break;
                             }
                         } while (menu3);
-
                         break;
                     default:
                         System.out.println("Please enter a valid choice.");
