@@ -87,15 +87,40 @@ public class DentistOffice {
     }
 
     // displays approved appointments
-    public void viewApproved() throws IOException {
+   
+    public String[] getAppointments() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
-        String line;
-        int num = 1;
+        ArrayList<String> appointmentsList = new ArrayList<>();
 
+        String line;
         while ((line = reader.readLine()) != null) {
-            System.out.println(num + ": " + line);
+            appointmentsList.add(line);
         }
         reader.close();
+        String[] appointments = new String[appointmentsList.size()];
+        for (int i = 0; i < appointmentsList.size(); i ++){
+            appointments[i] = appointmentsList.get(i);
+        }
+
+        return appointments;
+    }
+
+    public void viewApprovedAppointments() {
+        try {
+            String[] appointments = getAppointments();
+            // Now you have the appointments in the 'appointments' array
+            for (int i = 0; i < appointments.length; i++) {
+
+                System.out.println((i + 1) + ": " + appointments[i]);
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the IOException appropriately
+        }
+    }
+
+    public void viewApproved() {
+        viewApprovedAppointments();
     }
 
     //displays pending appointments
