@@ -98,7 +98,7 @@ public class Login {
 
                         do {
                             System.out.println("1. Add Doctor \n2. Remove Doctor \n3. View Approved Appointments " +
-                                    "\n4. View Pending Appointments \n5. Approve Appointment \n6. Decline Appointment \n7. Reschedule Appointment");
+                                    "\n4. View Pending Appointments \n5. Approve Appointment \n6. Decline Appointment \n7. Reschedule Appointment \n8. Log out");
                             int choice = scan.nextInt();
                             scan.nextLine();
 
@@ -161,8 +161,8 @@ public class Login {
                                     }
                                     break;
                                 case 8:
-                                    System.out.println("Exit");
-                                    menu3 = false;
+                                    System.out.println("You have logged out.");
+                                    menu(scan);
 
                                     // TODO: Write new doctors and appointments to pending.txt and approved.txt from arraylist of doctors and appointments
 
