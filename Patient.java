@@ -109,21 +109,25 @@ public class Patient {
                 case 2: //cancel appointment
                     do {
                         String[] a = readFile(); //display approved appointments
-                        System.out.println("Choose an appointment:");
-                        int cancel = scan.nextInt();
-                        scan.nextLine();
-                        //checking for valid choice
-                        int counter = 1;
-                        for (int i = 1; i <= a.length; i++) {
-                            if (cancel == i) {
-                                counter = 0;
-                            }
-                        }
-                        if (counter == 0) {
-                            cancelAppointment(cancel);
+                        if (a.length == 0) {
+                            System.out.println("You have no approved appointments.");
                         } else {
-                            System.out.println("Please enter a valid choice.");
-                            menu3 = true;
+                            System.out.println("Choose an appointment:");
+                            int cancel = scan.nextInt();
+                            scan.nextLine();
+                            //checking for valid choice
+                            int counter = 1;
+                            for (int i = 1; i <= a.length; i++) {
+                                if (cancel == i) {
+                                    counter = 0;
+                                }
+                            }
+                            if (counter == 0) {
+                                cancelAppointment(cancel);
+                            } else {
+                                System.out.println("Please enter a valid choice.");
+                                menu3 = true;
+                            }
                         }
                     } while (menu3);
                     menu2 = true;
