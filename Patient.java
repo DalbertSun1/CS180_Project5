@@ -434,8 +434,6 @@ public class Patient {
             }
         }
 
-        System.out.println(isBookedAppointmentList);
-
         for (int i = 0; i < 9; i++) {
             String printAppointment;
             if (i <= 1) {
