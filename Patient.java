@@ -120,7 +120,7 @@ public class Patient {
                             }
                         }
                         if (counter == 0) {
-                            cancelAppointment(cancel, a);
+                            cancelAppointment(cancel);
                         } else {
                             System.out.println("Please enter a valid choice.");
                             menu3 = true;
@@ -176,7 +176,7 @@ public class Patient {
         }
     }
 
-    public void cancelAppointment(int cancel, String[] list) {
+    public void cancelAppointment(int cancel) {
         try {
 
             ArrayList<String> list1 = new ArrayList<String>();
