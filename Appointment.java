@@ -2,6 +2,7 @@ public class Appointment {
     private String time; // Time slot for the appointment
     private String customerName; // Name of the customer
     private boolean isBooked; // Indicates whether the appointment is booked
+    private int maxAttendees;
 
     public Appointment(String time) {
         this.time = time;
@@ -15,6 +16,12 @@ public class Appointment {
 
     public String getCustomerName() {
         return customerName;
+    }
+    public void setMaxAttendees(int max) {
+    	this.maxAttendees = max;
+    }
+    public int getMaxAttendees() {
+    	return maxAttendees;
     }
 
     public void setCustomerName(String customerName) {
