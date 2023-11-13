@@ -1,3 +1,11 @@
+// TODO: Ask a user for their name before cancelling an appointment and only display cancellable appointments under that name
+// TODO: Allow cancelling on pending appointments too
+// TODO: Add error handling in update appointment (if the user types in an integer that does not correspond to an updatable appointment, print an error message and loop again)
+//       Look at numPending method in Login.java for guidance
+//       Must be done in Patient and DentistOffice
+// TODO: Add error handling for choosing a date (if integer inputted is greater than 31, print error message and loop again
+
+
 import java.io.*;
 import java.nio.Buffer;
 import java.util.ArrayList;
@@ -53,131 +61,161 @@ public class Patient {
         do {
             System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments\n4. Reschedule an appointment\n" +
                     "5. View Statistics\n6. Log out");
-            int choice = scan.nextInt();
-            scan.nextLine();
-            switch (choice) {
-                case 1:
-                    System.out.println(cal.viewCalendar()); // display calendar
-                    System.out.println("Select a day to view available doctors:");
-                    int date = scan.nextInt();
-                    scan.nextLine();
+
+            try {
+                String input1 = scan.nextLine();
+                int choice = Integer.parseInt(input1);
+
+                switch (choice) {
+                    case 1:
+                        System.out.println(cal.viewCalendar()); // display calendar
+                        System.out.println("Select a day to view available doctors:");
+                        try {
+                            String input2 = scan.nextLine();
+                            int date = Integer.parseInt(input2);
 
 
-                    Day selectedDay = new Day(cal.getIndividualDay(date).getDate());
-                    selectedDay.setDoctors(doctors);
+                            Day selectedDay = new Day(cal.getIndividualDay(date).getDate());
+                            selectedDay.setDoctors(doctors);
 
-                    System.out.println(selectedDay.showDoctorList() + "\n"); //display doctor list
+                            System.out.println(selectedDay.showDoctorList() + "\n"); //display doctor list
 
-                    while (selectedDay.getDoctors().isEmpty()) {
-                        System.out.println(cal.viewCalendar());
-                        System.out.println("Select another day to view available doctors:");
-                        date = scan.nextInt();
-                        scan.nextLine();
-                        selectedDay = cal.getIndividualDay(date);
+                            while (selectedDay.getDoctors().isEmpty()) {
+                                System.out.println(cal.viewCalendar());
+                                System.out.println("Select another day to view available doctors:");
+                                try {
+                                    String input3 = scan.nextLine();
+                                    date = Integer.parseInt(input3);
 
-
-                        System.out.println(selectedDay.showDoctorList() + "\n");
-
-                    }
-
-                    System.out.println("Choose a doctor to view available appointments:");
+                                    selectedDay = cal.getIndividualDay(date);
 
 
-                    int doctor = scan.nextInt();
-                    scan.nextLine();
+                                    System.out.println(selectedDay.showDoctorList() + "\n");
+                                } catch (NumberFormatException e) {
+                                    System.out.println("PLease enter an integer.");
+                                }
 
-                    Doctor doc = selectedDay.getIndividualDoctor(doctor - 1);
-                    System.out.println("\nDr. " + doc.getName());
+                            }
 
-
-                    ArrayList<String> show = printAppointments(selectedDay, doc);
-                    for (int i = 0; i < show.size(); i++) {
-                        System.out.println(sum + ": " + show.get(i));
-                        sum++;
-                    }
-
-                    System.out.println("Select a time:");
-                    int appt = scan.nextInt();
-                    scan.nextLine();
-                    String chosenTime = show.get(appt - 1);
+                            System.out.println("Choose a doctor to view available appointments:");
+                            try {
+                                String input4 = scan.nextLine();
+                                int doctor = Integer.parseInt(input4);
 
 
-                    System.out.println("Enter your name:");
-                    this.name = scan.nextLine();
-                    Appointment appointment = new Appointment(chosenTime);
-                    appointment.bookAppointment(name);
-                    System.out.println("\nAppointment Booked!");
+                                Doctor doc = selectedDay.getIndividualDoctor(doctor - 1);
+                                System.out.println("\nDr. " + doc.getName());
 
-                    makeAppointment(date, doc, appointment);
-                    menu2 = true;
-                    break;
-                case 2:
-                    do {
-                        String[] a = readFile(); //display approved appointments
-                        if (a.length == 0) {
-                            System.out.println("You have no approved appointments to cancel.");
-                        } else {
-                            System.out.println("Choose an appointment to cancel:");
-                            int cancel = scan.nextInt();
-                            scan.nextLine();
-                            //checking for valid choice
-                            int counter = 1;
-                            for (int i = 1; i <= a.length; i++) {
-                                if (cancel == i) {
-                                    counter = 0;
+
+                                ArrayList<String> show = printAppointments(selectedDay, doc);
+                                for (int i = 0; i < show.size(); i++) {
+                                    System.out.println(sum + ": " + show.get(i));
+                                    sum++;
+                                }
+
+                                System.out.println("Select a time:");
+                                try {
+                                    String input6 = scan.nextLine();
+                                    int appt = Integer.parseInt(input6);
+
+                                    String chosenTime = show.get(appt - 1);
+
+
+                                    System.out.println("Enter your name:");
+                                    this.name = scan.nextLine();
+                                    Appointment appointment = new Appointment(chosenTime);
+                                    appointment.bookAppointment(name);
+                                    System.out.println("\nAppointment Booked!");
+
+                                    makeAppointment(date, doc, appointment);
+                                    menu2 = true;
+                                } catch (NumberFormatException e) {
+                                    System.out.println("Please enter an integer.");
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Please enter an integer.");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Please enter an integer.");
+                        }
+                        break;
+                    case 2:
+                        do {
+                            String[] a = readFile(); //display approved appointments
+                            if (a.length == 0) {
+                                System.out.println("You have no approved appointments to cancel.");
+                            } else {
+                                System.out.println("Choose an appointment to cancel:");
+                                try {
+                                    String input5 = scan.nextLine();
+                                    int cancel = Integer.parseInt(input5);
+
+                                    //checking for valid choice
+                                    int counter = 1;
+                                    for (int i = 1; i <= a.length; i++) {
+                                        if (cancel == i) {
+                                            counter = 0;
+                                        }
+                                    }
+                                    if (counter == 0) {
+                                        cancelAppointment(cancel, a);
+                                    } else {
+                                        System.out.println("Please enter a valid choice.");
+                                        menu3 = true;
+                                    }
+                                } catch (NumberFormatException e) {
+                                    System.out.println("Please enter an integer.");
                                 }
                             }
-                            if (counter == 0) {
-                                cancelAppointment(cancel, a);
-                            } else {
-                                System.out.println("Please enter a valid choice.");
-                                menu3 = true;
+                        } while (menu3);
+                        menu2 = true;
+                        break;
+                    case 3:
+                        System.out.println("Enter your name: ");
+                        String checkName = scan.nextLine();
+                        BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
+                        String line;
+                        int num = 1;
+                        boolean found = false;
+
+                        while((line = reader.readLine()) != null) {
+                            String[] confirmName = line.split(",");
+                            if (confirmName[0].equals(checkName)) {
+                                System.out.println(num + ": " + line);
+                                num++;
+                                found = true;
                             }
                         }
-                    } while (menu3);
-                    menu2 = true;
-                    break;
-                case 3:
-                    System.out.println("Enter your name: ");
-                    String checkName = scan.nextLine();
-                    BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
-                    String line;
-                    int num = 1;
-                    boolean found = false;
 
-                    while((line = reader.readLine()) != null) {
-                        String[] confirmName = line.split(",");
-                        if (confirmName[0].equals(checkName)) {
-                            System.out.println(num + ": " + line);
-                            num++;
-                            found = true;
+                        if (!found) {
+                            System.out.println("You have no approved appointments at this time.");
                         }
-                    }
 
-                    if (!found) {
-                        System.out.println("You have no approved appointments at this time.");
-                    }
-
-                    reader.close();
-                    menu2 = true;
-                    break;
-                case 4:
-                    rescheduleAppointment(scan);
-                    menu2 = true;
-                    break;
-                case 5:
-                    OurStatistics.patientDashboard(d, scan);
-                    break;
-                case 6:
-                    System.out.println("You have logged out.");
-                    Login l = new Login();
-                    l.menu(scan);
-                    break;
-                default:
-                    System.out.println("Please enter a valid choice.");
-                    menu2 = true;
-                    break;
+                        reader.close();
+                        menu2 = true;
+                        break;
+                    case 4:
+                        rescheduleAppointment(scan);
+                        menu2 = true;
+                        break;
+                    case 5:
+                        OurStatistics.patientDashboard(d, scan);
+                        break;
+                    case 6:
+                        System.out.println("You have logged out.");
+                        Login l = new Login();
+                        l.menu(scan);
+                        break;
+                    default:
+                        System.out.println("Please enter a valid choice.");
+                        menu2 = true;
+                        break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter an integer.");
+                menu2 = true;
             }
+
         } while (menu2);
     }
 
@@ -298,105 +336,121 @@ public class Patient {
             System.out.println("You have no approved appointments at this time.");
         } else {
             System.out.println("Which appointment would you like to change?");
-            int userIndex = scan.nextInt() - 1;
-            scan.nextLine();
-            boolean timeIsBooked = false;
-            do {
-                System.out.println("What day would you like to change it to?");
-                int newDay = scan.nextInt();
-                String newTime = "";
-                int newTimeInt;
+            try {
+                String input1 = scan.nextLine();
+                int userIndex = Integer.parseInt(input1) - 1;
+
+                boolean timeIsBooked = false;
                 do {
+                    System.out.println("What day would you like to change it to?");
+                    try {
+                        String input2 = scan.nextLine();
+                        int newDay = Integer.parseInt(input2);
 
-                    System.out.println("What time would you like to change it to?");
+                        String newTime = "";
+                        int newTimeInt = 0;
+                        do {
 
-                    System.out.println("1. 9:00 AM - 10:00 AM");
-                    System.out.println("2. 10:00 AM - 11:00 AM");
-                    System.out.println("3. 11:00 AM - 12:00 PM");
-                    System.out.println("4. 12:00 PM - 1:00 PM");
-                    System.out.println("5. 1:00 PM - 2:00 PM");
-                    System.out.println("6. 2:00 PM - 3:00 PM");
-                    System.out.println("7. 3:00 PM - 4:00 PM");
-                    System.out.println("8. 4:00 PM - 5:00 PM");
-                    System.out.println("9. 5:00 PM - 6:00 PM");
-                    newTimeInt = scan.nextInt();
-                    scan.nextLine();
-                    switch (newTimeInt) {
-                        case 1 -> {
-                            newTime = "9:00 AM - 10:00 AM";
-                        }
-                        case 2 -> {
-                            newTime = "10:00 AM - 11:00 AM";
-                        }
-                        case 3 -> {
-                            newTime = "11:00 AM - 12:00 PM";
-                        }
-                        case 4 -> {
-                            newTime = "12:00 PM - 1:00 PM";
-                        }
-                        case 5 -> {
-                            newTime = "1:00 PM - 2:00 PM";
-                        }
-                        case 6 -> {
-                            newTime = "2:00 PM - 3:00 PM";
-                        }
-                        case 7 -> {
-                            newTime = "3:00 PM - 4:00 PM";
-                        }
-                        case 8 -> {
-                            newTime = "4:00 PM - 5:00 PM";
-                        }
-                        case 9 -> {
-                            newTime = "5:00 PM - 6:00 PM";
-                        }
-                        default -> {
-                            System.out.println("You typed an incorrect choice. ");
-                        }
-                    }
-                } while (newTimeInt < 1 || newTimeInt > 9);
+                            System.out.println("What time would you like to change it to?");
+
+                            System.out.println("1. 9:00 AM - 10:00 AM");
+                            System.out.println("2. 10:00 AM - 11:00 AM");
+                            System.out.println("3. 11:00 AM - 12:00 PM");
+                            System.out.println("4. 12:00 PM - 1:00 PM");
+                            System.out.println("5. 1:00 PM - 2:00 PM");
+                            System.out.println("6. 2:00 PM - 3:00 PM");
+                            System.out.println("7. 3:00 PM - 4:00 PM");
+                            System.out.println("8. 4:00 PM - 5:00 PM");
+                            System.out.println("9. 5:00 PM - 6:00 PM");
+
+                            try {
+                                String input3 = scan.nextLine();
+                                newTimeInt = Integer.parseInt(input3);
+
+                                switch (newTimeInt) {
+                                    case 1 -> {
+                                        newTime = "9:00 AM - 10:00 AM";
+                                    }
+                                    case 2 -> {
+                                        newTime = "10:00 AM - 11:00 AM";
+                                    }
+                                    case 3 -> {
+                                        newTime = "11:00 AM - 12:00 PM";
+                                    }
+                                    case 4 -> {
+                                        newTime = "12:00 PM - 1:00 PM";
+                                    }
+                                    case 5 -> {
+                                        newTime = "1:00 PM - 2:00 PM";
+                                    }
+                                    case 6 -> {
+                                        newTime = "2:00 PM - 3:00 PM";
+                                    }
+                                    case 7 -> {
+                                        newTime = "3:00 PM - 4:00 PM";
+                                    }
+                                    case 8 -> {
+                                        newTime = "4:00 PM - 5:00 PM";
+                                    }
+                                    case 9 -> {
+                                        newTime = "5:00 PM - 6:00 PM";
+                                    }
+                                    default -> {
+                                        System.out.println("You typed an incorrect choice. ");
+                                    }
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Please enter an integer.");
+                            }
+
+                        } while (newTimeInt < 1 || newTimeInt > 9);
 
 
-                // check if given time is already taken
-                line = lines.get(userIndex);
-                lineSplit = line.split(",");
-                // get this line, turn into a list, switch
+                        // check if given time is already taken
+                        line = lines.get(userIndex);
+                        lineSplit = line.split(",");
+                        // get this line, turn into a list, switch
 
-                String doctorName = lineSplit[3];
+                        String doctorName = lineSplit[3];
 
 
 
-                for (String thisLine : lines) {
-                    lineSplit = thisLine.split(",");
-                    if (lineSplit[3].equals(doctorName)) {
-                        if (lineSplit[1].equals(Integer.toString(newDay))) {
-                            if (lineSplit[2].equals(newTime)) {
-                                System.out.println("Time unavailable. Try again.");
-                                timeIsBooked = true;
+                        for (String thisLine : lines) {
+                            lineSplit = thisLine.split(",");
+                            if (lineSplit[3].equals(doctorName)) {
+                                if (lineSplit[1].equals(Integer.toString(newDay))) {
+                                    if (lineSplit[2].equals(newTime)) {
+                                        System.out.println("Time unavailable. Try again.");
+                                        timeIsBooked = true;
+                                    }
+                                }
                             }
                         }
+
+                        if (!timeIsBooked) {
+                            lineSplit[2] = newTime;
+                            lineSplit[1] = Integer.toString(newDay);
+                            String newApt = "";
+                            for (String x : lineSplit) {
+                                newApt += x + ",";
+                            }
+                            newApt = newApt.substring(0, newApt.length() - 1);
+                            lines.set(userIndex, newApt);
+                            BufferedWriter writer1 = new BufferedWriter(new FileWriter("approved.txt"));
+                            for (String thisLine : lines) {
+                                writer1.write(thisLine + "\n");
+                            }
+                            writer1.close();
+
+
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Please enter an integer.");
                     }
-                }
-
-                if (!timeIsBooked) {
-                    lineSplit[2] = newTime;
-                    lineSplit[1] = Integer.toString(newDay);
-                    String newApt = "";
-                    for (String x : lineSplit) {
-                        newApt += x + ",";
-                    }
-                    newApt = newApt.substring(0, newApt.length() - 1);
-                    lines.set(userIndex, newApt);
-                    BufferedWriter writer1 = new BufferedWriter(new FileWriter("approved.txt"));
-                    for (String thisLine : lines) {
-                        writer1.write(thisLine + "\n");
-                    }
-                    writer1.close();
-
-
-                }
-
-
-            } while (timeIsBooked);
+                } while (timeIsBooked);
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter an integer.");
+            }
         }
 
 
