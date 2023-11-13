@@ -188,7 +188,7 @@ public class RunLocalTest {
             assertEquals(1, Login.numPending());
 
             // Cleanup
-            testFile.delete();
+            testFile.deleteOnExit();
         }
     }
 
