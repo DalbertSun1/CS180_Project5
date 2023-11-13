@@ -196,7 +196,7 @@ public class Login {
                                                 if (declineNum > numPending()) {
                                                     System.out.println("Please enter a valid choice.");
                                                 } else {
-                                                    d.approveAppointment(declineNum);
+                                                    d.declineAppointment(declineNum);
                                                     System.out.println("Appointment declined!");
                                                 }
                                             } catch (NumberFormatException e) {
