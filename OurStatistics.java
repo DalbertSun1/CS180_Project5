@@ -6,11 +6,11 @@ import java.util.Comparator;
 import java.util.Map;
 
 /**
- * OurStatistics.java
- * gets the necessary data, processes it, prints it out
- * @author jackthetoga
- * @version 9-13-23
+ * Project 4
+ * Dentist Office Calendar Marketplace
  *
+ * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
+ * @version November 13th, 2023
  */
 
 public class OurStatistics { // handles the statistics section of our projection
@@ -28,7 +28,7 @@ public class OurStatistics { // handles the statistics section of our projection
 
 
             for (String name : patientData.keySet()) {
-                if (patientFrequency.containsKey(name)) {
+                if (patientFrequency.keySet().contains(name)) {
                     int currentValue = patientFrequency.get(name);
                     patientFrequency.put(name, currentValue + patientData.get(name));
                 } else {
@@ -50,7 +50,6 @@ public class OurStatistics { // handles the statistics section of our projection
             }
 
 
-
         }
         printDentistOfficeDashboard(patientFrequency, doctorTimeData, scanner);
 
@@ -61,6 +60,7 @@ public class OurStatistics { // handles the statistics section of our projection
         // Sellers can choose to sort the dashboard.
 
     }
+
     private static void printDentistOfficeDashboard(HashMap<String, Integer> patientFrequency, HashMap<Doctor, String> doctorTimeData, Scanner scanner) {
         boolean printing = true;
         int userChoice = 0;
@@ -100,7 +100,7 @@ public class OurStatistics { // handles the statistics section of our projection
                 }
             }
 
-            System.out.println(output);
+            System.out.println(output.toString());
             do {
                 System.out.println("Would you like to 1) Sort by patient's name, 2) Sort by # of appointments, 3) Sort by doctor's name, 4) exit?");
                 try {
@@ -118,7 +118,7 @@ public class OurStatistics { // handles the statistics section of our projection
                     }
                     case 2 -> {
                         // sort map by # of appointments
-                       sortedPatientEntries.sort(Map.Entry.comparingByValue());
+                        sortedPatientEntries.sort(Map.Entry.comparingByValue());
                     }
                     case 3 -> {
                         // sort by doctor's name
@@ -139,15 +139,8 @@ public class OurStatistics { // handles the statistics section of our projection
     }
 
 
-
-
-
-
-
-
-
     public static void patientDashboard(DentistOffice dentistOffice, Scanner scanner) {
-    // Data will include a list of Doctors by number of patients and the most popular appointment windows by Doctor.
+        // Data will include a list of Doctors by number of patients and the most popular appointment windows by Doctor.
         // Customers can choose to sort the dashboard.
 
         // get necessary data
@@ -181,10 +174,6 @@ public class OurStatistics { // handles the statistics section of our projection
         printPatientDashboard(doctorPatientData, doctorTimeData, scanner);
 
 
-
-
-
-
         // 1: Dr James | 4 patients
         // 2: Dr Henry | 1 patient
 
@@ -211,8 +200,11 @@ public class OurStatistics { // handles the statistics section of our projection
                     int numPatients = doctorPatientData.get(doctor);
 
                     String patientCount = Integer.toString(numPatients);
-                    if (numPatients == 1) { patientCount += (" patient");}
-                    else {patientCount += (" patients");}
+                    if (numPatients == 1) {
+                        patientCount += (" patient");
+                    } else {
+                        patientCount += (" patients");
+                    }
 
                     String timeString = doctorTimeData.get(doctor);
 
@@ -223,8 +215,11 @@ public class OurStatistics { // handles the statistics section of our projection
                     int numPatients = doctorPatientData.get(doctor);
 
                     String patientCount = Integer.toString(numPatients);
-                    if (numPatients == 1) { patientCount += (" patient");}
-                    else {patientCount += (" patients");}
+                    if (numPatients == 1) {
+                        patientCount += (" patient");
+                    } else {
+                        patientCount += (" patients");
+                    }
 
                     String timeString = doctorTimeData.get(doctor);
 
@@ -232,7 +227,7 @@ public class OurStatistics { // handles the statistics section of our projection
                 }
             }
 
-            System.out.println(output);
+            System.out.println(output.toString());
 
             do {
                 System.out.println("Would you like to 1) Sort by Doctor's name, 2) Sort by # of patients, 3) exit?");
@@ -263,9 +258,5 @@ public class OurStatistics { // handles the statistics section of our projection
             } while (userChoice == 5);
 
         } while (printing);
-
-
-
-
     }
 }
