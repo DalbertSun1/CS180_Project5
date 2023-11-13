@@ -15,13 +15,20 @@ This class contains the main calendar of our project. When the patient creates a
 
 The Appointment class manages individual appointments, has attributessuch as time for the specific slot, customerName representing the booking of an appointment, and isBooked indicating availability. Its constructor initializes appointments as unbooked, setting default values for customerName and isBooked. We made getters and setters to help access and modify appointment details like time, customer name, and maximum number of attendees allowed. The class enables booking and cancellation through methods like bookAppointment and cancelAppointment. The toString() method presents a clear status of whether an appointment is booked or available.
 
-**Relationship:**  The Appointment class and its methods are referenced in our Doctor, Patient, DentistOffice, and Login classes. In terms of a hierarchy, appointment classes is at the bottom so it is used in a lot of the other classes. Whenever we reference booking or canceling an appointment we use the class.
+**Relationship:**  The Appointment class and its methods are referenced in our Doctor, Patient, DentistOffice, Day, and Login classes. In terms of a hierarchy, appointment classes is at the bottom so it is used in a lot of the other classes. Whenever we reference booking, canceling, and listing an appointment we use the class.
+
+**Day**
+
+The Day class works towards scheduling for various doctors and their appointments.First we made getters and setters with the following methods: getDate, setDate, getDoctors, setDoctors. These methods manage the date and the doctors available on that day. Then we created methods to make new doctors. The methods were: addDoctor, removeDoctor, getIndividualDoctor, getIndividualDoctorIndex: These methods allowed us to handle the addition, removal, and access of individual doctors within the daily schedule. Then we created listAppts and showDoctorList. These methods display the available appointments for all doctors on that day. listAppts assembles a list of appointments, while showDoctorList shows that list. 
+
+**Relationship:**
+The methods created in Day are refrenced in Doctor, DentistOffice, Patient, and in Login. This is very similar class to Appointment. It is built upon by all the bigger classes. This is the very base class for Doctors, and is used to create the doctors and then stores them in a list. We then refrence that list of doctors in the other classes, which is important for when we want to update them in our files and in dentistOffice. 
 
 **Doctor Class**
    
 The Doctor class has functions that help manage a doctor's appointments within the scheduling system. Each doctor, equivalent to a store in our project, is specified by a name and maintains a list of appointments. The class is initialized with the doctor's name and an empty list of appointments. We made `addAppointment` and `removeAppointment`, to add and remove appointments from the doctor's schedule. We then coded the  `isAvailable` method to check the availability of a specific time slot for a doctor. This method ensures that a doctor's schedule isn't double-booked at a given time. We then created `loadBookedAppointments` method to load them from a file. It loads appointments assigned to the specific doctor from the `approved.txt` file, storing them in a separate list. Lastly, the `getStatistics` method is designed to provide insights into the doctor's appointment statistics. It constructs two hash maps. One maps customer names to the number of their appointments, and the other maps appointment times to their frequency.
 
-**Relationship:** The doctor class is referenced in patient, dentistOffice, and Login. It isn't referenced in appointment because in our class hierarchy appointment was created first and then used in everything class. Similarly, doctor was created second and then used in the following classes. It is used in Login to reference its methods in the case. It is also used in dentistOffice as the office consists of all the doctors.
+**Relationship:** The doctor class is referenced in patient, dentistOffice, and Login. It isn't referenced in appointment because in our class hierarchy appointment was created first and then used in everything class. Similarly, doctor was created second and then used in the following classes. It is used in Login to reference its methods in the case. It is also used in dentistOffice as the office consists of all the doctors. It is also used in Day because we add doctors there, and add them to a doctorList so we can see all the doctors working in the dentistOffice.
 
 **Patient Class**
   
@@ -33,8 +40,7 @@ The Patient class manages patient appointments. The methods enable making, cance
 
 The DentistOffice class oversees all the doctor-related operations and appointment creations. The addDoctor, deleteDoctor, readDoctors methods: handle the addition and removal of doctors from the pending.txt and approved.txt files and manage the reading of existing doctor details. For Appointments the methods approveAppointment, declineAppointment allow for the approval or rejection of pending appointments, and updated them to the approved.txt file as they become approved by the doctor. Then we have viewApprovedAppointments, and viewPending. These methods allow the user to view both approved and pending appointments from their respective files. Then we have the rescheduleAppointment method for sellers. This function allows the seller to go through their approved appointments and change the time and day of a specifc customer's appointment to a new time that works better for them. 
 
-**Relationship:** DentistOffice uses methods from Doctor, Patient, and Appointment in order to facilliate doing the operations of a doctor. It also then is refrenced by Login when we create a menu and do case statements that call all the methods from DentistOffice and use them to run the operations from the seller(doctor) side. It is one of our main classes and is similar to patient in the way it handles everything for the doctor.
-
+**Relationship:** DentistOffice uses methods from Doctor, Patient, Day, and Appointment in order to facilliate doing the operations of a doctor. It also then is refrenced by Login when we create a menu and do case statements that call all the methods from DentistOffice and use them to run the operations from the seller(doctor) side. It is one of our main classes and is similar to patient in the way it handles everything for the doctor.
 
 
 **OurStatistics** 
