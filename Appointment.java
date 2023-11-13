@@ -1,27 +1,44 @@
 public class Appointment {
-    private String time; // Time slot for the appointment
-    private String customerName; // Name of the customer
-    private boolean isBooked; // Indicates whether the appointment is booked
-    private int maxAttendees;
+    private String time;
+    private boolean isBooked;
+    private String customerName;
+    private String doctor;
+    private int day;
 
     public Appointment(String time) {
         this.time = time;
-        this.customerName = null; // initialize to null as it's not booked initially
-        this.isBooked = false; // initially the appointment is not booked
+        this.isBooked = false;
+        this.customerName = null;
+        this.doctor = null;
+        this.day = -1;
+    }
+
+    public String getDoctor() {
+        return doctor;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDoctor(String doctor) {
+        this.doctor = doctor;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
     }
 
     public String getTime() {
         return time;
     }
 
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public String getCustomerName() {
         return customerName;
-    }
-    public void setMaxAttendees(int max) {
-    	this.maxAttendees = max;
-    }
-    public int getMaxAttendees() {
-    	return maxAttendees;
     }
 
     public void setCustomerName(String customerName) {
@@ -31,7 +48,7 @@ public class Appointment {
     public boolean isBooked() {
         return isBooked;
     }
-    
+
     public void setIsBooked(boolean isBooked) {
         this.isBooked = isBooked;
     }
