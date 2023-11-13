@@ -120,7 +120,7 @@ public class Patient {
                                     this.name = scan.nextLine();
                                     Appointment appointment = new Appointment(chosenTime);
                                     appointment.bookAppointment(name);
-                                    System.out.println("\nAppointment booked!");
+                                    System.out.println("\nAppointment booked!\nMaximum number of attendees: 1");
 
                                     makeAppointment(date, doc, appointment);
                                     menu2 = true;
