@@ -1,8 +1,3 @@
-// TODO: Ask a user for their name before cancelling an appointment and only display cancellable appointments under that name
-// TODO: Allow cancelling on pending appointments too
-// TODO: Add error handling in update appointment (if the user types in an integer that does not correspond to an updatable appointment, print an error message and loop again)
-//       Look at numPending method in Login.java for guidance
-//       Must be done in Patient and DentistOffice
 // TODO: Add error handling for choosing a date (if integer inputted is greater than 31, print error message and loop again
 
 
