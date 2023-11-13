@@ -5,12 +5,6 @@ CS 18000 Project 4
 2. Dalbert Sun submitted every part of our project. He submitted the Report and the Vocareum Workspace.
 3. Detailed description of each class:
 
- **MyCalendar Class**
-   
-This class contains the main calendar of our project. When the patient creates an account and logins in they then have the option of creating an appointment. When they select this option they will be able to see a calendar that shows all the days in the month. They can then type in what day they want to book the appointment and they will be shown a list of times, and the program continues. Once several appointments are made, this class updates the calendar. When the next person wants to book an appointment and get to the prompt which shows them the calendar they will be able to see all the days in the month again, but specific days will have times underneath them. These times symbolize appointments that have been booked already on said days. Thus, the class ensures that when looking at a calendar, users with a specific time range for when they are available can see what days they could take an appointment and when they can't.
-
-**Relationship:**  MyCalendar has a relation to our main method class which is Login. When we run Login and login as a user and choose to make an appointment, myCalender is called and the calendar is shown to the user. 
-
 **Appointment Class**
 
 The Appointment class manages individual appointments, has attributessuch as time for the specific slot, customerName representing the booking of an appointment, and isBooked indicating availability. Its constructor initializes appointments as unbooked, setting default values for customerName and isBooked. We made getters and setters to help access and modify appointment details like time, customer name, and maximum number of attendees allowed. The class enables booking and cancellation through methods like bookAppointment and cancelAppointment. The toString() method presents a clear status of whether an appointment is booked or available.
@@ -42,6 +36,20 @@ The DentistOffice class oversees all the doctor-related operations and appointme
 
 **Relationship:** DentistOffice uses methods from Doctor, Patient, Day, and Appointment in order to facilliate doing the operations of a doctor. It also then is refrenced by Login when we create a menu and do case statements that call all the methods from DentistOffice and use them to run the operations from the seller(doctor) side. It is one of our main classes and is similar to patient in the way it handles everything for the doctor.
 
+**Login**
+
+The Login class focuses on first helping the doctor or the patient creating a new account and then signing in. We used file I/O to help us do the logging in and creating new accounts. The we created a login Menu: The method provides a structured menu, allowing users to log in or create new accounts. It guides the user through the login or account creation process, checking for valid input along the way and showing and error if they input something wrong. Then I created the createAccount, checkAccount methods which handle the creation of new accounts and verify the existence of user credentials within the system. Accounts are created by gathering user details and storing them in a designated file. The checkAccount method verifies the user's login credentials by cross-referencing them with stored account details. Once the user sucesffuly logs in the user interaction takes over and the method directs users to the appropriate interface, either as a patient or a member of the dentist office staff. It provides a menu-driven interface allowing for different actions, that we worked on in the various classes.
+
+Lastly, the methods viewApproved, viewPending, approveAppointment, declineAppointment, rescheduleAppointment enable the dentist office staff to view pending and approved appointments, approve, decline, or reschedule them. 
+
+**Relationship:**
+The Login class uses methods from all of our previous classes as it refrences them when ensuring a sucesfull main method. When compiling and running this method you can create an account and follow through the menu to use any of the methods we created in this or other classes. It shows that we have met all the requirements and handles all exceptions and errors for users inputting invalid things. 
+
+**MyCalendar Class**
+   
+This class contains the main calendar of our project. When the patient creates an account and logins in they then have the option of creating an appointment. When they select this option they will be able to see a calendar that shows all the days in the month. They can then type in what day they want to book the appointment and they will be shown a list of times, and the program continues. Once several appointments are made, this class updates the calendar. When the next person wants to book an appointment and get to the prompt which shows them the calendar they will be able to see all the days in the month again, but specific days will have times underneath them. These times symbolize appointments that have been booked already on said days. Thus, the class ensures that when looking at a calendar, users with a specific time range for when they are available can see what days they could take an appointment and when they can't.
+
+**Relationship:**  MyCalendar has a relation to our main method class which is Login. When we run Login and login as a user and choose to make an appointment, myCalender is called and the calendar is shown to the user. 
 
 **OurStatistics** 
 
@@ -52,5 +60,3 @@ OurStatistics covers data processing and printing for the statistics module. In 
 **Testing Done**
 
 All testing is done in the RunLocalTest.java. Per the standards given by test cases in the CS 18000 labs, RunLocalTest.java uses JUnit4 tests for each of the classes. RunLocalTest.java itself contains test classes for each class in the original program. In addition, each method in each class is tested using a respective method in RunLocalTest.java. As stated by the handout, not only is every method tested, but the persistence of data is also tested. In addition, error handling for invalid input is also tested.
-
-
