@@ -39,5 +39,8 @@ The Patient class manages patient appointments. The methods enable making, cance
 
 **DentistOffice**
 
+**OurStatistics** OurStatistics covers data processing and printing for the statistics module. In patientDashboard() and dentistOfficeDashboard(), it first calls Doctor.getStatistics() to load all the statistics into memory. Then, the method processes the data into two HashMaps: doctorPatientData, which maps doctors to # of patients, and doctorTimeData, which maps doctors to their most frequent time slot. Later, the method calls printPatientDashboard, which handles the user interface for the dashboard. Using string formatting, it prints the data in an appealing way. Lastly, the print method sorts the data as chosen by the user. There are relatively few differences between patientDashboard() and dentistOfficeDashboard(), excepting small differences in strings. Namely, whether the strings mention 'doctor' or 'patient.' There is little difference otherwise.
+**Testing Done**
+**Relationship:** OurStatistics is a relatively independent class. In the user interface, the main menus call OurStatistics.patientDashboard() and OurStatistics.dentistOfficeDashboard(). OurStatistics calls only Doctor.getStatistics() for each doctor in the system, then processes the data returned. Other than this, there is little interaction with other classes.
 
 
