@@ -1,10 +1,18 @@
-// TODO: Add error handling for choosing a date (if integer inputted is greater than 31, print error message and loop again
+
 
 
 import java.io.*;
 import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+/**
+ * Project 4
+ * Dentist Office Calendar Marketplace
+ *
+ * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
+ * @version November 13th, 2023
+ */
 
 public class Patient {
     private String name; // Customer's name
@@ -63,76 +71,89 @@ public class Patient {
 
                 switch (choice) {
                     case 1:
-                        System.out.println(cal.viewCalendar()); // display calendar
-                        System.out.println("Select a day to view available doctors:");
-                        try {
-                            String input2 = scan.nextLine();
-                            int date = Integer.parseInt(input2);
+                        boolean invalidInput = false;
+                        int date = 0;
+                        do {
 
-
-                            Day selectedDay = new Day(cal.getIndividualDay(date).getDate());
-                            selectedDay.setDoctors(doctors);
-
-                            System.out.println(selectedDay.showDoctorList() + "\n"); //display doctor list
-
-                            while (selectedDay.getDoctors().isEmpty()) {
-                                System.out.println(cal.viewCalendar());
-                                System.out.println("Select another day to view available doctors:");
-                                try {
-                                    String input3 = scan.nextLine();
-                                    date = Integer.parseInt(input3);
-
-                                    selectedDay = cal.getIndividualDay(date);
-
-
-                                    System.out.println(selectedDay.showDoctorList() + "\n");
-                                } catch (NumberFormatException e) {
-                                    System.out.println("PLease enter an integer.");
+                            System.out.println(cal.viewCalendar()); // display calendar
+                            System.out.println("Select a day to view available doctors:");
+                            try {
+                                String input2 = scan.nextLine();
+                                date = Integer.parseInt(input2);
+                                if (date <= 0 || date > 31) {
+                                    invalidInput = true;
+                                    System.out.println("Choose a day between 0 and 31");
+                                } else {
+                                    invalidInput = false;
                                 }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Please enter an integer.");
+                                invalidInput = true;
+                            }
+                        } while (invalidInput);
 
+                        Day selectedDay = new Day(cal.getIndividualDay(date).getDate());
+                        selectedDay.setDoctors(doctors);
+
+                        System.out.println(selectedDay.showDoctorList() + "\n"); //display doctor list
+
+                        while (selectedDay.getDoctors().isEmpty()) {
+                            System.out.println(cal.viewCalendar());
+                            System.out.println("Select another day to view available doctors:");
+                            try {
+                                String input3 = scan.nextLine();
+                                date = Integer.parseInt(input3);
+
+                                selectedDay = cal.getIndividualDay(date);
+
+
+                                System.out.println(selectedDay.showDoctorList() + "\n");
+                            } catch (NumberFormatException e) {
+                                System.out.println("Please enter an integer.");
                             }
 
-                            System.out.println("Choose a doctor to view available appointments:");
+                        }
+
+                        System.out.println("Choose a doctor to view available appointments:");
+                        try {
+                            String input4 = scan.nextLine();
+                            int doctor = Integer.parseInt(input4);
+
+
+                            Doctor doc = selectedDay.getIndividualDoctor(doctor - 1);
+                            System.out.println("\nDr. " + doc.getName());
+
+
+                            ArrayList<String> show = printAppointments(selectedDay, doc);
+                            for (int i = 0; i < show.size(); i++) {
+                                System.out.println(sum + ": " + show.get(i));
+                                sum++;
+                            }
+                            sum = 1;
+
+                            System.out.println("Select a time:");
                             try {
-                                String input4 = scan.nextLine();
-                                int doctor = Integer.parseInt(input4);
+                                String input6 = scan.nextLine();
+                                int appt = Integer.parseInt(input6);
+
+                                String chosenTime = show.get(appt - 1);
 
 
-                                Doctor doc = selectedDay.getIndividualDoctor(doctor - 1);
-                                System.out.println("\nDr. " + doc.getName());
+                                System.out.println("Enter your name:");
+                                this.name = scan.nextLine();
+                                Appointment appointment = new Appointment(chosenTime);
+                                appointment.bookAppointment(name);
+                                System.out.println("\nAppointment booked!");
 
-
-                                ArrayList<String> show = printAppointments(selectedDay, doc);
-                                for (int i = 0; i < show.size(); i++) {
-                                    System.out.println(sum + ": " + show.get(i));
-                                    sum++;
-                                }
-
-                                System.out.println("Select a time:");
-                                try {
-                                    String input6 = scan.nextLine();
-                                    int appt = Integer.parseInt(input6);
-
-                                    String chosenTime = show.get(appt - 1);
-
-
-                                    System.out.println("Enter your name:");
-                                    this.name = scan.nextLine();
-                                    Appointment appointment = new Appointment(chosenTime);
-                                    appointment.bookAppointment(name);
-                                    System.out.println("\nAppointment booked!\nMaximum number of attendees: 1\n\n");
-
-                                    makeAppointment(date, doc, appointment);
-                                    menu2 = true;
-                                } catch (NumberFormatException e) {
-                                    System.out.println("Please enter an integer.");
-                                }
+                                makeAppointment(date, doc, appointment);
+                                menu2 = true;
                             } catch (NumberFormatException e) {
                                 System.out.println("Please enter an integer.");
                             }
                         } catch (NumberFormatException e) {
                             System.out.println("Please enter an integer.");
                         }
+
                         break;
                     case 2:
                         do {
@@ -154,7 +175,6 @@ public class Patient {
                                     }
                                     if (counter == 0) {
                                         cancelAppointment(cancel, a);
-                                        System.out.println("Appointment canceled.\n\n");
                                     } else {
                                         System.out.println("Please enter a valid choice.");
                                         menu3 = true;
@@ -174,7 +194,7 @@ public class Patient {
                         int num = 1;
                         boolean found = false;
 
-                        while((line = reader.readLine()) != null) {
+                        while ((line = reader.readLine()) != null) {
                             String[] confirmName = line.split(",");
                             if (confirmName[0].equals(checkName)) {
                                 System.out.println(num + ": " + line);
@@ -309,7 +329,6 @@ public class Patient {
     public void rescheduleAppointment(Scanner scan) throws IOException {
 
 
-
         BufferedReader reader1 = new BufferedReader(new FileReader("approved.txt"));
 
         int currentLine = 1;
@@ -414,7 +433,6 @@ public class Patient {
                         String doctorName = lineSplit[3];
 
 
-
                         for (String thisLine : lines) {
                             lineSplit = thisLine.split(",");
                             if (lineSplit[3].equals(doctorName)) {
@@ -496,14 +514,11 @@ public class Patient {
             String printAppointment;
             if (i <= 1) {
                 printAppointment = (i + 9) + ":00 AM" + " - " + (i + 10) + ":00 AM";
-            }
-            else if (i == 2) {
+            } else if (i == 2) {
                 printAppointment = (i + 9) + ":00 AM" + " - " + (i + 10) + ":00 PM";
-            }
-            else if (i == 3) {
+            } else if (i == 3) {
                 printAppointment = (i + 9) + ":00 PM" + " - " + (i - 2) + ":00 PM";
-            }
-            else {
+            } else {
                 printAppointment = (i - 3) + ":00 PM" + " - " + (i - 2) + ":00 PM";
             }
 
