@@ -325,7 +325,7 @@ public class Patient {
         String checkName = scan.nextLine();
         int numOptions = 0;
 
-
+        System.out.println("Choice #, Patient Name, Day of Month, Time, Doctor Name");
         while ((line = reader1.readLine()) != null) { // read file and print appts
             lines.add(line);
             lineSplit = line.split(",");
