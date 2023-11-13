@@ -36,7 +36,8 @@ public class MyCalendar {
     	this.file = file;
     }
     
-    public String importCalendar() {
+    public ArrayList<Doctor> importCalendar() {
+    	ArrayList<Doctor> doctors = new ArrayList<Doctor>();
     	String result = "";
     	File f = new File(file);
     	FileReader fr;
@@ -44,44 +45,56 @@ public class MyCalendar {
 		try {
 			fr = new FileReader(f);
 			BufferedReader bf = new BufferedReader(fr);
+			
 			int d = 0;
 			//int i = 0;
 			boolean stop = false;
-			while ((line = bf.readLine()) != null || stop == false) {
+			while ((line = bf.readLine()) != null && stop == false) {
+				
 				String[] entry = line.split(",");
+				
 				
 				if (entry.length == 0) {
 					stop = true;
 					break;
 				}
+				//System.out.println(entry[0]);
+				Doctor addDoctor = new Doctor(entry[0]);
 //				for (int i = 0; i < entry.length; i++) {
 //					System.out.print(entry[i] + ", ");
 //				}
 //				System.out.println();
 				String m = entry[1].substring(0, entry[1].indexOf('/'));
 				checkMonth(Integer.parseInt(m));
-				year = 2000+Integer.parseInt(entry[1].split("/")[2]);
+				if (Integer.parseInt(entry[1].split("/")[2]) < 2000) {
+					year = 2000+Integer.parseInt(entry[1].split("/")[2]);
+				} else {
+					year = Integer.parseInt(entry[1].split("/")[2]);
+					
+				}
 				String temp = entry[1].substring(entry[1].indexOf('/')+1);
 				d = Integer.parseInt(temp.substring(0, temp.indexOf('/')))-1;
 				if (checkDuplicateDoc(days[d], entry[0]) == true) {
-					days[d].getIndividualDoctor(days[d].getIndividualDoctorIndex(entry[0])).addAppointment(new Appointment(new Time(entry[2] + " - " + entry[3], true)));
+					days[d].getIndividualDoctor(days[d].getIndividualDoctorIndex(entry[0])).addAppointment(new Appointment(entry[2] + " - " + entry[3]));
 				}	
 				if (days[d] != null) {
 					if (checkDuplicateDoc(days[d], entry[0]) == false) {
 
-						days[d].addDoctor(new Doctor(entry[0]));
+						days[d].addDoctor(addDoctor);
+						doctors.add(addDoctor);
 						//i++;
 
-						Appointment a = new Appointment(new Time(entry[2] + " - " + entry[3], true));
+						Appointment a = new Appointment(entry[2] + " - " + entry[3]);
 						a.setMaxAttendees(Integer.parseInt(entry[4]));
 						days[d].getIndividualDoctor(days[d].getIndividualDoctorIndex(entry[0])).addAppointment(a);
 					}
 				} else {
 					days[d] = new Day(d+1);
 					if (checkDuplicateDoc(days[d], entry[0]) == false) {
-						days[d].addDoctor(new Doctor(entry[0]));
+						days[d].addDoctor(addDoctor);
+						doctors.add(addDoctor);
 						//i++;
-						Appointment a = new Appointment(new Time(entry[2] + " - " + entry[3], true));
+						Appointment a = new Appointment(entry[2] + " - " + entry[3]);
 						a.setMaxAttendees(Integer.parseInt(entry[4]));
 						days[d].getIndividualDoctor(days[d].getIndividualDoctorIndex(entry[0])).addAppointment(a);
 					}
@@ -106,7 +119,7 @@ public class MyCalendar {
 		
 		
 		
-		return result;
+		return doctors;
     }
     
     public void checkMonth(int month) {
