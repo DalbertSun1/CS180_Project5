@@ -2,7 +2,7 @@
 CS 18000 Project 4
 
 1. In order to compile and run our project, you need to first compile each of the classes on Vocareum. Then open Login.java and run it. Once you run it you can go through the prompts that pop up and follow our project as a user.
-2. Dalbert Sun submitted every part of our project. He submitted the Report and the Vocareum Workspace.
+2. Dalbert Sun submitted the Vocareum Workspace. Vihaan Chadha sumbitted the report.
 3. Detailed description of each class:
 
 **Appointment Class**
