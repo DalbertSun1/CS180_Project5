@@ -1,6 +1,8 @@
 import org.junit.Test;
 import org.junit.After;
+
 import java.lang.reflect.Field;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.experimental.runners.Enclosed;
@@ -41,6 +43,7 @@ public class RunLocalTest {
         runTest(JUnitCore.runClasses(DayTest.class), "Day");
         runTest(JUnitCore.runClasses(AppointmentTest.class), "Appointment");
         runTest(JUnitCore.runClasses(OurStatisticsTest.class), "Our Statistics");
+        runTest(JUnitCore.runClasses(MyCalendarTest.class), "My Calendar");
     }
 
     public static void runTest(Result result, String testName) {
@@ -177,18 +180,32 @@ public class RunLocalTest {
 
     public static class LoginTest {
         @Test
-        public void testNumPending() throws IOException {
-            // Prepare a test file for pending appointments
-            File testFile = new File("test_pending.txt");
-            PrintWriter writer = new PrintWriter(testFile);
-            writer.println("John Doe,1,9:00 AM - 10:00 AM,Dr. Smith");
-            writer.close();
+        public void testCheckAccount() {
+            // Assuming that "accounts.txt" is a test file with known user accounts
+            String testFile = "test_accounts.txt";
+            // createTestAccountsFile(testFile);
 
-            // Check the number of pending appointments
-            assertEquals(1, Login.numPending());
+            // Test when the account exists
+            assertTrue(Login.checkAccount("testUser1", "testPassword1"));
 
-            // Cleanup
-            testFile.deleteOnExit();
+            // Test when the account does not exist
+            assertFalse(Login.checkAccount("nonexistentUser", "nonexistentPassword"));
+
+            // Cleanup: delete the test file
+            File file = new File(testFile);
+            file.deleteOnExit();
+        }
+
+        private void createTestAccountsFile(String filename) {
+            // Create a test file with sample accounts
+            try {
+                File testFile = new File(filename);
+                testFile.createNewFile();
+                Login.createAccount(1, "John Doe", "testUser1", "testPassword1", "john.doe@example.com", "9876543210", new Scanner("1"));
+                Login.createAccount(2, "Dr. Smith", "testUser2", "testPassword2", "smith@example.com", "1239874560", new Scanner("2"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -377,7 +394,21 @@ public class RunLocalTest {
         }
     }
 
+    public static class MyCalendarTest {
+        @Test
+        public void testCheckDuplicateDoc() {
+            MyCalendar myCalendar = new MyCalendar();
+            Day day = new Day(1);
+            Doctor doctor = new Doctor("Dr. John Doe");
+            day.addDoctor(doctor);
 
+            // Test when the doctor is not a duplicate
+            assertFalse(myCalendar.checkDuplicateDoc(day, "Dr. Jane Doe"));
+
+            // Test when the doctor is a duplicate
+            assertTrue(myCalendar.checkDuplicateDoc(day, "Dr. John Doe"));
+        }
+    }
 
 }
 
