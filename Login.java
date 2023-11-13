@@ -140,8 +140,8 @@ public class Login {
                         do {
                             System.out.println("1. Add Doctor \n2. Remove Doctor \n3. View Approved Appointments " +
                                     "\n4. View Pending Appointments \n5. Approve Appointment \n" +
-                                    "6. Decline Appointment \n7. Reschedule Appointment \n8. View Statistics\n" +
-                                    "9. Log out");
+                                    "6. Decline Appointment \n7. Reschedule Appointment \n8. View Statistics \n9. Import Calendar\n" +
+                                    "10. Log out");
                             try {
                                 String input1 = scan.nextLine();
                                 int choice = Integer.parseInt(input1);
@@ -234,6 +234,18 @@ public class Login {
                                         OurStatistics.dentistOfficeDashboard(d, scan);
                                         break;
                                     case 9:
+                                    	System.out.println("Please format your .csv file by rows in orders of [1] Doctor [2] Date (Month/Day/Year) [3] Start Time [4] End Time [5] Max Attendees");
+    
+                                    	System.out.println("Enter a filepath:");
+                                    	String path = scan.nextLine();
+                                    	MyCalendar c = new MyCalendar(path);
+                                    	ArrayList<Doctor> addD = c.importCalendar();
+                                    	for (int j = 0; j < addD.size(); j++) {
+                                    		d.addDoctor(addD.get(j));
+                                    	}
+                                    	addCalendar(c);
+                                	
+                                    case 10:
                                         System.out.println("You have logged out.");
                                         menu(scan);
                                         menu3 = false;
