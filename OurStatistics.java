@@ -5,6 +5,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 
+/**
+ * OurStatistics.java
+ * gets the necessary data, processes it, prints it out
+ * @author jackthetoga
+ * @version 9-13-23
+ *
+ */
+
 public class OurStatistics { // handles the statistics section of our projection
 
     public static void dentistOfficeDashboard(DentistOffice dentistOffice, Scanner scanner) {
@@ -20,7 +28,7 @@ public class OurStatistics { // handles the statistics section of our projection
 
 
             for (String name : patientData.keySet()) {
-                if (patientFrequency.keySet().contains(name)) {
+                if (patientFrequency.containsKey(name)) {
                     int currentValue = patientFrequency.get(name);
                     patientFrequency.put(name, currentValue + patientData.get(name));
                 } else {
@@ -92,7 +100,7 @@ public class OurStatistics { // handles the statistics section of our projection
                 }
             }
 
-            System.out.println(output.toString());
+            System.out.println(output);
             do {
                 System.out.println("Would you like to 1) Sort by patient's name, 2) Sort by # of appointments, 3) Sort by doctor's name, 4) exit?");
                 try {
@@ -224,7 +232,7 @@ public class OurStatistics { // handles the statistics section of our projection
                 }
             }
 
-            System.out.println(output.toString());
+            System.out.println(output);
 
             do {
                 System.out.println("Would you like to 1) Sort by Doctor's name, 2) Sort by # of patients, 3) exit?");
