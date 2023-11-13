@@ -2,6 +2,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.IOException;
 
+/**
+ * Project 4
+ * Dentist Office Calendar Marketplace
+ *
+ * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
+ * @version November 13th, 2023
+ */
+
 public class Doctor { // a doctor is equivalent to a store in the project handout
     private String name; // Doctor's name
     private ArrayList<Appointment> appointments; // List of appointments for the doctor
@@ -53,6 +61,7 @@ public class Doctor { // a doctor is equivalent to a store in the project handou
         }
         return null;
     }
+
     public void loadBookedAppointments() {
         try {
 
