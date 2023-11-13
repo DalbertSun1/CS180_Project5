@@ -1,4 +1,3 @@
-// TODO: Finish calendar csv file stuff
 
 
 import java.io.File;
@@ -8,6 +7,14 @@ import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
+
+/**
+ * Project 4
+ * Dentist Office Calendar Marketplace
+ *
+ * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
+ * @version November 13th, 2023
+ */
 
 public class Login {
     public static void main(String[] args) throws IOException {
@@ -27,7 +34,7 @@ public class Login {
                 String fullName = "";
 
                 switch (login) {
-                    case 1 : // log in
+                    case 1: // log in
                         boolean menu2 = false;
                         do {
                             menu2 = false;
@@ -54,7 +61,7 @@ public class Login {
                             }
                         } while (menu2);
                         break;
-                    case 2 : // create an account
+                    case 2: // create an account
                         boolean menu3 = false;
                         do {
                             menu3 = false;
@@ -88,7 +95,7 @@ public class Login {
 
                         } while (menu3);
                         break;
-                    default : // invalid choice
+                    default: // invalid choice
                         System.out.println("Please enter a valid choice.");
                         menu1 = true;
                         break;
@@ -206,45 +213,22 @@ public class Login {
 
                                         break;
                                     case 7:
-                                        System.out.println("Enter the doctor name");
-                                        doctorName = scan.nextLine();
-
-                                        // Find the doctor from the list to reschedule their appointment
-                                        Doctor doctorReschedule = null;
-                                        for (Doctor doctor : d.getDoctorList()) {
-                                            if (doctor.getName().equalsIgnoreCase(doctorName)) {
-                                                doctorReschedule = doctor;
-                                                break;
-                                            }
-                                        }
-
-                                        if (doctorReschedule != null) {
-                                            System.out.println("Enter the old appointment:");
-                                            String oldAppointment = scan.nextLine();
-                                            System.out.println("Enter the new appointment:");
-                                            String newAppointment = scan.nextLine();
-
-                                            d.rescheduleAppointment(scan);
-
-                                        } else {
-                                            System.out.println("Doctor " + doctorName + " not found.");
-                                        }
+                                        d.rescheduleAppointment(scan);
                                         break;
                                     case 8:
                                         OurStatistics.dentistOfficeDashboard(d, scan);
                                         break;
                                     case 9:
-                                    	System.out.println("Please format your .csv file by rows in orders of [1] Doctor [2] Date (Month/Day/Year) [3] Start Time [4] End Time [5] Max Attendees");
-    
-                                    	System.out.println("Enter a filepath:");
-                                    	String path = scan.nextLine();
-                                    	MyCalendar c = new MyCalendar(path);
-                                    	ArrayList<Doctor> addD = c.importCalendar();
-                                    	for (int j = 0; j < addD.size(); j++) {
-                                    		d.addDoctor(addD.get(j));
-                                    	}
-                                    	addCalendar(c);
-                                	
+                                        System.out.println("Please format your .csv file by rows in orders of [1] Doctor [2] Date (Month/Day/Year) [3] Start Time [4] End Time [5] Max Attendees");
+
+                                        System.out.println("Enter a filepath:");
+                                        String path = scan.nextLine();
+                                        MyCalendar c = new MyCalendar(path);
+                                        ArrayList<Doctor> addD = c.importCalendar();
+                                        for (int j = 0; j < addD.size(); j++) {
+                                            d.addDoctor(addD.get(j));
+                                        }
+
                                     case 10:
                                         System.out.println("You have logged out.");
                                         menu(scan);
@@ -273,6 +257,7 @@ public class Login {
         }
 
     }
+
     //creates a new account
     //prints error if account already exists - to do
     public static void createAccount(int identity, String fullName, String username,
