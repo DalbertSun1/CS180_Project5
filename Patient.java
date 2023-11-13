@@ -131,12 +131,15 @@ public class Patient {
                                     menu2 = true;
                                 } catch (NumberFormatException e) {
                                     System.out.println("Please enter an integer.");
+                                    menu2 = true;
                                 }
                             } catch (NumberFormatException e) {
                                 System.out.println("Please enter an integer.");
+                                menu2 = true;
                             }
                         } catch (NumberFormatException e) {
                             System.out.println("Please enter an integer.");
+                            menu2 = true;
                         }
                         break;
                     case 2:
