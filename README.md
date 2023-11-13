@@ -7,7 +7,7 @@ CS 18000 Project 4
 
 **Appointment Class**
 
-The Appointment class manages individual appointments, has attributessuch as time for the specific slot, customerName representing the booking of an appointment, and isBooked indicating availability. Its constructor initializes appointments as unbooked, setting default values for customerName and isBooked. We made getters and setters to help access and modify appointment details like time, customer name, and maximum number of attendees allowed. The class enables booking and cancellation through methods like bookAppointment and cancelAppointment. The toString() method presents a clear status of whether an appointment is booked or available.
+The Appointment class manages individual appointments, has attributes such as time for the specific slot, customerName representing the booking of an appointment, and isBooked indicating availability. Its constructor initializes appointments as unbooked, setting default values for customerName and isBooked. We made getters and setters to help access and modify appointment details like time, customer name, and maximum number of attendees allowed. The class enables booking and cancellation through methods like bookAppointment and cancelAppointment. The toString() method presents a clear status of whether an appointment is booked or available.
 
 **Relationship:**  The Appointment class and its methods are referenced in our Doctor, Patient, DentistOffice, Day, and Login classes. In terms of a hierarchy, appointment classes is at the bottom so it is used in a lot of the other classes. Whenever we reference booking, canceling, and listing an appointment we use the class.
 
