@@ -1,3 +1,11 @@
+/**
+ * Project 4
+ * Dentist Office Calendar Marketplace
+ *
+ * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
+ * @version November 13th, 2023
+ */
+
 public class Appointment {
     private String time;
     private boolean isBooked;
