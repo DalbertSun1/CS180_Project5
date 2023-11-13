@@ -30,6 +30,7 @@ public class Login {
                     case 1 : // log in
                         boolean menu2 = false;
                         do {
+                            menu2 = false;
                             System.out.println("Log in as\n1. Patient\n2. Dentist Office\n3. Back");
                             try {
                                 String input2 = scan.nextLine();
@@ -45,8 +46,7 @@ public class Login {
                                     menu1 = true;
                                 } else {
                                     System.out.println("Please enter a valid choice.");
-                                    menu1 = true;
-                                    menu2 = false;
+                                    menu2 = true;
                                 }
                             } catch (NumberFormatException e) {
                                 System.out.println("Please enter an integer.");
@@ -57,6 +57,7 @@ public class Login {
                     case 2 : // create an account
                         boolean menu3 = false;
                         do {
+                            menu3 = false;
                             System.out.println("Create an account as\n1. Patient\n2. Doctor\n3. Back");
                             try {
                                 String input2 = scan.nextLine();
@@ -83,7 +84,6 @@ public class Login {
                             } catch (NumberFormatException e) {
                                 System.out.println("Please enter an integer.");
                                 menu3 = true;
-                                menu1 = false;
                             }
 
                         } while (menu3);
