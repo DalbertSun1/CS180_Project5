@@ -1,11 +1,7 @@
 
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
+import java.net.Socket;
 import java.util.*;
 
 /**
@@ -116,7 +112,7 @@ public class Login {
 
 
         d.setDoctorList(readDoctorList);
-        if (checkAccount(username, password)) {
+        if (clientAuthenticate(username, password)) {
             System.out.println("Welcome!");
             // continue as a doctor or patient
             boolean menu2 = false;
@@ -245,10 +241,13 @@ public class Login {
 
     }
 
-    public boolean clientAuthenticate(int identity, String username, String password) {
+    public boolean clientAuthenticate(int identity, String username, String password, Socket socket) throws IOException {
         // send to server
-        writer.write("authenticate:identity,username,password\n");
-        if (reader.readline().equals("true")) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        writer.write("authenticate:" + identity + "," + username + "," + password + "\n");
+
+        if (reader.readLine().equals("true")) {
             return true;
         } else {
             return false;
