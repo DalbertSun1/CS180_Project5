@@ -108,7 +108,7 @@ public class Login {
     }
 
     public static void postLoginMenu(String fullName, int identity, String username, String password, Scanner scan) throws IOException {
-        // TODO: Read pending.txt and approved.txt and assign arraylist of appointments
+
         DentistOffice d = new DentistOffice("My Dentist Office");
 
         ArrayList<Doctor> readDoctorList;
@@ -245,17 +245,19 @@ public class Login {
 
     }
 
-    public boolean clientAuthenticate(int identity, String username, String password) throws IOException {
+    public boolean clientAuthenticate(int identity, String username, String password) {
         // send to server
         writer.write("authenticate:identity,username,password\n");
-
         if (reader.readline().equals("true")) {
             return true;
         } else {
             return false;
         }
-
     }
+
+
+
+}
     //creates a new account
     //prints error if account already exists - to do
     public static void createAccount(int identity, String fullName, String username,
@@ -265,7 +267,7 @@ public class Login {
             FileOutputStream fos = new FileOutputStream(f, true);
             PrintWriter pw = new PrintWriter(fos);
             //username is FIRST, password is LAST - more convenient to check
-            if (checkAccount(username, password)) {
+            if (clientAuthenticate(username, password)) {
                 System.out.println("Error! Account already exists");
             } else {
                 //adding the account details to the file
@@ -273,7 +275,7 @@ public class Login {
                 System.out.println("Account successfully created!");
             }
             pw.close();
-            clientLogin(fullName, identity, username, password, scan);
+            postLoginMenu(fullName, identity, username, password, scan);
 
         } catch (IOException e) {
             e.printStackTrace();

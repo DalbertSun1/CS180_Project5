@@ -24,11 +24,8 @@ public class DentistClient {
              BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter writer = new PrintWriter(socket.getOutputStream())) {
 
-            writer.println("Hello server!");
-            System.out.println(reader.readLine());
-
+            // call main
             Login.main(new String[0]);
-
 
         } catch (UnknownHostException e) {
             System.out.println(e.getMessage());
