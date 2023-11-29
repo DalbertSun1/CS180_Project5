@@ -48,7 +48,7 @@ public class Login {
                                     String username2 = scan.nextLine();
                                     System.out.println("Enter your password:");
                                     String password2 = scan.nextLine();
-                                    login(fullName, identity2, username2, password2, scan);
+                                    postLoginMenu(fullName, identity2, username2, password2, scan);
                                 } else if (identity2 == 3) {
                                     menu1 = true;
                                 } else {
@@ -107,26 +107,13 @@ public class Login {
         } while (menu1);
     }
 
-    public static void login(String fullName, int identity, String username, String password, Scanner scan) throws IOException {
+    public static void postLoginMenu(String fullName, int identity, String username, String password, Scanner scan) throws IOException {
         // TODO: Read pending.txt and approved.txt and assign arraylist of appointments
         DentistOffice d = new DentistOffice("My Dentist Office");
 
         ArrayList<Doctor> readDoctorList;
         readDoctorList = d.readDoctors();
 
-        /* No use for now
-        for (Doctor value : readDoctorList) {
-            value.addAppointment(new Appointment("9:00 AM - 10:00 AM"));
-            value.addAppointment(new Appointment("10:00 AM - 11:00 AM"));
-            value.addAppointment(new Appointment("11:00 AM - 12:00 PM"));
-            value.addAppointment(new Appointment("12:00 PM - 1:00 PM"));
-            value.addAppointment(new Appointment("1:00 PM - 2:00 PM"));
-            value.addAppointment(new Appointment("2:00 PM - 3:00 PM"));
-            value.addAppointment(new Appointment("3:00 PM - 4:00 PM"));
-            value.addAppointment(new Appointment("4:00 PM - 5:00 PM"));
-            value.addAppointment(new Appointment("5:00 PM - 6:00 PM"));
-        }
-        */
 
         d.setDoctorList(readDoctorList);
         if (checkAccount(username, password)) {
@@ -258,6 +245,17 @@ public class Login {
 
     }
 
+    public boolean clientAuthenticate(int identity, String username, String password) throws IOException {
+        // send to server
+        writer.write("authenticate:identity,username,password\n");
+
+        if (reader.readline().equals("true")) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
     //creates a new account
     //prints error if account already exists - to do
     public static void createAccount(int identity, String fullName, String username,
@@ -275,7 +273,7 @@ public class Login {
                 System.out.println("Account successfully created!");
             }
             pw.close();
-            login(fullName, identity, username, password, scan);
+            clientLogin(fullName, identity, username, password, scan);
 
         } catch (IOException e) {
             e.printStackTrace();

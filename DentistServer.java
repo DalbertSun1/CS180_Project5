@@ -21,9 +21,6 @@ public class DentistServer {
 //            }
 
 
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }

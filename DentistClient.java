@@ -17,6 +17,8 @@ public class DentistClient {
     static final String hostname = "localhost";
 
 
+
+
     public static void main(String[] args) {
         try (Socket socket = new Socket(hostname, port);
              BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
