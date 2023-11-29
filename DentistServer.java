@@ -15,9 +15,6 @@ public class DentistServer {
              PrintWriter writer = new PrintWriter(socket.getOutputStream());) {
 
 
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
