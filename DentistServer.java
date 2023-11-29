@@ -13,6 +13,12 @@ public class DentistServer {
              Socket socket = serverSocket.accept();
              BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter writer = new PrintWriter(socket.getOutputStream());) {
+            boolean clientConnected = true;
+
+//            while (clientConnected) {
+//                String clientMessage = reader.readLine();
+//                String methodChoice = clientMessage.
+//            }
 
 
 
