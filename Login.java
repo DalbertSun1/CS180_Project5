@@ -1,11 +1,7 @@
 
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
+import java.net.Socket;
 import java.util.*;
 
 /**
@@ -245,11 +241,13 @@ public class Login {
 
     }
 
-    public boolean clientAuthenticate(int identity, String username, String password) throws IOException {
+    public boolean clientAuthenticate(int identity, String username, String password, Socket socket) throws IOException {
         // send to server
-        writer.write("authenticate:identity,username,password\n");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        writer.write("authenticate:" + identity + "," + username + "," + password + "\n");
 
-        if (reader.readline().equals("true")) {
+        if (reader.readLine().equals("true")) {
             return true;
         } else {
             return false;
@@ -273,7 +271,7 @@ public class Login {
                 System.out.println("Account successfully created!");
             }
             pw.close();
-            clientLogin(fullName, identity, username, password, scan);
+            postLoginMenu(fullName, identity, username, password, scan);
 
         } catch (IOException e) {
             e.printStackTrace();
