@@ -15,10 +15,23 @@ public class DentistServer {
              PrintWriter writer = new PrintWriter(socket.getOutputStream());) {
             boolean clientConnected = true;
 
-//            while (clientConnected) {
-//                String clientMessage = reader.readLine();
-//                String methodChoice = clientMessage.
-//            }
+            while (clientConnected) {
+                String rawMessage = reader.readLine();
+                String methodChoice = rawMessage.split(":")[0];
+                String[] params = rawMessage.split(":")[1].split(",");
+
+                switch (methodChoice) {
+                    case "authenticate" -> {
+                        String username = params[1];
+                        String password = params[2];
+                        writer.write(Login.checkAccount(username, password) + "\n");
+                    }
+                    case "method2" -> {}
+                    case "method3" -> {}
+                    default -> {}
+
+                }
+            }
 
 
         } catch (IOException e) {
