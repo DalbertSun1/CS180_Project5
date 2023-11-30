@@ -13,13 +13,13 @@ import java.util.*;
  */
 
 public class Login {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args, DentistClient client) throws IOException {
         Scanner scan = new Scanner(System.in);
         System.out.println("Welcome to the Dentist's Office!");
-        menu(scan);
+        menu(scan, client);
     }
 
-    public static void menu(Scanner scan) throws IOException {
+    public static void menu(Scanner scan, DentistClient client) throws IOException {
         boolean menu1 = false; //counter to rerun the loop if invalid choice is entered
         do {
             System.out.println("Menu\n1. Log in\n2. Create an account");
@@ -44,7 +44,7 @@ public class Login {
                                     String username2 = scan.nextLine();
                                     System.out.println("Enter your password:");
                                     String password2 = scan.nextLine();
-                                    postLoginMenu(fullName, identity2, username2, password2, scan);
+                                    postLoginMenu(fullName, identity2, username2, password2, scan, client);
                                 } else if (identity2 == 3) {
                                     menu1 = true;
                                 } else {
@@ -77,7 +77,7 @@ public class Login {
                                     String email = scan.nextLine();
                                     System.out.println("Enter your phone number:");
                                     String phoneNumber = scan.nextLine();
-                                    createAccount(identity, fullName, username, password, email, phoneNumber, scan);
+                                    createAccount(identity, fullName, username, password, email, phoneNumber, scan, client);
                                 } else if (identity == 3) {
                                     menu1 = true;
                                 } else {
@@ -103,7 +103,7 @@ public class Login {
         } while (menu1);
     }
 
-    public static void postLoginMenu(String fullName, int identity, String username, String password, Scanner scan) throws IOException {
+    public static void postLoginMenu(String fullName, int identity, String username, String password, Scanner scan, DentistClient client) throws IOException {
 
         DentistOffice d = new DentistOffice("My Dentist Office");
 
@@ -112,7 +112,7 @@ public class Login {
 
 
         d.setDoctorList(readDoctorList);
-        if (clientAuthenticate(username, password)) {
+        if (clientAuthenticate(username, password, client)) {
             System.out.println("Welcome!");
             // continue as a doctor or patient
             boolean menu2 = false;
@@ -120,7 +120,7 @@ public class Login {
                 switch (identity) {
                     case 1:
                         Patient p = new Patient(fullName); // continue as a patient
-                        p.go(scan, readDoctorList, d);
+                        p.go(scan, readDoctorList, d, client);
                         break;
                     case 2:
                         // continue as a doctor
@@ -214,7 +214,7 @@ public class Login {
 
                                     case 10:
                                         System.out.println("You have logged out.");
-                                        menu(scan);
+                                        menu(scan, client);
                                         menu3 = false;
                                         break;
                                     default:
@@ -236,18 +236,18 @@ public class Login {
             } while (menu2);
         } else {
             System.out.println("Error! Account does not exist");
-            menu(scan);
+            menu(scan, client);
         }
 
     }
 
-    public boolean clientAuthenticate(int identity, String username, String password, Socket socket) throws IOException {
-        // send to server
-        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        writer.write("authenticate:" + identity + "," + username + "," + password + "\n");
+    public static boolean clientAuthenticate(String username, String password, DentistClient client) throws IOException {
 
-        if (reader.readLine().equals("true")) {
+        // send to server to authenticate
+        client.println("authenticate:" + username + "," + password);
+
+        // receive server response
+        if (client.readLine().equals("true")) {
             return true;
         } else {
             return false;
@@ -256,17 +256,17 @@ public class Login {
 
 
 
-}
+
     //creates a new account
     //prints error if account already exists - to do
     public static void createAccount(int identity, String fullName, String username,
-                                     String password, String email, String phoneNumber, Scanner scan) {
+                                     String password, String email, String phoneNumber, Scanner scan, DentistClient client) {
         try {
             File f = new File("accounts.txt"); //creates accounts file
             FileOutputStream fos = new FileOutputStream(f, true);
             PrintWriter pw = new PrintWriter(fos);
             //username is FIRST, password is LAST - more convenient to check
-            if (clientAuthenticate(username, password)) {
+            if (clientAuthenticate(username, password, client)) {
                 System.out.println("Error! Account already exists");
             } else {
                 //adding the account details to the file
@@ -274,7 +274,7 @@ public class Login {
                 System.out.println("Account successfully created!");
             }
             pw.close();
-            postLoginMenu(fullName, identity, username, password, scan);
+            postLoginMenu(fullName, identity, username, password, scan, client);
 
         } catch (IOException e) {
             e.printStackTrace();

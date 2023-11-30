@@ -56,7 +56,7 @@ public class Patient {
         return name;
     }
 
-    public void go(Scanner scan, ArrayList<Doctor> doctors, DentistOffice d) throws IOException {
+    public void go(Scanner scan, ArrayList<Doctor> doctors, DentistOffice d, DentistClient client) throws IOException {
         boolean menu2 = false;
         boolean menu3 = false;
         int sum = 1;
@@ -145,7 +145,7 @@ public class Patient {
                                 appointment.bookAppointment(name);
                                 System.out.println("\nAppointment booked!");
 
-                                makeAppointment(date, doc, appointment);
+                                clientMakeAppointment(date, doc, appointment);
                                 menu2 = true;
                             } catch (NumberFormatException e) {
                                 System.out.println("Please enter an integer.");
@@ -220,7 +220,7 @@ public class Patient {
                     case 6:
                         System.out.println("You have logged out.");
                         Login l = new Login();
-                        l.menu(scan);
+                        l.menu(scan, client);
                         break;
                     default:
                         System.out.println("Please enter a valid choice.");
@@ -276,7 +276,7 @@ public class Patient {
     }
 
 
-    public String[] readFile(Scanner scan) {
+    public static void serverReadFile(String name, DentistServer server) { // reads file and returns printList to client
         try {
             ArrayList<String[]> list = new ArrayList<String[]>();
             ArrayList<String> list2 = new ArrayList<String>(); // stores each line of the file, only for printing purposes
@@ -306,24 +306,52 @@ public class Patient {
                 doctors[i] = list.get(i)[3];
             }
 
-            String[] printList = new String[list2.size()];
-            System.out.println("Enter your name:");
-            String checkName = scan.nextLine();
+            String[] aptList = new String[list2.size()];
+
             System.out.println("Approved appointments:");
             //displays the approved appointments for that person
-            for (int i = 0; i < printList.length; i++) {
-                if (checkName.equals(names[i])) {
-                    printList[i] = list2.get(i);
-                    System.out.println((i + 1) + ". " + printList[i]);
+            for (int i = 0; i < aptList.length; i++) {
+                if (name.equals(names[i])) {
+                    aptList[i] = list2.get(i);
                 }
             }
 
-            return printList;
+            // send aptList to client
+            StringBuilder output = new StringBuilder();
+            for (String apt : aptList) {
+                output.append(apt + "|||");
+            }
+            server.println(output.toString());
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+
         }
+    }
+    public String[] clientReadFile(Scanner scan, DentistClient client) { // returns printList
+        System.out.println("Enter your name:");
+        String name = scan.nextLine();
+        client.println("readFile:" + name);
+
+        ArrayList<String> aptList = new ArrayList<>();
+
+        String input = client.readLine();
+
+        for (String apt : input.split("|||")) {
+            aptList.add(apt);
+        }
+
+        System.out.println("Approved appointments:");
+        //displays the approved appointments for that person
+        for (String apt : aptList) {
+            System.out.println(apt);
+        }
+
+        return aptList.toArray(new String[0]);
+
+
     }
 
     public void rescheduleAppointment(Scanner scan) throws IOException {
