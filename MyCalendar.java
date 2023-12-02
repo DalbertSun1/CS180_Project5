@@ -4,9 +4,17 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.*;
+import java.util.ArrayList;
 /**
- * Project 4
+ * Project 5
  * Dentist Office Calendar Marketplace
  *
  * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
@@ -19,6 +27,8 @@ public class MyCalendar {
     private String month;
     private int numberMonth;
     private int year;
+    static JFrame frame;;
+    static JFrame newFrame = new JFrame();
 
     public MyCalendar(String file) {
         this.file = file;
@@ -248,177 +258,140 @@ public class MyCalendar {
 //        this.doctor = doctor;
 //    }
 
-    public String viewCalendar() {
-        String result = "";
+    public void viewCalendar() {
+        frame = new JFrame("Calendar");
 
-//        result += ("--------------------JULY 2023-------------------\n");
-//        result += ("[ MO ] [ TU ] [ WE ] [ TH ] [ FR ] [ SA ] [ SU ]\n");
-//        result += ("------------------------------------------------\n");
-//        result += ("[ -- ] [ -- ] [ -- ] [ -- ] [ -- ] [ 01 ] [ 02 ]\n");
-//        result += ("[ 03 ] [ 04 ] [ 05 ] [ 06 ] [ 07 ] [ 08 ] [ 09 ]\n");
-//        result += ("[ 10 ] [ 11 ] [ 12 ] [ 13 ] [ 14 ] [ 15 ] [ 16 ]\n");
-//        result += ("[ 17 ] [ 18 ] [ 19 ] [ 20 ] [ 21 ] [ 22 ] [ 23 ]\n");
-//        result += ("[ 24 ] [ 25 ] [ 26 ] [ 27 ] [ 28 ] [ 29 ] [ 30 ]\n");
-//        result += ("[ 31 ] [ -- ] [ -- ] [ -- ] [ -- ] [ -- ] [ -- ]\n");
-        int maxLength = Integer.MIN_VALUE;
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Container content = frame.getContentPane();
 
-        result += (month + " " + year) + "\n";
-        int maxLength2 = 1;
 
-        for (int i = 0; i < 7; i++) {
+        JPanel title = new JPanel();
+        title.setLayout(new BoxLayout(title, BoxLayout.Y_AXIS));
+        JPanel label = createPanel("July 2023");
+        title.add(label);
 
-            String temp = "";
-            temp += "[        ";
-            if ((i + 1) < 10) {
-                temp += "0" + (i + 1) + "        ]  ";
-            } else {
-                temp += (i + 1) + "        ]  ";
+        for (int i = 0; i < 5; i++) {
+            JPanel rowPanel = new JPanel();
+            for (int j = 1; j < 8; j++) {
+                JButton tempButton = assignButton(i, j);
+
+                tempButton.setPreferredSize(new Dimension(75, 25));
+                rowPanel.add(tempButton);
+
 
             }
-            result += temp.substring(0, temp.length() - 1);
+            title.add(rowPanel);
         }
-        result += "\n";
-        for (int j = 0; j < maxLength2; j++) {
-            for (int i = 0; i < 7; i++) {
-                if (days[i] != null && days[i].getDoctors() != null) {
-                    if (days[i].listAppts().size() == j) {
-                        result += "                     ";
-                    } else {
-                        result += " " + days[i].listAppts().get(j) + " ";
-                        if (days[i].listAppts().size() > maxLength2) {
-                            maxLength2 = days[i].listAppts().size();
-                        }
-                    }
-                } else {
-                    result += "                     ";
+
+
+        content.add(BorderLayout.NORTH, title);
+
+        frame.setVisible(true);
+
+    }
+
+    private static JPanel createPanel(String text) {
+        JPanel panel = new JPanel();
+
+        // Add some components to the panel
+        JLabel label = new JLabel(text);
+        panel.add(label);
+
+        return panel;
+    }
+
+    static ActionListener actionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() instanceof JButton source) {
+                if (isInt(source.getText())) {
+                    openNewFrame("July " + source.getText() + ", 2023", Integer.parseInt(source.getText()));
                 }
             }
-            result += "\n";
+
         }
-        for (int i = 7; i < 14; i++) {
+    };
 
-            String temp = "";
-            temp += "[        ";
-            if ((i + 1) < 10) {
-                temp += "0" + (i + 1) + "        ]  ";
-            } else {
-                temp += (i + 1) + "        ]  ";
 
+    private static JButton assignButton(int i, int j) {
+        JButton tempButton;
+//        System.out.println(((7 * i) + j));
+        if (((7 * i) + j) > 31) {
+            tempButton = new JButton("--");
+
+        } else if (((7 * i) + j) < 10) {
+
+            tempButton = new JButton("0" + ((7 * i) + j));
+        } else {
+            String a = "";
+            a += ((7 * i) + j);
+            tempButton = new JButton(a);
+        }
+        tempButton.addActionListener(actionListener);
+
+
+
+        return tempButton;
+    }
+    private static void openNewFrame(String title, int date) {
+        File f = new File("doctors.txt");
+        try {
+            FileReader fr = new FileReader(f);
+            BufferedReader bf = new BufferedReader(fr);
+
+            ArrayList<String> doctors = new ArrayList<String>();
+            Container content = newFrame.getContentPane();
+            content.removeAll();
+            newFrame.setTitle("Make An Appointment");
+            newFrame.setSize(600, 400);
+
+            JLabel label = new JLabel("July " + date + ", 2023");
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            newFrame.add(label, BorderLayout.NORTH);
+
+            JPanel buttons = new JPanel();
+            buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
+
+
+
+            String line;
+            while ((line = bf.readLine()) != null) {
+                doctors.add("Dr. " + line);
             }
-            result += temp.substring(0, temp.length() - 1);
-        }
-        result += "\n";
-        for (int j = 0; j < maxLength2; j++) {
-            for (int i = 7; i < 14; i++) {
-                if (days[i] != null && days[i].getDoctors() != null) {
-                    if (days[i].listAppts().size() == j) {
-                        result += "                     ";
-                    } else {
-                        result += " " + days[i].listAppts().get(j) + " ";
-                        if (days[i].listAppts().size() > maxLength2) {
-                            maxLength2 = days[i].listAppts().size();
-                        }
-                    }
-                } else {
-                    result += "                     ";
-                }
+
+            int height = 300/doctors.size();
+
+            for (int i = 0; i < doctors.size(); i++) {
+                JButton button = new JButton(doctors.get(i));
+                button.setPreferredSize(new Dimension(600, height));
+                buttons.add(button);
             }
-            result += "\n";
+
+            newFrame.add(buttons);
+
+
+
+            newFrame.setLocationRelativeTo(null);
+            newFrame.setVisible(true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        for (int i = 14; i < 21; i++) {
+    }
 
-            String temp = "";
-            temp += "[        ";
-            if ((i + 1) < 10) {
-                temp += "0" + (i + 1) + "        ]  ";
-            } else {
-                temp += (i + 1) + "        ]  ";
-
-            }
-            result += temp.substring(0, temp.length() - 1);
+    public static boolean isInt(String str) {
+        try {
+            // Attempt to parse the string as a int
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            // If an exception is caught, it's not a int
+            return false;
         }
-        result += "\n";
-        for (int j = 0; j < maxLength2; j++) {
-            for (int i = 14; i < 21; i++) {
-                if (days[i] != null && days[i].getDoctors() != null) {
-                    if (days[i].listAppts().size() == j) {
-                        result += "                     ";
-                    } else {
-                        result += " " + days[i].listAppts().get(j) + " ";
-                        if (days[i].listAppts().size() > maxLength2) {
-                            maxLength2 = days[i].listAppts().size();
-                        }
-                    }
-                } else {
-                    result += "                     ";
-                }
-            }
-            result += "\n";
-        }
-        for (int i = 21; i < 28; i++) {
-
-            String temp = "";
-            temp += "[        ";
-            if ((i + 1) < 10) {
-                temp += "0" + (i + 1) + "        ]  ";
-            } else {
-                temp += (i + 1) + "        ]  ";
-
-            }
-            result += temp.substring(0, temp.length() - 1);
-        }
-        result += "\n";
-        for (int j = 0; j < maxLength2; j++) {
-            for (int i = 21; i < 28; i++) {
-                if (days[i] != null && days[i].getDoctors() != null) {
-                    if (days[i].listAppts().size() == j) {
-                        result += "                     ";
-                    } else {
-                        result += " " + days[i].listAppts().get(j) + " ";
-                        if (days[i].listAppts().size() > maxLength2) {
-                            maxLength2 = days[i].listAppts().size();
-                        }
-                    }
-                } else {
-                    result += "                     ";
-                }
-            }
-            result += "\n";
-        }
-        int hehe = numberMonth - 28;
-        for (int i = 28; i < numberMonth; i++) {
-
-            String temp = "";
-            temp += "[        ";
-            if ((i + 1) < 10) {
-                temp += "0" + (i + 1) + "        ]  ";
-            } else {
-                temp += (i + 1) + "        ]  ";
-
-            }
-            result += temp.substring(0, temp.length() - 1);
-        }
-        result += "\n";
-        for (int j = 0; j < maxLength2; j++) {
-            for (int i = 28; i < numberMonth; i++) {
-                if (days[i] != null && days[i].getDoctors() != null) {
-                    if (days[i].listAppts().size() == j) {
-                        result += "                     ";
-                    } else {
-                        result += " " + days[i].listAppts().get(j) + " ";
-                        if (days[i].listAppts().size() > maxLength2) {
-                            maxLength2 = days[i].listAppts().size();
-                        }
-                    }
-                } else {
-                    result += "                     ";
-                }
-            }
-            result += "\n";
-        }
-
-
-        return result;
     }
 
     public String format(Day day, ArrayList<Doctor> doctors) {
