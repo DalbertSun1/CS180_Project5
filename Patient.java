@@ -56,7 +56,7 @@ public class Patient {
         return name;
     }
 
-    public void go(Scanner scan, ArrayList<Doctor> doctors, DentistOffice d, DentistClient client) throws IOException {
+    public synchronized void go(Scanner scan, ArrayList<Doctor> doctors, DentistOffice d, DentistClient client) throws IOException {
         boolean menu2 = false;
         boolean menu3 = false;
         int sum = 1;
@@ -143,9 +143,9 @@ public class Patient {
                                 this.name = scan.nextLine();
                                 Appointment appointment = new Appointment(chosenTime);
                                 appointment.bookAppointment(name);
-                                System.out.println("\nAppointment booked!");
-
-                                clientMakeAppointment(date, doc, appointment);
+                                if (clientPending(name, date, doc, appointment, new DentistClient())) {
+                                    System.out.println("\nAppointment booked!");
+                                }
                                 menu2 = true;
                             } catch (NumberFormatException e) {
                                 System.out.println("Please enter an integer.");
@@ -157,7 +157,7 @@ public class Patient {
                         break;
                     case 2:
                         do {
-                            String[] a = readFile(scan); //display approved appointments
+                            String[] a = clientReadFile(scan, new DentistClient()); //display approved appointments
                             if (a.length == 0) {
                                 System.out.println("You have no approved appointments to cancel.");
                             } else {
@@ -235,16 +235,18 @@ public class Patient {
         } while (menu2);
     }
 
-    public void makeAppointment(int date, Doctor doctor, Appointment appointment) {
+    public synchronized static String makeAppointment(String name, int date, Doctor doctor, Appointment appointment) {
         try {
             File f = new File("pending.txt"); //creates pending appointments file
             FileOutputStream fos = new FileOutputStream(f, true);
             PrintWriter pw = new PrintWriter(fos);
             pw.println(name + "," + date + "," + appointment.getTime() + "," + doctor.getName());
             pw.close();
+            return "true";
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return "false";
     }
 
     public void cancelAppointment(int cancel, String[] list) {
@@ -559,5 +561,16 @@ public class Patient {
 
         reader.close();
         return returnList;
+    }
+
+    public static synchronized boolean clientPending(String name, int date, Doctor doctor, Appointment appointment, DentistClient client) {
+        // send to server
+        client.println("makeAppointment:" + name + "," + date + "," + appointment.getTime() + "," + doctor.getName());
+
+        if (client.readLine().equals("true")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
