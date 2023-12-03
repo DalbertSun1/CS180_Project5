@@ -36,37 +36,35 @@ public class DentistClient {
 
 
 
-    public static void main(String[] args) {
+    public synchronized static void main(String[] args) {
         DentistClient thisClient = new DentistClient();
         thisClient.run();
     }
 
 
-    public void run() {
+    public synchronized void run() {
         try {
             Login.main(new String[0], this);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("ERROR!");
         }
-
-
-
     }
 
 
-    public String readLine() {
+    public synchronized String readLine() {
         try {
             String line = reader.readLine();
-            System.out.println("read from server -> " + line);
+            System.out.println("Read from server -> " + line);
             return line;
         } catch (IOException e) {
             return e.getMessage();
         }
 
     }
-    public void println(String input) {
+    public synchronized void println(String input) {
         System.out.println("Wrote to server -> " + input);
         writer.println(input);
+        writer.flush();
     }
 }
