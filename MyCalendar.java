@@ -284,6 +284,8 @@ public class MyCalendar {
             }
             title.add(rowPanel);
         }
+        JPanel select = createPanel("--Select a day to view available doctors--");
+        title.add(select);
 
 
         content.add(BorderLayout.NORTH, title);
@@ -309,7 +311,35 @@ public class MyCalendar {
             if (e.getSource() instanceof JButton source) {
                 if (isInt(source.getText())) {
                     openNewFrame("July " + source.getText() + ", 2023", Integer.parseInt(source.getText()));
+                } else if (source.getText().substring(0,4).equals("Dr. ")){
+                    for (Doctor d : doctors){
+//                        System.out.println("d.getname: " + d.getName());
+//                        System.out.println("source.getText().substring(4): " + source.getText().substring(4));
+                        if (d.getName().equals(source.getText().substring(4))) {
+
+                            selectedDoctor = d;
+                        }
+                    }
+                    openDoctorFrame(source.getText().substring(4));
+
+
+                } else if (source.getText().length() > 12 && isInt(source.getText().substring(11,12))) {
+                    for (Appointment a : selectedDoctor.getAppointments()){
+//                        System.out.println("a.getTime(): " + a.getTime());
+//                        System.out.println("source.getText(): " + source.getText());
+                        if (a.getTime().equals(source.getText().substring(11))) { selectedAppointment = a; }
+                    }
+                    openTimeFrame(source.getText());
+                } else if (source == nameButton){
+                    selectedAppointment.bookAppointment(name.getText());
+                    JFrame request = new JFrame();
+                    request.setSize(600, 100);
+                    request.add(new JTextField("Your appointment has been requested!"));
+                    request.setLocationRelativeTo(null);
+                    request.setVisible(true);
                 }
+
+
             }
 
         }
@@ -342,33 +372,46 @@ public class MyCalendar {
             FileReader fr = new FileReader(f);
             BufferedReader bf = new BufferedReader(fr);
 
-            ArrayList<String> doctors = new ArrayList<String>();
+            doctors = new ArrayList<Doctor>();
             Container content = newFrame.getContentPane();
             content.removeAll();
-            newFrame.setTitle("Make An Appointment");
+            newFrame.setTitle("Make An Appointment: July " + date + ", 2023");
             newFrame.setSize(600, 400);
+//
+//            JLabel label = new JLabel("July " + date + ", 2023");
+//            label.setHorizontalAlignment(SwingConstants.CENTER);
+//            newFrame.add(label, BorderLayout.NORTH);
 
-            JLabel label = new JLabel("July " + date + ", 2023");
-            label.setHorizontalAlignment(SwingConstants.CENTER);
-            newFrame.add(label, BorderLayout.NORTH);
 
             JPanel buttons = new JPanel();
             buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
 
 
 
+
+
             String line;
             while ((line = bf.readLine()) != null) {
-                doctors.add("Dr. " + line);
+                doctors.add(new Doctor(line));
             }
 
-            int height = 300/doctors.size();
+            int height = 0;
+            if (doctors.size() < 5) {
+                height = 70;
+            } else {
+                height = 400/doctors.size();
+            }
 
             for (int i = 0; i < doctors.size(); i++) {
-                JButton button = new JButton(doctors.get(i));
-                button.setPreferredSize(new Dimension(600, height));
+                JButton button = new JButton("Dr. " + doctors.get(i).getName());
+                button.setAlignmentX(Component.CENTER_ALIGNMENT);
+                button.addActionListener(actionListener);
+                button.setMaximumSize(new java.awt.Dimension(300, height));
+
                 buttons.add(button);
+
             }
+
 
             newFrame.add(buttons);
 
@@ -382,6 +425,60 @@ public class MyCalendar {
             throw new RuntimeException(e);
         }
     }
+    private static void openDoctorFrame(String doctor) {
+        //File f = new File("doctors.txt");
+
+        Container content = timeFrame.getContentPane();
+        content.removeAll();
+        timeFrame.setTitle("Make An Appointment: Dr. " + doctor);
+        timeFrame.setSize(600, 400);
+
+
+//            FileReader fr = new FileReader(f);
+//            BufferedReader bf = new BufferedReader(fr);
+            ArrayList<Appointment> times = new ArrayList<Appointment>();
+            for (int i = 9; i < 11; i++){
+                String a = "";
+                a+= (i + ":00 AM - " + (i+1) + ":00 AM");
+                selectedDoctor.getAppointments().add(new Appointment(a));
+            }
+            selectedDoctor.getAppointments().add(new Appointment("11:00 AM - 12:00 PM"));
+            selectedDoctor.getAppointments().add(new Appointment("12:00 PM - 1:00 PM"));
+            for (int i = 1; i < 6; i++){
+                String a = "";
+                a+= (i + ":00 PM - " + (i+1) + ":00 PM");
+                selectedDoctor.getAppointments().add(new Appointment(a));
+            }
+
+            JPanel buttons = new JPanel();
+            buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
+
+
+
+
+
+            int height = 400/9;
+
+
+            for (int i = 0; i < 9; i++) {
+                JButton button = new JButton(selectedDoctor.getAppointments().get(i).toString());
+                button.setAlignmentX(Component.CENTER_ALIGNMENT);
+                button.addActionListener(actionListener);
+                button.setMaximumSize(new java.awt.Dimension(300, height));
+
+                buttons.add(button);
+
+            }
+
+
+            timeFrame.add(buttons);
+
+
+
+            timeFrame.setLocationRelativeTo(null);
+            timeFrame.setVisible(true);
+
+    }
 
     public static boolean isInt(String str) {
         try {
@@ -392,6 +489,23 @@ public class MyCalendar {
             // If an exception is caught, it's not a int
             return false;
         }
+    }
+    private static void openTimeFrame(String time){
+        pending.setTitle("Enter your name:");
+        pending.setSize(300, 100);
+
+        JPanel panel = new JPanel();
+        name = new JTextField(10);
+
+        panel.add(name);
+
+        nameButton = new JButton("Enter");
+        nameButton.addActionListener(actionListener);
+        panel.add(nameButton);
+        pending.add(panel);
+        pending.setLocationRelativeTo(null);
+        pending.setVisible(true);
+
     }
 
     public String format(Day day, ArrayList<Doctor> doctors) {
