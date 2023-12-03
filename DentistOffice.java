@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.*;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
@@ -119,7 +120,7 @@ public class DentistOffice {
             String[] appointments = getAppointments();
             // Now you have the appointments in the 'appointments' array
             if (appointments.length == 0) {
-                System.out.println("You have no approved appointments.");
+                JOptionPane.showMessageDialog(null, "You have no approved appointments.", "Approved Appointments", JOptionPane.ERROR_MESSAGE);
             } else {
                 for (int i = 0; i < appointments.length; i++) {
 
@@ -143,7 +144,7 @@ public class DentistOffice {
         String line = reader.readLine();
         int num = 1;
         if (line == null) {
-            System.out.println("You have no pending appointments.");
+            JOptionPane.showMessageDialog(null, "You have no pending appointments.", "Pending Appointments", JOptionPane.ERROR_MESSAGE);
             num = 0;
         } else {
             while (line != null) {
@@ -245,7 +246,7 @@ public class DentistOffice {
 
 
         if (!found1) {
-            System.out.println("Patient has no approved appointments at this time.");
+            JOptionPane.showMessageDialog(null, "Patient has no approved appointments at this time.", "Reschedule Appointments", JOptionPane.ERROR_MESSAGE);
         } else {
             boolean invalidInput = false;
             int userIndex = 0;

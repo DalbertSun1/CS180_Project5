@@ -1,9 +1,4 @@
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.sql.SQLOutput;
 import java.util.*;
 import javax.swing.*;
@@ -19,13 +14,6 @@ import java.awt.event.*;
  */
 
 public class Login extends JComponent {
-
-    JButton loginButton;
-
-    JTextField usernameText;
-    JTextField passwordText;
-    Login paint;
-
 
     public static void main(String[] args) throws IOException {
         JOptionPane.showMessageDialog(null, "Welcome to Dentist Office!", "Welcome",
@@ -48,7 +36,7 @@ public class Login extends JComponent {
 
                 switch (result) {
                     case 0: // log in
-                        boolean menu2 = false;
+                        boolean menu2;
                         do {
                             String[] userMenu = {"Patient", "Doctor"};
                             String userOption;
@@ -72,7 +60,6 @@ public class Login extends JComponent {
                                 }
 
                                 menu2 = false;
-                                // Get username and password in a single JOptionPane
                                 JPanel panel = new JPanel(new GridLayout(2, 2));
                                 JTextField usernameField = new JTextField();
                                 JPasswordField passwordField = new JPasswordField();
@@ -88,7 +75,6 @@ public class Login extends JComponent {
                                     String username = usernameField.getText();
                                     String password = new String(passwordField.getPassword());
 
-                                    // Call the login method with username and password
                                     login(fullName, testOption, username, password, scan);
 
                                 } else {
@@ -96,14 +82,14 @@ public class Login extends JComponent {
                                 }
                             } catch (NumberFormatException e) {
                                 JOptionPane.showMessageDialog(null, "Please choose a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
-                                menu2 = true; // Repeat the outer loop
+                                menu2 = true;
                             }
 
                         } while (menu2);
                         break;
 
                     case 1: // create an account
-                        boolean menu3 = false;
+                        boolean menu3;
                         do {
                             String[] userMenu = {"Patient", "Doctor"};
                             String userOption;
@@ -128,9 +114,7 @@ public class Login extends JComponent {
                                 }
 
                                 menu3 = false;
-                                //System.out.println("Create an account as\n1. Patient\n2. Doctor\n3. Back");
-//                                String input2 = scan.nextLine();
-//                                int identity = Integer.parseInt(input2);
+
 
                                 JPanel panel = new JPanel(new GridLayout(5, 2));
                                 JTextField fullNameField = new JTextField();
@@ -160,7 +144,6 @@ public class Login extends JComponent {
                                     String email = emailField.getText();
                                     String number = numberField.getText();
 
-                                    // Call the login method with username and password
                                     createAccount(testOption, fullName, username, password, email, number, scan);
 
                                 } else {
@@ -168,18 +151,17 @@ public class Login extends JComponent {
                                 }
                             } catch (NumberFormatException e) {
                                 JOptionPane.showMessageDialog(null, "Please choose a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
-                                menu3 = true; // Repeat the outer loop
+                                menu3 = true;
                             }
 
                         } while (menu3);
                         break;
-                    default: // invalid choice
+                    default:
                         JOptionPane.showMessageDialog(null, "Please choose a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
                         menu1 = true;
                         break;
                 }
             } catch (NumberFormatException e) {
-                e.printStackTrace(); // For debugging purposes
                 JOptionPane.showMessageDialog(null, "Please enter a valid number.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
                 menu1 = true;
             }
@@ -187,7 +169,6 @@ public class Login extends JComponent {
     }
 
     public static void login(String fullName, int identity, String username, String password, Scanner scan) throws IOException {
-        // TODO: Read pending.txt and approved.txt and assign arraylist of appointments
         DentistOffice d = new DentistOffice("My Dentist Office");
 
         ArrayList<Doctor> readDoctorList;
@@ -195,7 +176,8 @@ public class Login extends JComponent {
 
         d.setDoctorList(readDoctorList);
         if (checkAccount(username, password)) {
-            System.out.println("Welcome!");
+            JOptionPane.showMessageDialog(null, "Welcome!");
+            //System.out.println("Welcome!");
             // continue as a doctor or patient
             boolean menu2 = false;
             do {
@@ -210,34 +192,88 @@ public class Login extends JComponent {
                         boolean menu3 = true;
 
                         do {
-                            System.out.println("1. Add Doctor \n2. Remove Doctor \n3. View Approved Appointments " +
-                                    "\n4. View Pending Appointments \n5. Approve Appointment \n" +
-                                    "6. Decline Appointment \n7. Reschedule Appointment \n8. View Statistics \n9. Import Calendar\n" +
-                                    "10. Log out");
-                            try {
-                                String input1 = scan.nextLine();
-                                int choice = Integer.parseInt(input1);
+                            String[] userMenu = {"Add Doctor", "Remove Doctor", "View Approved Appointments", "View Pending Appointments",
+                            "Approve Appointment", "Decline Appointment", "Reschedule Appointment", "View Statistics", "Import Calendar",
+                            "Log Out"};
+                            String userOption;
 
-                                switch (choice) {
-                                    case 1:
-                                        System.out.println("Enter the new doctor's full name: ");
-                                        doctorName = scan.nextLine();
-                                        Doctor addDoctor = new Doctor(doctorName);
-                                        d.addDoctor(addDoctor);
+                            try {
+                                do {
+                                    userOption = (String) JOptionPane.showInputDialog(null, "Choose an option",
+                                            "Menu", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
+                                    if ((userOption == null) || (userOption.isEmpty())) {
+                                        JOptionPane.showMessageDialog(null, "Please select a valid option!",
+                                                "Menu", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                } while ((userOption == null) || (userOption.isEmpty()));
+
+
+                                int testOption;
+                                if (userOption.equals("Add Doctor")) {
+                                    testOption = 1;
+                                } else if (userOption.equals("Remove Doctor")) {
+                                    testOption = 2;
+                                } else if (userOption.equals("View Approved Appointments")) {
+                                    testOption = 3;
+                                }else if (userOption.equals("View Pending Appointments")) {
+                                    testOption = 4;
+                                }else if (userOption.equals("Approve Appointment")) {
+                                    testOption = 5;
+                                }else if (userOption.equals("Decline Appointment")) {
+                                    testOption = 6;
+                                }else if (userOption.equals("Reschedule Appointment")) {
+                                    testOption = 7;
+                                } else if (userOption.equals("View Statistics")) {
+                                    testOption = 8;
+                                }else if (userOption.equals("Import Calendar")) {
+                                    testOption = 9;
+                                } else {
+                                    testOption = 10;
+                                }
+
+                                switch (userOption) {
+                                    case "Add Doctor":
+                                        JPanel panel = new JPanel(new GridLayout(1, 1));
+                                        JTextField fullNameField = new JTextField();
+
+
+                                        panel.add(new JTextField("Enter the new doctor's full name:"));
+                                        panel.add(fullNameField);
+
+                                        int loginResult = JOptionPane.showConfirmDialog(null, panel, "Add Doctor",
+                                                JOptionPane.OK_CANCEL_OPTION);
+
+                                        if (loginResult == JOptionPane.OK_OPTION) {
+                                            fullName = fullNameField.getText();
+
+                                            Doctor addDoctor = new Doctor(fullName);
+                                            d.addDoctor(addDoctor);
+                                        }
+                                            break;
+                                    case "Remove Doctor":
+                                        JPanel panel1 = new JPanel(new GridLayout(1, 1));
+                                        JTextField fullNameField1 = new JTextField();
+
+
+                                        panel1.add(new JTextField("Enter the doctor's full name:"));
+                                        panel1.add(fullNameField1);
+
+                                        int loginResult1 = JOptionPane.showConfirmDialog(null, panel1, "Remove Doctor",
+                                                JOptionPane.OK_CANCEL_OPTION);
+
+                                        if (loginResult1 == JOptionPane.OK_OPTION) {
+                                            fullName = fullNameField1.getText();
+                                            Doctor deleteDoctor = new Doctor(fullName);
+                                            d.deleteDoctor(deleteDoctor);
+                                        }
                                         break;
-                                    case 2:
-                                        System.out.println("Enter the doctor's full name: ");
-                                        doctorName = scan.nextLine();
-                                        Doctor deleteDoctor = new Doctor(doctorName);
-                                        d.deleteDoctor(deleteDoctor);
-                                        break;
-                                    case 3:
+                                    case "View Approved Appointments":
                                         d.viewApproved();
                                         break;
-                                    case 4:
+                                    case "View Pending Appointments":
                                         d.viewPending();
                                         break;
-                                    case 5:
+                                    case "Approve Appointment":
                                         int pending = d.viewPending();
                                         if (pending != 0) {
                                             try {
@@ -257,7 +293,7 @@ public class Login extends JComponent {
                                         }
 
                                         break;
-                                    case 6:
+                                    case "Decline Appointment":
                                         int pending1 = d.viewPending();
                                         if (pending1 != 0) {
                                             try {
@@ -277,54 +313,75 @@ public class Login extends JComponent {
                                         }
 
                                         break;
-                                    case 7:
+                                    case "Reschedule Appointment":
                                         d.rescheduleAppointment(scan);
                                         break;
-                                    case 8:
+                                    case "View Statistics":
                                         OurStatistics.dentistOfficeDashboard(d, scan);
                                         break;
-                                    case 9:
-                                        System.out.println("Please format your .csv file by rows in orders of [1] Doctor [2] Date (Month/Day/Year) [3] Start Time [4] End Time [5] Max Attendees");
+                                    case "Import Calendar":
+                                        try {
+                                            JOptionPane.showMessageDialog(null, "Please format your .csv file by rows in orders of [1] Doctor " +
+                                                    "[2] Date (Month/Day/Year) [3] Start Time [4] End Time [5] Max Attendees");
 
-                                        System.out.println("Enter a filepath:");
-                                        String path = scan.nextLine();
-                                        MyCalendar c = new MyCalendar(path);
-                                        ArrayList<Doctor> addD = c.importCalendar();
-                                        for (int j = 0; j < addD.size(); j++) {
-                                            d.addDoctor(addD.get(j));
+                                            JPanel panel2 = new JPanel(new GridLayout(1, 1));
+                                            JTextField pathField = new JTextField();
+
+
+                                            panel2.add(new JTextField("Enter a filepath:"));
+                                            panel2.add(pathField);
+
+                                            int loginResult2 = JOptionPane.showConfirmDialog(null, panel2, "Import Calendar",
+                                                    JOptionPane.OK_CANCEL_OPTION);
+
+                                            if (loginResult2 == JOptionPane.OK_OPTION) {
+                                                String path = pathField.getText();
+
+                                                File file = new File(path);
+                                                if (!file.exists()) {
+                                                    throw new FileNotFoundException();
+                                                }
+                                                MyCalendar c = new MyCalendar(path);
+                                                ArrayList<Doctor> addD = c.importCalendar();
+                                                for (int j = 0; j < addD.size(); j++) {
+                                                    d.addDoctor(addD.get(j));
+                                                }
+                                            }
+                                        } catch (FileNotFoundException e) {
+                                            JOptionPane.showMessageDialog(null, "Please enter a valid file path.", "Import Calendar", JOptionPane.ERROR_MESSAGE);
                                         }
-
-                                    case 10:
-                                        System.out.println("You have logged out.");
+                                        break;
+                                    case "Log Out":
+                                        JOptionPane.showMessageDialog(null, "You have logged out.");
                                         menu(scan);
                                         menu3 = false;
                                         break;
                                     default:
-                                        System.out.println("Please enter a valid choice.");
+                                        JOptionPane.showMessageDialog(null, "Please select a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
                                         break;
                                 }
+
+
                             } catch (NumberFormatException e) {
-                                System.out.println("Please enter an integer.");
+                                JOptionPane.showMessageDialog(null, "Please select a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
                             }
 
                         } while (menu3);
                         break;
                     default:
-                        System.out.println("Please enter a valid choice.");
+                        JOptionPane.showMessageDialog(null, "Please select a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
                         menu2 = true;
                         break;
                 }
 
             } while (menu2);
         } else {
-            System.out.println("Error! Account does not exist");
+            JOptionPane.showMessageDialog(null, "Error! Account doesn't exist.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
             menu(scan);
         }
 
     }
 
-    //creates a new account
-    //prints error if account already exists - to do
     public static void createAccount(int identity, String fullName, String username,
                                      String password, String email, String phoneNumber, Scanner scan) {
         try {
@@ -333,11 +390,11 @@ public class Login extends JComponent {
             PrintWriter pw = new PrintWriter(fos);
             //username is FIRST, password is LAST - more convenient to check
             if (checkAccount(username, password)) {
-                System.out.println("Error! Account already exists");
+                JOptionPane.showMessageDialog(null, "Error! Account doesn't exist.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
             } else {
                 //adding the account details to the file
                 pw.println(fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
-                System.out.println("Account successfully created!");
+                JOptionPane.showMessageDialog(null, "Account successfully created!");
             }
             pw.close();
             login(fullName, identity, username, password, scan);
