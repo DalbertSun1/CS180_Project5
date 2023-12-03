@@ -45,12 +45,13 @@ public class DentistOffice {
             writer.write("");
             writer.close();
         }
-        BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
-        String line;
 
-        while ((line = reader.readLine()) != null) {
-            Doctor doctor = new Doctor(line);
+        BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
+        String line = reader.readLine();
+        Doctor doctor = new Doctor(line);
+        while (line != null) {
             doctorList.add(doctor);
+            line = reader.readLine();
         }
         reader.close();
         return doctorList;
@@ -58,15 +59,32 @@ public class DentistOffice {
 
     public void addDoctor(Doctor doctor) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", true));
-        if (!(doctorList.contains(doctor))) {
+
+        int counter = 0;
+        /*for (int i = 0; i < doctorList.size(); i++) {
+            if (doctorList.get(i). equals(doctor)) {
+                counter++;
+            }
+        }*/
+
+        BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            if (String.valueOf(doctor).equals(line)) {
+                counter++;
+            }
+        }
+
+        if (counter == 0) {
             doctorList.add(doctor);
             writer.write(String.valueOf(doctor) + "\n");
+            JOptionPane.showMessageDialog(null, "Successfully added doctor " + doctor.getName() + " to " + this.name);
 
-            System.out.println("Successfully added doctor " + doctor.getName() + " to " + this.name);
         } else {
-            System.out.println("Doctor " + doctor.getName() + " is already in " + this.name);
+            JOptionPane.showMessageDialog(null,"Doctor " + doctor.getName() + " is already in " + this.name);
         }
         writer.close();
+        reader.close();
     }
 
     public void deleteDoctor(Doctor doctor) throws IOException {
@@ -90,13 +108,11 @@ public class DentistOffice {
 
             writer.close();
 
-            System.out.println("Successfully removed doctor " + doctor.getName() + " from " + this.name);
+            JOptionPane.showMessageDialog(null, "Successfully removed doctor " + doctor.getName() + " from " + this.name);
         } else {
-            System.out.println("Doctor " + doctor.getName() + " is not in " + this.name);
+            JOptionPane.showMessageDialog(null, "Doctor " + doctor.getName() + " is not in " + this.name);
         }
     }
-
-    // displays approved appointments
 
     public static String[] getAppointments() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
@@ -129,7 +145,7 @@ public class DentistOffice {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace(); // Handle the IOException appropriately
+            e.printStackTrace();
         }
     }
 

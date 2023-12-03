@@ -236,7 +236,6 @@ public class Login extends JComponent {
                                         JPanel panel = new JPanel(new GridLayout(1, 1));
                                         JTextField fullNameField = new JTextField();
 
-
                                         panel.add(new JTextField("Enter the new doctor's full name:"));
                                         panel.add(fullNameField);
 
@@ -246,8 +245,8 @@ public class Login extends JComponent {
                                         if (loginResult == JOptionPane.OK_OPTION) {
                                             fullName = fullNameField.getText();
 
-                                            Doctor addDoctor = new Doctor(fullName);
-                                            d.addDoctor(addDoctor);
+                                            Doctor newDoctor = new Doctor(fullName);
+                                            d.addDoctor(newDoctor);
                                         }
                                             break;
                                     case "Remove Doctor":
