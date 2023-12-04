@@ -254,9 +254,6 @@ public class Login {
         }
     }
 
-
-
-
     //creates a new account
     //prints error if account already exists - to do
     public static void createAccount(int identity, String fullName, String username,
@@ -266,6 +263,7 @@ public class Login {
             FileOutputStream fos = new FileOutputStream(f, true);
             PrintWriter pw = new PrintWriter(fos);
             //username is FIRST, password is LAST - more convenient to check
+            //if the username and password match a case in accounts.txt, then new account will not be created
             if (clientAuthenticate(username, password, client)) {
                 System.out.println("Error! Account already exists");
             } else {
@@ -274,7 +272,7 @@ public class Login {
                 System.out.println("Account successfully created!");
             }
             pw.close();
-            postLoginMenu(fullName, identity, username, password, scan, client);
+            menu(scan, client);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -26,18 +26,17 @@ public class DentistServer {
         }
 
     }
-    public static void main(String[] args) {
+    public synchronized static void main(String[] args) {
         DentistServer thisServer = new DentistServer();
         thisServer.run();
-
-
     }
 
-    void run() {
-
+    synchronized void run() {
         boolean clientConnected = true;
+        int i = 0;
         while (clientConnected) {
-            System.out.println("blocking for client");
+            System.out.println("Loop " + i);
+            System.out.println("Waiting for client input...");
             String rawMessage = readLine();
             System.out.println("rawMessage = " + rawMessage);
             String methodChoice = rawMessage.split(":")[0];
@@ -51,7 +50,15 @@ public class DentistServer {
                     println(Login.checkAccount(username, password) + "\n");
                 }
                 case "makeAppointment" -> {
+                    String name = params[0];
+                    int date = Integer.parseInt(params[1]);
+                    String appointmentTime = params[2];
+                    String doctorName = params[3];
 
+                    Appointment appointment = new Appointment(appointmentTime);
+                    Doctor doctor = new Doctor(doctorName);
+
+                    println(Patient.makeAppointment(name, date, doctor, appointment));
                 }
                 case "approveAppointment" -> {}
 
@@ -61,16 +68,19 @@ public class DentistServer {
                 }
 
 
-                default -> {}
+                default -> {
+                    clientConnected = false;
+                }
 
             }
+            i++;
         }
     }
 
-    public String readLine() {
+    public synchronized String readLine() {
         try {
             String line = reader.readLine();
-            System.out.println("read from client -> " + line);
+            System.out.println("Read from client -> " + line);
             return line;
         } catch (IOException e) {
             return e.getMessage();
@@ -78,9 +88,10 @@ public class DentistServer {
 
     }
 
-    public void println(String input) {
+    public synchronized void println(String input) {
         System.out.println("Wrote to client -> " + input);
         writer.println(input);
+        writer.flush();
     }
 
 
