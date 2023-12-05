@@ -27,8 +27,18 @@ public class MyCalendar {
     private String month;
     private int numberMonth;
     private int year;
+    static JTextField name;
     static JFrame frame;;
     static JFrame newFrame = new JFrame();
+    static JFrame timeFrame = new JFrame();
+    static Doctor selectedDoctor;
+
+    static JFrame pending = new JFrame();
+    static ArrayList<Doctor> doctors;
+
+    static Appointment selectedAppointment;
+
+    static JButton nameButton;
 
     public MyCalendar(String file) {
         this.file = file;
