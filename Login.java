@@ -24,6 +24,8 @@ public class Login extends JComponent {
     }
 
     public static void menu(Scanner scan) throws IOException {
+        JButton backButton;
+        JButton logOut;
         boolean menu1 = false; //counter to rerun the loop if invalid choice is entered
         do {
             String[] options = {"Log in", "Create an Account"};
@@ -41,14 +43,22 @@ public class Login extends JComponent {
                             String[] userMenu = {"Patient", "Doctor"};
                             String userOption;
                             try {
-                                do {
+                                /*do {
                                     userOption = (String) JOptionPane.showInputDialog(null, "Log in as",
                                             "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
                                     if ((userOption == null) || (userOption.isEmpty())) {
                                         JOptionPane.showMessageDialog(null, "Please select a valid option!",
                                                 "Dentist Office", JOptionPane.ERROR_MESSAGE);
                                     }
-                                } while ((userOption == null) || (userOption.isEmpty()));
+                                } while ((userOption == null) || (userOption.isEmpty()));*/
+
+
+                                userOption = (String) JOptionPane.showInputDialog(null, "Log in as",
+                                        "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
+                                if ((userOption == null) || (userOption.isEmpty())) {
+                                    JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                    return;
+                                }
 
                                 int testOption;
                                 if (userOption.equals("Patient")) {
@@ -93,22 +103,19 @@ public class Login extends JComponent {
                         boolean menu3;
                         do {
                             String[] userMenu = {"Patient", "Doctor"};
-                            String userOption;
+                            String userOption2;
                             try {
-                                do {
-                                    userOption = (String) JOptionPane.showInputDialog(null, "Create an account as",
-                                            "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
-                                    if ((userOption == null) || (userOption.isEmpty())) {
-                                        JOptionPane.showMessageDialog(null, "Please select a valid option!",
-                                                "Dentist Office", JOptionPane.ERROR_MESSAGE);
-                                    }
-                                } while ((userOption == null) || (userOption.isEmpty()));
-
+                                userOption2 = (String) JOptionPane.showInputDialog(null, "Create an account as",
+                                        "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
+                                if ((userOption2 == null) || (userOption2.isEmpty())) {
+                                    JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                    return;
+                                }
 
                                 int testOption;
-                                if (userOption.equals("Patient")) {
+                                if (userOption2.equals("Patient")) {
                                     testOption = 1;
-                                } else if (userOption.equals("Doctor")) {
+                                } else if (userOption2.equals("Doctor")) {
                                     testOption = 2;
                                 } else {
                                     testOption = 3;
@@ -148,7 +155,8 @@ public class Login extends JComponent {
                                     createAccount(testOption, fullName, username, password, email, number, scan);
 
                                 } else {
-                                    JOptionPane.showMessageDialog(null, "Creating Account canceled.");
+                                    JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                    return;
                                 }
                             } catch (NumberFormatException e) {
                                 JOptionPane.showMessageDialog(null, "Please choose a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
@@ -199,14 +207,13 @@ public class Login extends JComponent {
                             String userOption;
 
                             try {
-                                do {
-                                    userOption = (String) JOptionPane.showInputDialog(null, "Choose an option",
-                                            "Menu", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
-                                    if ((userOption == null) || (userOption.isEmpty())) {
-                                        JOptionPane.showMessageDialog(null, "Please select a valid option!",
-                                                "Menu", JOptionPane.ERROR_MESSAGE);
-                                    }
-                                } while ((userOption == null) || (userOption.isEmpty()));
+                                userOption = (String) JOptionPane.showInputDialog(null, "Choose an option",
+                                        "Menu", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
+                                if ((userOption == null) || (userOption.isEmpty())) {
+                                    JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                    return;
+                                }
+
 
 
                                 int testOption;
@@ -278,19 +285,17 @@ public class Login extends JComponent {
                                         String[] pendingAppointments = d.viewPending();
                                         String approveOption;
                                         if (pendingAppointments.length != 0) {
-                                            do {
-                                                approveOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to approve?",
-                                                        "Approve appointment", JOptionPane.QUESTION_MESSAGE, null, pendingAppointments,
-                                                        pendingAppointments[0]);
-                                                if ((approveOption == null) || (approveOption.isEmpty())) {
-                                                    JOptionPane.showMessageDialog(null, "Please select a valid option!", "Approve appointment",
-                                                            JOptionPane.ERROR_MESSAGE);
-                                                } else {
-                                                    d.approveAppointment(approveOption);
-                                                    JOptionPane.showMessageDialog(null, "Appointment approved.", "Approve appointment",
-                                                            JOptionPane.INFORMATION_MESSAGE);
-                                                }
-                                            } while ((approveOption == null) || (approveOption.isEmpty()));
+                                            approveOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to approve?",
+                                                    "Approve appointment", JOptionPane.QUESTION_MESSAGE, null, pendingAppointments,
+                                                    pendingAppointments[0]);
+                                            if ((approveOption == null) || (approveOption.isEmpty())) {
+                                                JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                                return;
+                                            } else {
+                                                d.approveAppointment(approveOption);
+                                                JOptionPane.showMessageDialog(null, "Appointment approved.", "Approve appointment",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+                                            }
                                         }
                                         break;
 
@@ -315,19 +320,17 @@ public class Login extends JComponent {
                                         String[] pendingAppointments1 = d.viewPending();
                                         String declineOption;
                                         if (pendingAppointments1.length != 0) {
-                                            do {
-                                                declineOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to decline?",
-                                                        "Decline appointment", JOptionPane.QUESTION_MESSAGE, null, pendingAppointments1,
-                                                        pendingAppointments1[0]);
-                                                if ((declineOption == null) || (declineOption.isEmpty())) {
-                                                    JOptionPane.showMessageDialog(null, "Please select a valid option!", "Decline appointment",
-                                                            JOptionPane.ERROR_MESSAGE);
-                                                } else {
-                                                    d.declineAppointment(declineOption);
-                                                    JOptionPane.showMessageDialog(null, "Appointment declined.", "Decline appointment",
-                                                            JOptionPane.INFORMATION_MESSAGE);
-                                                }
-                                            } while ((declineOption == null) || (declineOption.isEmpty()));
+                                            declineOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to decline?",
+                                                    "Decline appointment", JOptionPane.QUESTION_MESSAGE, null, pendingAppointments1,
+                                                    pendingAppointments1[0]);
+                                            if ((declineOption == null) || (declineOption.isEmpty())) {
+                                                JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                                return;
+                                            } else {
+                                                d.declineAppointment(declineOption);
+                                                JOptionPane.showMessageDialog(null, "Appointment declined.", "Decline appointment",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+                                            }
                                         }
                                         break;
 
