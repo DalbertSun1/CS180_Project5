@@ -63,15 +63,13 @@ public class Patient {
             String[] patientMenu = {"Make a new appointment", "Cancel an appointment",
                     "View approved appointments", "Reschedule an appointment", "View Statistics"};
             String patientOption;
-            do {
-                patientOption = (String) JOptionPane.showInputDialog(null, "Choose an option.",
-                        "Menu", JOptionPane.QUESTION_MESSAGE, null, patientMenu,
-                        patientMenu[0]);
-                if ((patientOption == null) || (patientOption.isEmpty())) {
-                    JOptionPane.showMessageDialog(null, "Please select a valid option!", "Menu",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            } while ((patientOption == null)  || (patientOption.isEmpty()));
+            patientOption = (String) JOptionPane.showInputDialog(null, "Choose an option.",
+                    "Menu", JOptionPane.QUESTION_MESSAGE, null, patientMenu,
+                    patientMenu[0]);
+            if ((patientOption == null) || (patientOption.isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                return;
+            }
             //System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments\n4. Reschedule an appointment\n" +
                     //"5. View Statistics\n6. Log out");
 
@@ -184,16 +182,13 @@ public class Patient {
                                         JOptionPane.ERROR_MESSAGE);
                             } else {
                                 //System.out.println("Choose an appointment to cancel:");
-                                String cancelOption;
-                                do {
-                                    cancelOption = (String) JOptionPane.showInputDialog(null, "Choose an appointment to cancel.",
-                                            "Cancel an appointment", JOptionPane.QUESTION_MESSAGE, null, b,
-                                            b[0]);
-                                    if ((cancelOption == null) || (cancelOption.isEmpty())) {
-                                        JOptionPane.showMessageDialog(null, "Please select a valid option!", "Cancel an appointment",
-                                                JOptionPane.ERROR_MESSAGE);
-                                    }
-                                } while ((cancelOption == null)  || (cancelOption.isEmpty()));
+                                String cancelOption = (String) JOptionPane.showInputDialog(null, "Choose an appointment to cancel.",
+                                        "Cancel an appointment", JOptionPane.QUESTION_MESSAGE, null, b,
+                                        b[0]);
+                                if ((cancelOption == null) || (cancelOption.isEmpty())) {
+                                    JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                    return;
+                                }
 
                                 try {
                                     //String input5 = scan.nextLine();
@@ -419,16 +414,13 @@ public class Patient {
                     JOptionPane.ERROR_MESSAGE);
         } else {
             //System.out.println("Which appointment would you like to change?");
-            String rescheduleOption;
-            do {
-                rescheduleOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to reschedule?",
-                        "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, approvedList,
-                        approvedList[0]);
-                if ((rescheduleOption == null) || (rescheduleOption.isEmpty())) {
-                    JOptionPane.showMessageDialog(null, "Please select a valid option!", "Reschedule appointment",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            } while ((rescheduleOption == null)  || (rescheduleOption.isEmpty()));
+            String rescheduleOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to reschedule?",
+                    "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, approvedList,
+                    approvedList[0]);
+            if ((rescheduleOption == null) || (rescheduleOption.isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                return;
+            }
 
             try {
                 //String input1 = scan.nextLine();
@@ -468,16 +460,13 @@ public class Patient {
                         timeslots[7] = "4:00 PM - 5:00 PM";
                         timeslots[8] = "5:00 PM - 6:00 PM";
 
-                        String newTime = "";
-                        do {
-                            newTime = (String) JOptionPane.showInputDialog(null, "What time would you like to change it to?",
-                                    "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, timeslots,
-                                    timeslots[0]);
-                            if ((newTime == null) || (newTime.isEmpty())) {
-                                JOptionPane.showMessageDialog(null, "Please select a valid option!", "Reschedule appointment",
-                                        JOptionPane.ERROR_MESSAGE);
-                            }
-                        } while ((newTime == null)  || (newTime.isEmpty()));
+                        String newTime = (String) JOptionPane.showInputDialog(null, "What time would you like to change it to?",
+                                "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, timeslots,
+                                timeslots[0]);
+                        if ((newTime == null) || (newTime.isEmpty())) {
+                            JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                            return;
+                        }
 
                         // check if given time is already taken
                         line = rescheduleOption;
