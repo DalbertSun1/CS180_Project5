@@ -310,15 +310,13 @@ public class DentistOffice {
                             dateList[i] = "" + j;
                             j++;
                         }
-                        String date;
-                        do {
-                            date = (String) JOptionPane.showInputDialog(null, "What date would you like to change it to?",
-                                    "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, dateList, dateList[0]);
-                            if ((date == null) || (date.isEmpty())) {
-                                JOptionPane.showMessageDialog(null, "Please select a valid option!", "Reschedule appointment",
-                                        JOptionPane.ERROR_MESSAGE);
-                            }
-                        } while ((date == null)  || (date.isEmpty()));
+                        String date = (String) JOptionPane.showInputDialog(null, "What date would you like to change it to?",
+                                "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, dateList, dateList[0]);
+                        if ((date == null) || (date.isEmpty())) {
+                            JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                            return;
+                        }
+
                         int newDate = Integer.parseInt(date);
 
                         String[] timeslots = new String[9];
@@ -332,16 +330,13 @@ public class DentistOffice {
                         timeslots[7] = "4:00 PM - 5:00 PM";
                         timeslots[8] = "5:00 PM - 6:00 PM";
 
-                        String newTime = "";
-                        do {
-                            newTime = (String) JOptionPane.showInputDialog(null, "What time would you like to change it to?",
-                                    "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, timeslots,
-                                    timeslots[0]);
-                            if ((newTime == null) || (newTime.isEmpty())) {
-                                JOptionPane.showMessageDialog(null, "Please select a valid option!", "Reschedule appointment",
-                                        JOptionPane.ERROR_MESSAGE);
-                            }
-                        } while ((newTime == null)  || (newTime.isEmpty()));
+                        String newTime = (String) JOptionPane.showInputDialog(null, "What time would you like to change it to?",
+                                "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, timeslots,
+                                timeslots[0]);
+                        if ((newTime == null) || (newTime.isEmpty())) {
+                            JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                            return;
+                        }
 
                         // check if given time is already taken
                         line = rescheduleOption;
