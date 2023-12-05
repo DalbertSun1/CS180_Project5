@@ -97,7 +97,7 @@ public class OurStatistics { // handles the statistics section of our projection
                     int numApts = patientFrequency.get(name);
                     String numAptsString = numApts + (numApts == 1 ? " appointment" : " appointments");
                     output.append(String.format(patientFormat, name, numAptsString));
-                }
+           No fuck that don't like what do you think I'm gonna do like I'm not doing all that make up artist had a complex TGI's for a part of it if it works for some reason song Ghana know I don't I don't even understand     }
             }
 
             System.out.println(output.toString());

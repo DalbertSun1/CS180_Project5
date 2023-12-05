@@ -247,7 +247,6 @@ public class Login extends JComponent {
 
                                             Doctor newDoctor = new Doctor(fullName);
                                             d.addDoctor(newDoctor);
-                                        }
                                             break;
                                     case "Remove Doctor":
                                         JPanel panel1 = new JPanel(new GridLayout(1, 1));
