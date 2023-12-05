@@ -143,8 +143,10 @@ public class Patient {
                                 this.name = scan.nextLine();
                                 Appointment appointment = new Appointment(chosenTime);
                                 appointment.bookAppointment(name);
-                                if (clientPending(name, date, doc, appointment, new DentistClient())) {
+                                if (clientPending(name, date, doc, appointment, client)) {  // send info to server
                                     System.out.println("\nAppointment booked!");
+                                } else {
+                                    System.out.println("Error during appointment booking");
                                 }
                                 menu2 = true;
                             } catch (NumberFormatException e) {
@@ -565,7 +567,7 @@ public class Patient {
 
     public static synchronized boolean clientPending(String name, int date, Doctor doctor, Appointment appointment, DentistClient client) {
         // send to server
-        client.println("makeAppointment:" + name + "," + date + "," + appointment.getTime() + "," + doctor.getName());
+        client.println("makeAppointment:" + name + "," + date + "," + doctor.getName() + "," + appointment.getTime());
 
         if (client.readLine().equals("true")) {
             return true;

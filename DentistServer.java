@@ -43,12 +43,23 @@ public class DentistServer {
             System.out.println("methodChoice = " + methodChoice);
             String[] params = rawMessage.split(":")[1].split(",");
 
+
+            DentistOffice d = new DentistOffice("My Dentist Office");
+
             switch (methodChoice) {
+
+                // login functions
                 case "authenticate" -> {
                     String username = params[0];
                     String password = params[1];
                     println(Login.checkAccount(username, password) + "\n");
                 }
+                case "createAccount" -> {
+                    println(Boolean.toString(Login.serverCreateAccount(params[0], params[1], params[2], params[3], params[4])));
+                }
+
+
+                // Patient side functions
                 case "makeAppointment" -> {
                     String name = params[0];
                     int date = Integer.parseInt(params[1]);
@@ -60,12 +71,38 @@ public class DentistServer {
 
                     println(Patient.makeAppointment(name, date, doctor, appointment));
                 }
+                case "cancelAppointment" -> {}
+                case "viewPatientApprovedAppointments" -> {}
+
+
+
+
+                // DentistOffice functions
+
+                case "addDoctor" -> {
+                    println(Boolean.toString(d.addDoctor(new Doctor(params[0]))));
+
+                }
+                case "removeDoctor" -> {
+                    println(Boolean.toString(d.removeDoctor(new Doctor(params[0]))));
+                }
+                case "viewDoctorApprovedAppointments" -> {}
+                case "viewDoctorPendingAppointments" -> {}
                 case "approveAppointment" -> {}
+                case "declineAppointment" -> {}
+                case "rescheduleAppointment" -> {}
+                case "importCalendar" -> {}
+
+                // other functions
 
                 case "readFile" -> {
                     String name = params[0];
                     Patient.serverReadFile(name, this);
                 }
+
+
+
+
 
 
                 default -> {

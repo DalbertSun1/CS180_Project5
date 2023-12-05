@@ -77,7 +77,7 @@ public class Login {
                                     String email = scan.nextLine();
                                     System.out.println("Enter your phone number:");
                                     String phoneNumber = scan.nextLine();
-                                    createAccount(identity, fullName, username, password, email, phoneNumber, scan, client);
+                                    clientCreateAccount(fullName, username, password, email, phoneNumber, scan, client);
                                 } else if (identity == 3) {
                                     menu1 = true;
                                 } else {
@@ -106,12 +106,6 @@ public class Login {
     public static void postLoginMenu(String fullName, int identity, String username, String password, Scanner scan, DentistClient client) throws IOException {
 
         DentistOffice d = new DentistOffice("My Dentist Office");
-
-        ArrayList<Doctor> readDoctorList;
-        readDoctorList = d.readDoctors();
-
-
-        d.setDoctorList(readDoctorList);
         if (clientAuthenticate(username, password, client)) {
             System.out.println("Welcome!");
             // continue as a doctor or patient
@@ -120,7 +114,7 @@ public class Login {
                 switch (identity) {
                     case 1:
                         Patient p = new Patient(fullName); // continue as a patient
-                        p.go(scan, readDoctorList, d, client);
+                        p.go(scan, d.getDoctorList(), d, client);
                         break;
                     case 2:
                         // continue as a doctor
@@ -140,14 +134,18 @@ public class Login {
                                     case 1:
                                         System.out.println("Enter the new doctor's full name: ");
                                         doctorName = scan.nextLine();
-                                        Doctor addDoctor = new Doctor(doctorName);
-                                        d.addDoctor(addDoctor);
+                                        client.println("addDoctor:" + doctorName);
+                                        if (client.readLine().equals("true")) {
+                                            System.out.println("Successfully added Doctor");
+                                        }
                                         break;
                                     case 2:
                                         System.out.println("Enter the doctor's full name: ");
                                         doctorName = scan.nextLine();
-                                        Doctor deleteDoctor = new Doctor(doctorName);
-                                        d.deleteDoctor(deleteDoctor);
+                                        client.println("removeDoctor:" + doctorName);
+                                        if (client.readLine().equals("true")) {
+                                            System.out.println("Successfully removed Doctor");
+                                        }
                                         break;
                                     case 3:
                                         d.viewApproved();
@@ -256,26 +254,40 @@ public class Login {
 
     //creates a new account
     //prints error if account already exists - to do
-    public static void createAccount(int identity, String fullName, String username,
+    public static void clientCreateAccount(String fullName, String username,
                                      String password, String email, String phoneNumber, Scanner scan, DentistClient client) {
+        try {
+
+            if (clientAuthenticate(username, password, client)) {
+                System.out.println("Error! Account already exists");
+            } else {
+                //adding the account details to the file
+                client.println("createAccount:" + fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
+                System.out.println("Account successfully created!");
+            }
+
+            menu(scan, client);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static boolean serverCreateAccount(String fullName, String username,
+                                                        String password, String email, String phoneNumber) {
         try {
             File f = new File("accounts.txt"); //creates accounts file
             FileOutputStream fos = new FileOutputStream(f, true);
             PrintWriter pw = new PrintWriter(fos);
             //username is FIRST, password is LAST - more convenient to check
             //if the username and password match a case in accounts.txt, then new account will not be created
-            if (clientAuthenticate(username, password, client)) {
-                System.out.println("Error! Account already exists");
-            } else {
-                //adding the account details to the file
-                pw.println(fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
-                System.out.println("Account successfully created!");
-            }
-            pw.close();
-            menu(scan, client);
 
+            pw.println(fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
+            System.out.println("Account successfully created!");
+            pw.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 

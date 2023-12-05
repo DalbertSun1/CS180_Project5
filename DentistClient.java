@@ -52,7 +52,7 @@ public class DentistClient {
     }
 
 
-    public synchronized String readLine() {
+    public String readLine() {
         try {
             String line = reader.readLine();
             System.out.println("Read from server -> " + line);
