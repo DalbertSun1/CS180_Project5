@@ -18,7 +18,9 @@ public class DentistOffice {
     private ArrayList<Doctor> doctorList = new ArrayList<>();
 
     public DentistOffice(String name) {
+
         this.name = name;
+        this.setDoctorList(readDoctors());
     }
 
     public String getName() {
@@ -37,25 +39,33 @@ public class DentistOffice {
         this.doctorList = doctorList;
     }
 
-    public ArrayList<Doctor> readDoctors() throws IOException {
-        File f = new File("doctors.txt");
-        if (!f.exists()) {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt"));
-            writer.write("");
-            writer.close();
-        }
-        BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
-        String line;
+    public ArrayList<Doctor> readDoctors() {
+        try {
+            File f = new File("doctors.txt");
+            if (!f.exists()) {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt"));
+                writer.write("");
+                writer.close();
+            }
+            BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
+            String line;
 
-        while ((line = reader.readLine()) != null) {
-            Doctor doctor = new Doctor(line);
-            doctorList.add(doctor);
+            while ((line = reader.readLine()) != null) {
+                Doctor doctor = new Doctor(line);
+                doctorList.add(doctor);
+            }
+            reader.close();
+            return doctorList;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
-        reader.close();
-        return doctorList;
+
+
     }
 
-    public void addDoctor(Doctor doctor) throws IOException {
+    public boolean addDoctor(Doctor doctor) {
+    try {
         BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", true));
         if (!(doctorList.contains(doctor))) {
             doctorList.add(doctor);
@@ -66,33 +76,48 @@ public class DentistOffice {
             System.out.println("Doctor " + doctor.getName() + " is already in " + this.name);
         }
         writer.close();
+        return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
-    public void deleteDoctor(Doctor doctor) throws IOException {
-        boolean repeat = false;
-        int doctorNum = -1;
+    public boolean removeDoctor(Doctor doctor) {
+        try {
+            boolean repeat = false;
+            int doctorNum = -1;
 
-        for (int i = 0; i < doctorList.size(); i++) {
-            if (String.valueOf(doctorList.get(i)).equals(String.valueOf(doctor))) {
-                repeat = true;
-                doctorNum = i;
+            for (int i = 0; i < doctorList.size(); i++) {
+                if (String.valueOf(doctorList.get(i)).equals(String.valueOf(doctor))) {
+                    repeat = true;
+                    doctorNum = i;
+                }
             }
-        }
-        if (repeat) {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", false));
+            if (repeat) {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", false));
 
-            doctorList.remove(doctorNum);
-            for (Doctor s : doctorList) {
-                writer.write(String.valueOf(s));
-                writer.newLine();
+                doctorList.remove(doctorNum);
+                for (Doctor s : doctorList) {
+                    writer.write(String.valueOf(s));
+                    writer.newLine();
+                }
+
+                writer.close();
+
+                System.out.println("Successfully removed doctor " + doctor.getName() + " from " + this.name);
+                return true;
+            } else {
+                System.out.println("Doctor " + doctor.getName() + " is not in " + this.name);
+                return false;
             }
-
-            writer.close();
-
-            System.out.println("Successfully removed doctor " + doctor.getName() + " from " + this.name);
-        } else {
-            System.out.println("Doctor " + doctor.getName() + " is not in " + this.name);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
+
+
     }
 
     // displays approved appointments
