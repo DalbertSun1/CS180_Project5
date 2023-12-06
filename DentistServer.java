@@ -79,7 +79,7 @@ public class DentistServer {
                     int choice = Integer.parseInt(params[0]);
                     println(Patient.cancelAppointment(choice));
                 }
-                case "viewPatientApprovedAppointments" -> {}
+
 
 
 
@@ -91,6 +91,14 @@ public class DentistServer {
                 }
                 case "removeDoctor" -> {
                     println(Boolean.toString(d.removeDoctor(new Doctor(params[0]))));
+                }
+                case "readDoctors" -> {
+                    StringBuilder output = new StringBuilder();
+                    for (Doctor doctor : d.getDoctorList()) {
+                        output.append(doctor.getName()).append(",");
+                    }
+                    println(output.toString());
+
                 }
                 case "readDoctorFile" -> {
                     d.serverReadDoctorFile(this);

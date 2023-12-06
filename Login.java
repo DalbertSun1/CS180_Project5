@@ -106,7 +106,7 @@ public class Login {
 
     public static void postLoginMenu(String fullName, int identity, String username, String password, Scanner scan, DentistClient client) throws IOException {
 
-        DentistOffice d = new DentistOffice("My Dentist Office");
+        DentistOffice d = new DentistOffice("My Dentist Office", client);
         if (clientAuthenticate(username, password, client)) {
             System.out.println("Welcome!");
             // continue as a doctor or patient
@@ -198,7 +198,7 @@ public class Login {
                                         d.rescheduleAppointment(scan);
                                         break;
                                     case 8:
-                                        OurStatistics.dentistOfficeDashboard(d, scan);
+                                        OurStatistics.dentistOfficeDashboard(d, scan, client);
                                         break;
                                     case 9:
                                         System.out.println("Please format your .csv file by rows in orders of [1] Doctor [2] Date (Month/Day/Year) [3] Start Time [4] End Time [5] Max Attendees");
