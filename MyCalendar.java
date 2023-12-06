@@ -8,24 +8,27 @@ import java.awt.event.WindowListener;
 import java.io.*;
 import java.util.ArrayList;
 
-public class MyCalendar {
-    static boolean menu = false;
-    static int day;
-    static String username;
-    static JTextField name;
-    static JFrame frame;;
-    static JFrame newFrame = new JFrame();
-    static JFrame timeFrame = new JFrame();
-    static Doctor selectedDoctor;
+public class MyCalendar extends Login {
+     boolean menu = false;
 
-    static JFrame pending = new JFrame();
-    static ArrayList<Doctor> doctors;
+     JFrame request;
+     int apptIndex = -1;
+     int day;
+     String username;
+     JTextField name;
+     JFrame frame;;
+     JFrame newFrame = new JFrame();
+     JFrame timeFrame = new JFrame();
+     Doctor selectedDoctor;
 
-    static Appointment selectedAppointment;
+     JFrame pending = new JFrame();
+     ArrayList<Doctor> doctors;
 
-    static JButton nameButton;
+     Appointment selectedAppointment;
 
-    private static Day[] days;
+     JButton nameButton;
+
+    private  Day[] days;
     private String file;
     private String month;
     private int numberMonth;
@@ -296,7 +299,7 @@ public class MyCalendar {
 
     }
 
-    private static JPanel createPanel(String text) {
+    private  JPanel createPanel(String text) {
         JPanel panel = new JPanel();
 
         // Add some components to the panel
@@ -306,7 +309,7 @@ public class MyCalendar {
         return panel;
     }
 
-    static ActionListener actionListener = new ActionListener() {
+    ActionListener actionListener = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -326,10 +329,11 @@ public class MyCalendar {
 
 
                 } else if (source.getText().length() > 12 && isInt(source.getText().substring(11,12))) {
-                    for (Appointment a : selectedDoctor.getAppointments()){
+                    for (int i = 0; i < selectedDoctor.getAppointments().size(); i++){
+                        Appointment a = selectedDoctor.getAppointments().get(i);
 //                        System.out.println("a.getTime(): " + a.getTime());
 //                        System.out.println("source.getText(): " + source.getText());
-                        if (a.getTime().equals(source.getText().substring(11))) { selectedAppointment = a; }
+                        if (a.getTime().equals(source.getText().substring(11))) { apptIndex = i; selectedAppointment = a; }
                     }
                     openTimeFrame(source.getText());
                 } else if (source == nameButton){
@@ -340,9 +344,11 @@ public class MyCalendar {
 
                     selectedAppointment.bookAppointment(name.getText());
                     username = name.getText();
-                    makeAppointmentLeBron(selectedAppointment.getDay(), selectedAppointment.getTime(), selectedDoctor.getName());
+                    selectedDoctor.getAppointments().set(apptIndex, selectedAppointment);
 
-                    JFrame request = new JFrame();
+                    makeAppointmentLeBron(selectedAppointment.getTime(), selectedDoctor.getName());
+
+                    request = new JFrame();
                     request.setSize(600, 100);
                     request.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     JPanel panel = new JPanel();
@@ -357,7 +363,15 @@ public class MyCalendar {
                     request.setLocationRelativeTo(null);
                     request.setVisible(true);
                 } else if (source.getText().equals("Back to Menu")) {
-                    System.out.println("menu is true fucker");
+                    //System.out.println("menu is true fucker");
+                    try {
+                        request.dispose();
+                        MyCalendar.super.start();
+
+                        
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
 
                     menu = true;
                 }
@@ -369,7 +383,7 @@ public class MyCalendar {
     };
 
 
-    private static JButton assignButton(int i, int j) {
+    private JButton assignButton(int i, int j) {
         JButton tempButton;
 //        System.out.println(((7 * i) + j));
         if (((7 * i) + j) > 31) {
@@ -389,7 +403,7 @@ public class MyCalendar {
 
         return tempButton;
     }
-    private static void openNewFrame(String title, int date) {
+    private void openNewFrame(String title, int date) {
         File f = new File("doctors.txt");
         try {
             FileReader fr = new FileReader(f);
@@ -415,7 +429,10 @@ public class MyCalendar {
 
             String line;
             while ((line = bf.readLine()) != null) {
-                doctors.add(new Doctor(line));
+                if (!line.equals("")) {
+
+                    doctors.add(new Doctor(line));
+                }
             }
             days[date-1].setDoctors(doctors);
             int height = 0;
@@ -448,7 +465,7 @@ public class MyCalendar {
             throw new RuntimeException(e);
         }
     }
-    private static void openDoctorFrame(String doctor) {
+    private void openDoctorFrame(String doctor) {
         //File f = new File("doctors.txt");
 
         Container content = timeFrame.getContentPane();
@@ -463,14 +480,31 @@ public class MyCalendar {
             for (int i = 9; i < 11; i++){
                 String a = "";
                 a+= (i + ":00 AM - " + (i+1) + ":00 AM");
-                selectedDoctor.getAppointments().add(new Appointment(a));
+                Appointment ap = new Appointment(a);
+                ap.setCustomerName(username);
+                ap.setDoctor(selectedDoctor.getName());
+                ap.setDay(day);
+
+                selectedDoctor.getAppointments().add(ap);
             }
-            selectedDoctor.getAppointments().add(new Appointment("11:00 AM - 12:00 PM"));
-            selectedDoctor.getAppointments().add(new Appointment("12:00 PM - 1:00 PM"));
+            Appointment apt = new Appointment("11:00 AM - 12:00 PM");
+            apt.setCustomerName(username);
+            apt.setDoctor(selectedDoctor.getName());
+            apt.setDay(day);
+            selectedDoctor.getAppointments().add(apt);
+            Appointment apt2 = new Appointment("12:00 PM - 1:00 PM");
+            apt2.setCustomerName(username);
+            apt2.setDoctor(selectedDoctor.getName());
+            apt2.setDay(day);
+            selectedDoctor.getAppointments().add(apt2);
             for (int i = 1; i < 6; i++){
                 String a = "";
                 a+= (i + ":00 PM - " + (i+1) + ":00 PM");
-                selectedDoctor.getAppointments().add(new Appointment(a));
+                Appointment ap = new Appointment(a);
+                ap.setCustomerName(username);
+                ap.setDoctor(selectedDoctor.getName());
+                ap.setDay(day);
+                selectedDoctor.getAppointments().add(ap);
             }
 
             JPanel buttons = new JPanel();
@@ -484,15 +518,27 @@ public class MyCalendar {
 
 
             for (int i = 0; i < 9; i++) {
-                JButton button = new JButton(selectedDoctor.getAppointments().get(i).toString());
-                button.setAlignmentX(Component.CENTER_ALIGNMENT);
-                if (!selectedDoctor.getAppointments().get(i).isBooked()){
+
+                if (!selectedDoctor.getAppointments().get(i).toString().substring(0,1).equals("B") && !selectedDoctor.getAppointments().get(i).toString().substring(0,1).equals("P")){
+                    JButton button;
+                    button = new JButton(selectedDoctor.getAppointments().get(i).toString());
                     button.addActionListener(actionListener);
+                    button.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                    button.setMaximumSize(new java.awt.Dimension(300, height));
+                    buttons.add(button);
+                } else {
+                    JLabel button;
+                    button = new JLabel(selectedDoctor.getAppointments().get(i).toString());
+
+                    button.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                    button.setMaximumSize(new java.awt.Dimension(300, height));
+                    buttons.add(button);
                 }
 
-                button.setMaximumSize(new java.awt.Dimension(300, height));
 
-                buttons.add(button);
+
 
             }
 
@@ -506,7 +552,7 @@ public class MyCalendar {
 
     }
 
-    public static boolean isInt(String str) {
+    public  boolean isInt(String str) {
         try {
             // Attempt to parse the string as a int
             Integer.parseInt(str);
@@ -516,7 +562,7 @@ public class MyCalendar {
             return false;
         }
     }
-    private static void openTimeFrame(String time){
+    private void openTimeFrame(String time){
         pending.setTitle("Enter your name:");
         pending.setSize(300, 100);
 
@@ -536,15 +582,8 @@ public class MyCalendar {
     public void showDoctor(String selectedDay) {
         System.out.println("The doctors avaliabile on " + selectedDay + ":");
     }
-    public boolean openMenu(){
-        if (menu == true){
-            menu = false;
-            return true;
-        } else {
-            return false;
-        }
-    }
-    public static void makeAppointmentLeBron(int date, String time, String nameDoctor) {
+    
+    public void makeAppointmentLeBron(String time, String nameDoctor) {
         try {
             File f = new File("pending.txt"); //creates pending appointments file
             FileOutputStream fos = new FileOutputStream(f, true);
@@ -602,34 +641,34 @@ public class MyCalendar {
 //        if (((7 * i) + j) == 29) {button29 = tempButton; button29.addActionListener(actionListener);}
 //        if (((7 * i) + j) == 30) {button30 = tempButton; button30.addActionListener(actionListener);}
 //        if (((7 * i) + j) == 31) {button31 = tempButton; button31.addActionListener(actionListener);}
-//    static JButton button1;
-//    static JButton button2;
-//    static JButton button3;
-//    static JButton button4;
-//    static JButton button5;
-//    static JButton button6;
-//    static JButton button7;
-//    static JButton button8;
-//    static JButton button9;
-//    static JButton button10;
-//    static JButton button11;
-//    static JButton button12;
-//    static JButton button13;
-//    static JButton button14;
-//    static JButton button15;
-//    static JButton button16;
-//    static JButton button17;
-//    static JButton button18;
-//    static JButton button19;
-//    static JButton button20;
-//    static JButton button21;
-//    static JButton button22;
-//    static JButton button23;
-//    static JButton button24;
-//    static JButton button25;
-//    static JButton button26;
-//    static JButton button27;
-//    static JButton button28;
-//    static JButton button29;
-//    static JButton button30;
-//    static JButton button31;
+//     JButton button1;
+//     JButton button2;
+//     JButton button3;
+//     JButton button4;
+//     JButton button5;
+//     JButton button6;
+//     JButton button7;
+//     JButton button8;
+//     JButton button9;
+//     JButton button10;
+//     JButton button11;
+//     JButton button12;
+//     JButton button13;
+//     JButton button14;
+//     JButton button15;
+//     JButton button16;
+//     JButton button17;
+//     JButton button18;
+//     JButton button19;
+//     JButton button20;
+//     JButton button21;
+//     JButton button22;
+//     JButton button23;
+//     JButton button24;
+//     JButton button25;
+//     JButton button26;
+//     JButton button27;
+//     JButton button28;
+//     JButton button29;
+//     JButton button30;
+//     JButton button31;
