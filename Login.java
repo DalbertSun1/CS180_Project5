@@ -134,7 +134,7 @@ public class Login {
                                     case 1:
                                         System.out.println("Enter the new doctor's full name: ");
                                         doctorName = scan.nextLine();
-                                        client.println("addDoctor:" + doctorName);
+                                        client.println("addDoctor::" + doctorName);
                                         if (client.readLine().equals("true")) {
                                             System.out.println("Successfully added Doctor");
                                         }
@@ -142,13 +142,13 @@ public class Login {
                                     case 2:
                                         System.out.println("Enter the doctor's full name: ");
                                         doctorName = scan.nextLine();
-                                        client.println("removeDoctor:" + doctorName);
+                                        client.println("removeDoctor::" + doctorName);
                                         if (client.readLine().equals("true")) {
                                             System.out.println("Successfully removed Doctor");
                                         }
                                         break;
                                     case 3:
-                                        d.viewApproved();
+                                        d.clientReadDoctorFile(client);
                                         break;
                                     case 4:
                                         d.viewPending();
@@ -242,7 +242,7 @@ public class Login {
     public static boolean clientAuthenticate(String username, String password, DentistClient client) throws IOException {
 
         // send to server to authenticate
-        client.println("authenticate:" + username + "," + password);
+        client.println("authenticate::" + username + "," + password);
 
         // receive server response
         if (client.readLine().equals("true")) {
@@ -262,7 +262,7 @@ public class Login {
                 System.out.println("Error! Account already exists");
             } else {
                 //adding the account details to the file
-                client.println("createAccount:" + fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
+                client.println("createAccount::" + fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
                 System.out.println("Account successfully created!");
             }
 

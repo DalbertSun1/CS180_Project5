@@ -4,6 +4,7 @@
 import java.io.*;
 import java.nio.Buffer;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -189,27 +190,7 @@ public class Patient {
                         menu2 = true;
                         break;
                     case 3:
-                        System.out.println("Enter your name: ");
-                        String checkName = scan.nextLine();
-                        BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
-                        String line;
-                        int num = 1;
-                        boolean found = false;
-
-                        while ((line = reader.readLine()) != null) {
-                            String[] confirmName = line.split(",");
-                            if (confirmName[0].equals(checkName)) {
-                                System.out.println(num + ": " + line);
-                                num++;
-                                found = true;
-                            }
-                        }
-
-                        if (!found) {
-                            System.out.println("You have no approved appointments at this time.");
-                        }
-
-                        reader.close();
+                        clientReadFile(scan, client);
                         menu2 = true;
                         break;
                     case 4:
@@ -236,6 +217,8 @@ public class Patient {
 
         } while (menu2);
     }
+
+
 
     public synchronized static String makeAppointment(String name, int date, Doctor doctor, Appointment appointment) {
         try {
@@ -323,7 +306,7 @@ public class Patient {
             // send aptList to client
             StringBuilder output = new StringBuilder();
             for (String apt : aptList) {
-                output.append(apt + "|||");
+                output.append(apt + ";");
             }
             server.println(output.toString());
 
@@ -334,16 +317,18 @@ public class Patient {
 
         }
     }
-    public String[] clientReadFile(Scanner scan, DentistClient client) { // returns printList
+    public String[] clientReadFile(Scanner scan, DentistClient client) { // returns a list of the apts corresponding to
+        // the Patient's name
+
         System.out.println("Enter your name:");
         String name = scan.nextLine();
-        client.println("readFile:" + name);
+        client.println("readFile::" + name);
 
         ArrayList<String> aptList = new ArrayList<>();
 
         String input = client.readLine();
 
-        for (String apt : input.split("|||")) {
+        for (String apt : input.split(";")) {
             aptList.add(apt);
         }
 
@@ -358,9 +343,9 @@ public class Patient {
 
     }
 
+
+
     public void rescheduleAppointment(Scanner scan) throws IOException {
-
-
         BufferedReader reader1 = new BufferedReader(new FileReader("approved.txt"));
 
         int currentLine = 1;
@@ -567,7 +552,7 @@ public class Patient {
 
     public static synchronized boolean clientPending(String name, int date, Doctor doctor, Appointment appointment, DentistClient client) {
         // send to server
-        client.println("makeAppointment:" + name + "," + date + "," + doctor.getName() + "," + appointment.getTime());
+        client.println("makeAppointment::" + name + "," + date + "," + doctor.getName() + "," + appointment.getTime());
 
         if (client.readLine().equals("true")) {
             return true;

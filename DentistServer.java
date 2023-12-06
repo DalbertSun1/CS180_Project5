@@ -39,9 +39,13 @@ public class DentistServer {
             System.out.println("Waiting for client input...");
             String rawMessage = readLine();
             System.out.println("rawMessage = " + rawMessage);
-            String methodChoice = rawMessage.split(":")[0];
+            String methodChoice = rawMessage.split("::")[0];
             System.out.println("methodChoice = " + methodChoice);
-            String[] params = rawMessage.split(":")[1].split(",");
+            String[] params = new String[0];
+            try {
+                params = rawMessage.split("::")[1].split(",");
+            } catch (ArrayIndexOutOfBoundsException ignored) {};
+
 
 
             DentistOffice d = new DentistOffice("My Dentist Office");
@@ -52,7 +56,7 @@ public class DentistServer {
                 case "authenticate" -> {
                     String username = params[0];
                     String password = params[1];
-                    println(Login.checkAccount(username, password) + "\n");
+                    println(Login.checkAccount(username, password) + "");
                 }
                 case "createAccount" -> {
                     println(Boolean.toString(Login.serverCreateAccount(params[0], params[1], params[2], params[3], params[4])));
@@ -63,8 +67,8 @@ public class DentistServer {
                 case "makeAppointment" -> {
                     String name = params[0];
                     int date = Integer.parseInt(params[1]);
-                    String appointmentTime = params[2];
-                    String doctorName = params[3];
+                    String appointmentTime = params[3];
+                    String doctorName = params[2];
 
                     Appointment appointment = new Appointment(appointmentTime);
                     Doctor doctor = new Doctor(doctorName);
@@ -72,7 +76,8 @@ public class DentistServer {
                     println(Patient.makeAppointment(name, date, doctor, appointment));
                 }
                 case "cancelAppointment" -> {}
-                case "viewPatientApprovedAppointments" -> {}
+
+
 
 
 
@@ -81,13 +86,16 @@ public class DentistServer {
 
                 case "addDoctor" -> {
                     println(Boolean.toString(d.addDoctor(new Doctor(params[0]))));
-
                 }
                 case "removeDoctor" -> {
                     println(Boolean.toString(d.removeDoctor(new Doctor(params[0]))));
                 }
-                case "viewDoctorApprovedAppointments" -> {}
-                case "viewDoctorPendingAppointments" -> {}
+                case "readDoctorFile" -> {
+                    d.serverReadDoctorFile(this);
+                }
+                case "readDoctorPendingFile" -> {
+                    d.serverReadDoctorPendingFile(this);
+                }
                 case "approveAppointment" -> {}
                 case "declineAppointment" -> {}
                 case "rescheduleAppointment" -> {}
@@ -95,10 +103,15 @@ public class DentistServer {
 
                 // other functions
 
-                case "readFile" -> {
+                case "readFile" -> { // reads file for all apts that match the given name
                     String name = params[0];
                     Patient.serverReadFile(name, this);
                 }
+
+
+
+
+
 
 
 
@@ -126,9 +139,9 @@ public class DentistServer {
     }
 
     public synchronized void println(String input) {
-        System.out.println("Wrote to client -> " + input);
         writer.println(input);
         writer.flush();
+        System.out.println("Wrote to client -> " + input);
     }
 
 
