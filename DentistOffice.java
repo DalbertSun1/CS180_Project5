@@ -213,6 +213,7 @@ public class DentistOffice {
             aptList.add(apt);
         }
 
+
         if (aptList.isEmpty()) {
             System.out.println("You have no pending appointments.");
         } else {
@@ -229,9 +230,8 @@ public class DentistOffice {
 
 
 
-
     //displays pending appointments
-    public int viewPending() throws IOException {
+    public static int viewPending() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
         String line = reader.readLine();
         int num = 1;
@@ -247,6 +247,24 @@ public class DentistOffice {
             reader.close();
         }
         return num;
+    }
+
+    public static String serverViewPending() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
+        String line = reader.readLine();
+        int num = 1;
+        if (line == null) {
+            System.out.println("You have no pending appointments.");
+            num = 0;
+        } else {
+            while (line != null) {
+                System.out.println(num + ": " + line);
+                num++;
+                line = reader.readLine();
+            }
+            reader.close();
+        }
+        return "true";
     }
 
     // TODO: Implement storage of doctor names as well

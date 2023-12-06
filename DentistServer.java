@@ -47,7 +47,6 @@ public class DentistServer {
             } catch (ArrayIndexOutOfBoundsException ignored) {};
 
 
-
             DentistOffice d = new DentistOffice("My Dentist Office");
 
             switch (methodChoice) {
@@ -75,9 +74,12 @@ public class DentistServer {
 
                     println(Patient.makeAppointment(name, date, doctor, appointment));
                 }
-                case "cancelAppointment" -> {}
 
-
+                case "cancelAppointment" -> {
+                    int choice = Integer.parseInt(params[0]);
+                    println(Patient.cancelAppointment(choice));
+                }
+                case "viewPatientApprovedAppointments" -> {}
 
 
 
