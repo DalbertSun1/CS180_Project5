@@ -13,21 +13,42 @@ import java.awt.event.*;
  * @version November 13th, 2023
  */
 
-public class Login extends JComponent {
+public class Login extends JComponent{
+
+    static Scanner scan;
 
     public static void main(String[] args) throws IOException {
-        JOptionPane.showMessageDialog(null, "Welcome to Dentist Office!", "Welcome",
-                JOptionPane.INFORMATION_MESSAGE);
-        Scanner scan = new Scanner(System.in);
-        menu(scan);
 
+//        SwingUtilities.invokeLater(new Login());
+//    }
+//    public void run() {
+        int welcome1  = JOptionPane.showConfirmDialog(null, "Welcome to Dentist Office!", "Welcome", JOptionPane.OK_CANCEL_OPTION);
+        if (welcome1 != JOptionPane.OK_OPTION) {
+            JOptionPane.showMessageDialog(null, "Thank you for using the Dentist Office", "Dentist Office", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        scan = new Scanner(System.in);
+        try {
+            menu(scan);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    private static JTextField noEdit(String prompt) {
+        JTextField textField = new JTextField(prompt);
+        textField.setEditable(false);
+        return textField;
+    }
+    public void start() throws IOException {
+        menu(scan);
+    }
     public static void menu(Scanner scan) throws IOException {
         boolean menu1 = false; //counter to rerun the loop if invalid choice is entered
         do {
-            String[] options = {"Log in", "Create an Account"};
-            int result = JOptionPane.showOptionDialog(null, "Choose an option.", "Dentist Office",
+            String[] options = {"Log in", "Create an Account", "Exit"};
+
+            int result = JOptionPane.showOptionDialog(null, "Choose an option:", "Dentist Office",
                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                     null, options, options[1]);
             try {
@@ -41,14 +62,14 @@ public class Login extends JComponent {
                             String[] userMenu = {"Patient", "Doctor"};
                             String userOption;
                             try {
-                                do {
-                                    userOption = (String) JOptionPane.showInputDialog(null, "Log in as",
-                                            "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
-                                    if ((userOption == null) || (userOption.isEmpty())) {
-                                        JOptionPane.showMessageDialog(null, "Please select a valid option!",
-                                                "Dentist Office", JOptionPane.ERROR_MESSAGE);
-                                    }
-                                } while ((userOption == null) || (userOption.isEmpty()));
+
+                                userOption = (String) JOptionPane.showInputDialog(null, "Log in as",
+                                        "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
+                                if ((userOption == null) || (userOption.isEmpty())) {
+//                                    JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                    menu(scan);
+                                    return;
+                                }
 
                                 int testOption;
                                 if (userOption.equals("Patient")) {
@@ -63,9 +84,10 @@ public class Login extends JComponent {
                                 JPanel panel = new JPanel(new GridLayout(2, 2));
                                 JTextField usernameField = new JTextField();
                                 JPasswordField passwordField = new JPasswordField();
-                                panel.add(new JTextField("Username:"));
+
+                                panel.add(noEdit("Username:"));
                                 panel.add(usernameField);
-                                panel.add(new JTextField("Password:"));
+                                panel.add(noEdit("Password:"));
                                 panel.add(passwordField);
 
                                 int loginResult = JOptionPane.showConfirmDialog(null, panel, "Log in",
@@ -77,8 +99,12 @@ public class Login extends JComponent {
 
                                     login(fullName, testOption, username, password, scan);
 
-                                } else {
-                                    JOptionPane.showMessageDialog(null, "Login canceled.");
+                                } else if (loginResult == JOptionPane.CANCEL_OPTION) {
+                                    menu(scan);
+                                }
+                                else {
+                                    menu(scan);
+                                    return;
                                 }
                             } catch (NumberFormatException e) {
                                 JOptionPane.showMessageDialog(null, "Please choose a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
@@ -92,22 +118,19 @@ public class Login extends JComponent {
                         boolean menu3;
                         do {
                             String[] userMenu = {"Patient", "Doctor"};
-                            String userOption;
+                            String userOption2;
                             try {
-                                do {
-                                    userOption = (String) JOptionPane.showInputDialog(null, "Create an account as",
-                                            "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
-                                    if ((userOption == null) || (userOption.isEmpty())) {
-                                        JOptionPane.showMessageDialog(null, "Please select a valid option!",
-                                                "Dentist Office", JOptionPane.ERROR_MESSAGE);
-                                    }
-                                } while ((userOption == null) || (userOption.isEmpty()));
-
+                                userOption2 = (String) JOptionPane.showInputDialog(null, "Create an account as",
+                                        "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
+                                if ((userOption2 == null) || (userOption2.isEmpty())) {
+                                    menu(scan);
+                                    return;
+                                }
 
                                 int testOption;
-                                if (userOption.equals("Patient")) {
+                                if (userOption2.equals("Patient")) {
                                     testOption = 1;
-                                } else if (userOption.equals("Doctor")) {
+                                } else if (userOption2.equals("Doctor")) {
                                     testOption = 2;
                                 } else {
                                     testOption = 3;
@@ -123,15 +146,15 @@ public class Login extends JComponent {
                                 JTextField emailField = new JTextField();
                                 JTextField numberField = new JTextField();
 
-                                panel.add(new JTextField("Full Name:"));
+                                panel.add(noEdit("Full Name:"));
                                 panel.add(fullNameField);
-                                panel.add(new JTextField("Username:"));
+                                panel.add(noEdit("Username:"));
                                 panel.add(usernameField);
-                                panel.add(new JTextField("Password:"));
+                                panel.add(noEdit("Password:"));
                                 panel.add(passwordField);
-                                panel.add(new JTextField("Email:"));
+                                panel.add(noEdit("Email:"));
                                 panel.add(emailField);
-                                panel.add(new JTextField("Phone Number:"));
+                                panel.add(noEdit("Phone Number:"));
                                 panel.add(numberField);
 
                                 int loginResult = JOptionPane.showConfirmDialog(null, panel, "Create Account",
@@ -146,8 +169,11 @@ public class Login extends JComponent {
 
                                     createAccount(testOption, fullName, username, password, email, number, scan);
 
-                                } else {
-                                    JOptionPane.showMessageDialog(null, "Creating Account canceled.");
+                                }
+                                else {
+                                    //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                    menu(scan);
+                                    return;
                                 }
                             } catch (NumberFormatException e) {
                                 JOptionPane.showMessageDialog(null, "Please choose a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
@@ -156,9 +182,12 @@ public class Login extends JComponent {
 
                         } while (menu3);
                         break;
+
+                    case 2: // logout
+                        JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!", "Dentist Office", JOptionPane.INFORMATION_MESSAGE);
+                        break;
                     default:
-                        JOptionPane.showMessageDialog(null, "Please choose a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
-                        menu1 = true;
+                        JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!", "Dentist Office", JOptionPane.INFORMATION_MESSAGE);
                         break;
                 }
             } catch (NumberFormatException e) {
@@ -176,9 +205,11 @@ public class Login extends JComponent {
 
         d.setDoctorList(readDoctorList);
         if (checkAccount(username, password)) {
-            JOptionPane.showMessageDialog(null, "Welcome!");
-            //System.out.println("Welcome!");
-            // continue as a doctor or patient
+            int welcome = JOptionPane.showConfirmDialog(null, "Welcome!", "Dentist Office", JOptionPane.OK_CANCEL_OPTION);
+            if (welcome != JOptionPane.OK_OPTION) {
+                menu(scan);
+                return;
+            }
             boolean menu2 = false;
             do {
                 switch (identity) {
@@ -193,19 +224,19 @@ public class Login extends JComponent {
 
                         do {
                             String[] userMenu = {"Add Doctor", "Remove Doctor", "View Approved Appointments", "View Pending Appointments",
-                            "Approve Appointment", "Decline Appointment", "Reschedule Appointment", "View Statistics", "Import Calendar",
-                            "Log Out"};
+                                    "Approve Appointment", "Decline Appointment", "Reschedule Appointment", "View Statistics", "Import Calendar",
+                                    "Log Out"};
                             String userOption;
 
                             try {
-                                do {
-                                    userOption = (String) JOptionPane.showInputDialog(null, "Choose an option",
-                                            "Menu", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
-                                    if ((userOption == null) || (userOption.isEmpty())) {
-                                        JOptionPane.showMessageDialog(null, "Please select a valid option!",
-                                                "Menu", JOptionPane.ERROR_MESSAGE);
-                                    }
-                                } while ((userOption == null) || (userOption.isEmpty()));
+                                userOption = (String) JOptionPane.showInputDialog(null, "Choose an option",
+                                        "Menu", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
+                                if ((userOption == null) || (userOption.isEmpty())) {
+                                    //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                    menu(scan);
+                                    return;
+                                }
+
 
 
                                 int testOption;
@@ -236,7 +267,8 @@ public class Login extends JComponent {
                                         JPanel panel = new JPanel(new GridLayout(1, 1));
                                         JTextField fullNameField = new JTextField();
 
-                                        panel.add(new JTextField("Enter the new doctor's full name:"));
+
+                                        panel.add(noEdit("Enter the new doctor's full name:"));
                                         panel.add(fullNameField);
 
                                         int loginResult = JOptionPane.showConfirmDialog(null, panel, "Add Doctor",
@@ -245,15 +277,19 @@ public class Login extends JComponent {
                                         if (loginResult == JOptionPane.OK_OPTION) {
                                             fullName = fullNameField.getText();
 
-                                            Doctor newDoctor = new Doctor(fullName);
-                                            d.addDoctor(newDoctor);
-                                            break;
+                                            Doctor addDoctor = new Doctor(fullName);
+                                            d.addDoctor(addDoctor);
+                                        }
+                                        else if (loginResult == JOptionPane.CANCEL_OPTION) {
+                                            JOptionPane.showMessageDialog(null, "Back to menu:");
+                                        }
+                                        break;
                                     case "Remove Doctor":
                                         JPanel panel1 = new JPanel(new GridLayout(1, 1));
                                         JTextField fullNameField1 = new JTextField();
 
 
-                                        panel1.add(new JTextField("Enter the doctor's full name:"));
+                                        panel1.add(noEdit("Enter the doctor's full name:"));
                                         panel1.add(fullNameField1);
 
                                         int loginResult1 = JOptionPane.showConfirmDialog(null, panel1, "Remove Doctor",
@@ -264,6 +300,9 @@ public class Login extends JComponent {
                                             Doctor deleteDoctor = new Doctor(fullName);
                                             d.deleteDoctor(deleteDoctor);
                                         }
+                                        else if (loginResult1 == JOptionPane.CANCEL_OPTION) {
+                                            JOptionPane.showMessageDialog(null, "Back to menu:");
+                                        }
                                         break;
                                     case "View Approved Appointments":
                                         d.viewApproved();
@@ -272,45 +311,42 @@ public class Login extends JComponent {
                                         d.viewPending();
                                         break;
                                     case "Approve Appointment":
-                                        int pending = d.viewPending();
-                                        if (pending != 0) {
-                                            try {
-                                                System.out.println("Enter appointment number to approve: ");
-                                                String input2 = scan.nextLine();
-                                                int approveNum = Integer.parseInt(input2);
-
-                                                if (approveNum > numPending()) {
-                                                    System.out.println("Please enter a valid choice.");
-                                                } else {
-                                                    d.approveAppointment(approveNum);
-                                                    System.out.println("Appointment approved!");
-                                                }
-                                            } catch (NumberFormatException e) {
-                                                System.out.println("Please enter an integer.");
+                                        String[] pendingAppointments = d.viewPending();
+                                        String approveOption;
+                                        if (pendingAppointments.length != 0) {
+                                            approveOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to approve?",
+                                                    "Approve appointment", JOptionPane.QUESTION_MESSAGE, null, pendingAppointments,
+                                                    pendingAppointments[0]);
+                                            if ((approveOption == null) || (approveOption.isEmpty())) {
+                                                //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                                menu3 = true;
+                                                break;
+                                            } else {
+                                                d.approveAppointment(approveOption);
+                                                JOptionPane.showMessageDialog(null, "Appointment approved.", "Approve appointment",
+                                                        JOptionPane.INFORMATION_MESSAGE);
                                             }
                                         }
-
                                         break;
+
                                     case "Decline Appointment":
-                                        int pending1 = d.viewPending();
-                                        if (pending1 != 0) {
-                                            try {
-                                                System.out.println("Enter appointment number to decline: ");
-                                                String input3 = scan.nextLine();
-                                                int declineNum = Integer.parseInt(input3);
-
-                                                if (declineNum > numPending()) {
-                                                    System.out.println("Please enter a valid choice.");
-                                                } else {
-                                                    d.declineAppointment(declineNum);
-                                                    System.out.println("Appointment declined!");
-                                                }
-                                            } catch (NumberFormatException e) {
-                                                System.out.println("Please enter an integer.");
+                                        String[] pendingAppointments1 = d.viewPending();
+                                        String declineOption;
+                                        if (pendingAppointments1.length != 0) {
+                                            declineOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to decline?",
+                                                    "Decline appointment", JOptionPane.QUESTION_MESSAGE, null, pendingAppointments1,
+                                                    pendingAppointments1[0]);
+                                            if ((declineOption == null) || (declineOption.isEmpty())) {
+                                                //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                                menu3 = true;
+                                            } else {
+                                                d.declineAppointment(declineOption);
+                                                JOptionPane.showMessageDialog(null, "Appointment declined.", "Decline appointment",
+                                                        JOptionPane.INFORMATION_MESSAGE);
                                             }
                                         }
-
                                         break;
+
                                     case "Reschedule Appointment":
                                         d.rescheduleAppointment(scan);
                                         break;
@@ -326,7 +362,7 @@ public class Login extends JComponent {
                                             JTextField pathField = new JTextField();
 
 
-                                            panel2.add(new JTextField("Enter a filepath:"));
+                                            panel2.add(noEdit("Enter a filepath:"));
                                             panel2.add(pathField);
 
                                             int loginResult2 = JOptionPane.showConfirmDialog(null, panel2, "Import Calendar",
@@ -344,6 +380,9 @@ public class Login extends JComponent {
                                                 for (int j = 0; j < addD.size(); j++) {
                                                     d.addDoctor(addD.get(j));
                                                 }
+                                            }
+                                            else if (loginResult2 == JOptionPane.CANCEL_OPTION) {
+                                                JOptionPane.showMessageDialog(null, "Back to Menu:", "Error", JOptionPane.ERROR_MESSAGE);
                                             }
                                         } catch (FileNotFoundException e) {
                                             JOptionPane.showMessageDialog(null, "Please enter a valid file path.", "Import Calendar", JOptionPane.ERROR_MESSAGE);
@@ -388,11 +427,15 @@ public class Login extends JComponent {
             PrintWriter pw = new PrintWriter(fos);
             //username is FIRST, password is LAST - more convenient to check
             if (checkAccount(username, password)) {
-                JOptionPane.showMessageDialog(null, "Error! Account doesn't exist.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error! Account doesn't exist.", "Create an Account", JOptionPane.ERROR_MESSAGE);
             } else {
                 //adding the account details to the file
                 pw.println(fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
-                JOptionPane.showMessageDialog(null, "Account successfully created!");
+                int success  = JOptionPane.showConfirmDialog(null, "Account successfully created!", "Create an Account", JOptionPane.OK_CANCEL_OPTION);
+                if (success != JOptionPane.OK_OPTION) {
+                    menu(scan);
+                    return;
+                }
             }
             pw.close();
             login(fullName, identity, username, password, scan);
@@ -444,5 +487,6 @@ public class Login extends JComponent {
         reader.close();
         return num;
     }
+
 
 }
