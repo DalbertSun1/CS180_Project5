@@ -161,7 +161,7 @@ public class Login {
                                             String input2 = scan.nextLine();
                                             int approveNum = Integer.parseInt(input2);
 
-                                            if (approveNum > numPending()) {
+                                            if (approveNum > numPending(client)) {
                                                 System.out.println("Please enter a valid choice.");
                                             } else {
                                                 DentistOffice.clientApproveAppointment(approveNum, client);
@@ -179,7 +179,7 @@ public class Login {
                                             String input3 = scan.nextLine();
                                             int declineNum = Integer.parseInt(input3);
 
-                                            if (declineNum > numPending()) {
+                                            if (declineNum > numPending(client)) {
                                                 System.out.println("Please enter a valid choice.");
                                             } else {
                                                 DentistOffice.clientDeclineAppointment(declineNum, client);
@@ -252,7 +252,7 @@ public class Login {
     //creates a new account
     //prints error if account already exists - to do
     public static void clientCreateAccount(String fullName, String username,
-                                     String password, String email, String phoneNumber, Scanner scan, DentistClient client) {
+                                           String password, String email, String phoneNumber, Scanner scan, DentistClient client) {
         try {
 
             if (clientAuthenticate(username, password, client)) {
@@ -270,7 +270,7 @@ public class Login {
         }
     }
     public static boolean serverCreateAccount(String fullName, String username,
-                                                        String password, String email, String phoneNumber) {
+                                              String password, String email, String phoneNumber) {
         try {
             File f = new File("accounts.txt"); //creates accounts file
             FileOutputStream fos = new FileOutputStream(f, true);
@@ -318,16 +318,11 @@ public class Login {
         return exists;
     }
 
-    public static int numPending() throws IOException {
+    public static int numPending(DentistClient client) throws IOException {
         int num = 0;
-        BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
-        String line;
-
-        while ((line = reader.readLine()) != null) {
+        for (String apt : DentistOffice.clientGetPendingAppointments(client)) {
             num++;
         }
-
-        reader.close();
         return num;
     }
 
