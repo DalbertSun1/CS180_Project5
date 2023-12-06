@@ -77,7 +77,7 @@ public class DentistServer {
 
                 case "cancelAppointment" -> {
                     int choice = Integer.parseInt(params[0]);
-                    println(Patient.cancelAppointment(choice));
+                    println(Patient.cancelAppointment(choice) + "");
                 }
                 case "viewPatientApprovedAppointments" -> {}
 
@@ -98,9 +98,31 @@ public class DentistServer {
                 case "readDoctorPendingFile" -> {
                     d.serverReadDoctorPendingFile(this);
                 }
-                case "approveAppointment" -> {}
-                case "declineAppointment" -> {}
-                case "rescheduleAppointment" -> {}
+                case "approveAppointment" -> {
+                    int line = Integer.parseInt(params[0]);
+                    try {
+                        println(DentistOffice.approveAppointment(line) + "");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                case "declineAppointment" -> {
+                    int line = Integer.parseInt(params[0]);
+                    try {
+                        println(DentistOffice.declineAppointment(line) + "");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                case "rescheduleAppointment" -> {
+                    int line = Integer.parseInt(params[0]);
+                    /*
+                    try {
+                        println(DentistOffice.rescheduleAppointment(scan) + "");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }*/
+                }
                 case "importCalendar" -> {}
 
                 // other functions
@@ -109,16 +131,6 @@ public class DentistServer {
                     String name = params[0];
                     Patient.serverReadFile(name, this);
                 }
-
-
-
-
-
-
-
-
-
-
 
                 default -> {
                     clientConnected = false;

@@ -152,45 +152,41 @@ public class Login {
                                         d.clientReadDoctorFile(client);
                                         break;
                                     case 4:
-                                        d.viewPending();
+                                        d.clientReadDoctorPendingFile(client);
                                         break;
                                     case 5:
-                                        int pending = d.viewPending();
-                                        if (pending != 0) {
-                                            try {
-                                                System.out.println("Enter appointment number to approve: ");
-                                                String input2 = scan.nextLine();
-                                                int approveNum = Integer.parseInt(input2);
+                                        d.clientReadDoctorPendingFile(client);
+                                        try {
+                                            System.out.println("Enter appointment number to approve: ");
+                                            String input2 = scan.nextLine();
+                                            int approveNum = Integer.parseInt(input2);
 
-                                                if (approveNum > numPending()) {
-                                                    System.out.println("Please enter a valid choice.");
-                                                } else {
-                                                    d.approveAppointment(approveNum);
-                                                    System.out.println("Appointment approved!");
-                                                }
-                                            } catch (NumberFormatException e) {
-                                                System.out.println("Please enter an integer.");
+                                            if (approveNum > numPending()) {
+                                                System.out.println("Please enter a valid choice.");
+                                            } else {
+                                                DentistOffice.clientApproveAppointment(approveNum, client);
+                                                System.out.println("Appointment approved!");
                                             }
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("Please enter an integer.");
                                         }
 
                                         break;
                                     case 6:
-                                        int pending1 = d.viewPending();
-                                        if (pending1 != 0) {
-                                            try {
-                                                System.out.println("Enter appointment number to decline: ");
-                                                String input3 = scan.nextLine();
-                                                int declineNum = Integer.parseInt(input3);
+                                        d.clientReadDoctorPendingFile(client);
+                                        try {
+                                            System.out.println("Enter appointment number to decline: ");
+                                            String input3 = scan.nextLine();
+                                            int declineNum = Integer.parseInt(input3);
 
-                                                if (declineNum > numPending()) {
-                                                    System.out.println("Please enter a valid choice.");
-                                                } else {
-                                                    d.declineAppointment(declineNum);
-                                                    System.out.println("Appointment declined!");
-                                                }
-                                            } catch (NumberFormatException e) {
-                                                System.out.println("Please enter an integer.");
+                                            if (declineNum > numPending()) {
+                                                System.out.println("Please enter a valid choice.");
+                                            } else {
+                                                DentistOffice.clientDeclineAppointment(declineNum, client);
+                                                System.out.println("Appointment declined!");
                                             }
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("Please enter an integer.");
                                         }
 
                                         break;

@@ -268,7 +268,7 @@ public class DentistOffice {
     }
 
     // TODO: Implement storage of doctor names as well
-    public void approveAppointment(int line) throws IOException {
+    public static boolean approveAppointment(int line) throws IOException {
         List<String> pendingAppointments = new ArrayList<>();
 
         try (BufferedWriter approvedWriter = new BufferedWriter(new FileWriter("approved.txt", true));
@@ -296,10 +296,21 @@ public class DentistOffice {
                 pendingWriter.write(appointment);
                 pendingWriter.newLine();
             }
+            return true;
         }
     }
 
-    public void declineAppointment(int line) throws IOException {
+    public static boolean clientApproveAppointment(int choice, DentistClient client) {
+        client.println("approveAppointment::" + choice);
+
+        if (client.readLine().equals("true")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean declineAppointment(int line) throws IOException {
         List<String> pendingAppointments = new ArrayList<>();
 
         try (BufferedReader pendingReader = new BufferedReader(new FileReader("pending.txt"))) {
@@ -321,11 +332,22 @@ public class DentistOffice {
                 pendingWriter.write(appointment);
                 pendingWriter.newLine();
             }
+            return true;
+        }
+    }
+
+    public static boolean clientDeclineAppointment(int choice, DentistClient client) {
+        client.println("declineAppointment::" + choice);
+
+        if (client.readLine().equals("true")) {
+            return true;
+        } else {
+            return false;
         }
     }
 
 
-    public void rescheduleAppointment(Scanner scan) throws IOException {
+    public static void rescheduleAppointment(Scanner scan) throws IOException {
 
 
         BufferedReader reader1 = new BufferedReader(new FileReader("approved.txt"));

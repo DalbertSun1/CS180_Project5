@@ -159,7 +159,7 @@ public class Patient {
                         break;
                     case 2:
                         do {
-                            String[] a = clientReadFile(scan, new DentistClient()); //display approved appointments
+                            String[] a = clientReadFile(scan, client); //display approved appointments
                             if (a.length == 0) {
                                 System.out.println("You have no approved appointments to cancel.");
                             } else {
@@ -176,8 +176,9 @@ public class Patient {
                                         }
                                     }
                                     if (counter == 0) {
-                                        clientCancelAppointment(cancel, client);
-                                        System.out.println("Appointment cancelled.");
+                                        if (clientCancelAppointment(cancel, client)) {
+                                            System.out.println("Appointment cancelled.");
+                                        }
                                     } else {
                                         System.out.println("Please enter a valid choice.");
                                         menu3 = true;
@@ -234,7 +235,7 @@ public class Patient {
         return "false";
     }
 
-    public static String cancelAppointment(int cancel) {
+    public static boolean cancelAppointment(int cancel) {
         try {
             ArrayList<String> list1 = new ArrayList<String>();
             BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
@@ -256,12 +257,12 @@ public class Patient {
                 pw.println(list1.get(i));
             }
             pw.close();
-            return "true";
+            return true;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "false";
+        return false;
     }
 
 
