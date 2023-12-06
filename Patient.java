@@ -3,6 +3,7 @@
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -124,7 +125,7 @@ public class Patient {
                             System.out.println("\nDr. " + doc.getName());
 
 
-                            ArrayList<String> show = printAppointments(selectedDay, doc);
+                            ArrayList<String> show = printAppointments(selectedDay, doc, client);
                             for (int i = 0; i < show.size(); i++) {
                                 System.out.println(sum + ": " + show.get(i));
                                 sum++;
@@ -199,7 +200,7 @@ public class Patient {
                         menu2 = true;
                         break;
                     case 5:
-                        OurStatistics.patientDashboard(d, scan);
+                        OurStatistics.patientDashboard(d, scan, client);
                         break;
                     case 6:
                         System.out.println("You have logged out.");
@@ -496,7 +497,7 @@ public class Patient {
 
     }
 
-    private ArrayList<String> printAppointments(Day day, Doctor doctor) throws IOException {
+    private ArrayList<String> printAppointments(Day day, Doctor doctor, DentistClient client) throws IOException {
         ArrayList<String> isBookedAppointmentList = new ArrayList<>();
         ArrayList<String> returnList = new ArrayList<>();
         ArrayList<Integer> dayList = new ArrayList<>();
@@ -504,17 +505,20 @@ public class Patient {
         ArrayList<String> doctorList = new ArrayList<>();
         ArrayList<String> fullList = new ArrayList<>();
 
-        BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
-        String line1;
-        while ((line1 = reader.readLine()) != null) {
-            fullList.add(line1);
+        // adds all approved apts to the fullList
+        for (String apt : DentistOffice.clientGetAppointments(client)) {
+            if (!apt.isEmpty()) {
+                fullList.add(apt);
+            }
+        }
+        // adds all pending apts to the fullList
+        for (String apt : DentistOffice.clientGetPendingAppointments(client)) {
+            if (!apt.isEmpty()) {
+                fullList.add(apt);
+            }
         }
 
-        reader = new BufferedReader(new FileReader("approved.txt"));
-        String line2;
-        while ((line2 = reader.readLine()) != null) {
-            fullList.add(line2);
-        }
+
 
         for (int i = 0; i < fullList.size(); i++) {
             String[] split = fullList.get(i).split(",");
@@ -549,7 +553,7 @@ public class Patient {
             returnList.remove(isBookedAppointmentList.get(j));
         }
 
-        reader.close();
+
         return returnList;
     }
 

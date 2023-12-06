@@ -17,11 +17,16 @@ public class DentistOffice {
     private String name;
     private ArrayList<Doctor> doctorList = new ArrayList<>();
 
-    public DentistOffice(String name) {
+    public DentistOffice(String name) { // this is the server version of DentistOffice
 
         this.name = name;
         this.setDoctorList(readDoctors());
     }
+    public DentistOffice(String name, DentistClient client) {
+        this.name = name;
+        this.setDoctorList(clientReadDoctors(client));
+    } // this is the client version of DentistOffice
+
 
     public String getName() {
         return this.name;
@@ -34,6 +39,7 @@ public class DentistOffice {
     public ArrayList<Doctor> getDoctorList() {
         return doctorList;
     }
+
 
     public void setDoctorList(ArrayList<Doctor> doctorList) {
         this.doctorList = doctorList;
@@ -60,9 +66,17 @@ public class DentistOffice {
             e.printStackTrace();
             return null;
         }
-
-
     }
+    public ArrayList<Doctor> clientReadDoctors(DentistClient client) {
+        client.println("readDoctors::");
+        ArrayList<Doctor> doctorList = new ArrayList<>();
+        String input = client.readLine();
+        for (String name : input.split(",")) {
+            doctorList.add(new Doctor(name));
+        }
+        return doctorList;
+    }
+
 
     public boolean addDoctor(Doctor doctor) {
     try {
@@ -122,7 +136,7 @@ public class DentistOffice {
 
     // displays approved appointments
 
-    public static String[] getAppointments() throws IOException {
+    public static String[] serverGetAppointments() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
         ArrayList<String> appointmentsList = new ArrayList<>();
 
@@ -138,8 +152,32 @@ public class DentistOffice {
 
         return appointments;
     }
+    public static String[] clientGetAppointments(DentistClient client) {
+        client.println("readDoctorFile::");
 
-    public void clientReadDoctorFile(DentistClient client) {
+        ArrayList<String> aptList = new ArrayList<>();
+
+        String input = client.readLine(); // get apts from server
+
+        for (String apt : input.split(";")) { // turn apts into a list of strings
+            aptList.add(apt);
+        }
+        return aptList.toArray(new String[0]);
+    }
+    public static String[] clientGetPendingAppointments(DentistClient client) {
+        client.println("readDoctorPendingFile::");
+
+        ArrayList<String> aptList = new ArrayList<>();
+
+        String input = client.readLine(); // get apts from server
+
+        for (String apt : input.split(";")) { // turn apts into a list of strings
+            aptList.add(apt);
+        }
+        return aptList.toArray(new String[0]);
+    }
+
+    public static void clientReadDoctorFile(DentistClient client) {
         client.println("readDoctorFile::");
 
         ArrayList<String> aptList = new ArrayList<>();
@@ -161,9 +199,10 @@ public class DentistOffice {
             }
         }
     }
-    public void serverReadDoctorFile(DentistServer server) {
+
+    public static void serverReadDoctorFile(DentistServer server) {
         try {
-            String[] aptList = getAppointments();
+            String[] aptList = serverGetAppointments();
             // Now you have the appointments in the 'appointments' array
 
             // send aptList to client
@@ -177,7 +216,7 @@ public class DentistOffice {
             e.printStackTrace(); // Handle the IOException appropriately
         }
     }
-    public void serverReadDoctorPendingFile(DentistServer server) {
+    public static void serverReadDoctorPendingFile(DentistServer server) {
         try {
             // read pending apts
             BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
@@ -202,7 +241,7 @@ public class DentistOffice {
             e.printStackTrace(); // Handle the IOException appropriately
         }
     }
-    public void clientReadDoctorPendingFile(DentistClient client) {
+    public static void clientReadDoctorPendingFile(DentistClient client) {
         client.println("readDoctorPendingFile::");
 
         ArrayList<String> aptList = new ArrayList<>();

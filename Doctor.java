@@ -62,38 +62,36 @@ public class Doctor { // a doctor is equivalent to a store in the project handou
         return null;
     }
 
-    public void loadBookedAppointments() {
-        try {
+    public void loadBookedAppointments(DentistClient client) {
 
-            String[] lineSplit;
-            String time;
-            String doctorName;
-            String patientName;
 
-            for (String thisAptLine : DentistOffice.getAppointments()) {
-                lineSplit = thisAptLine.split(",");
+        String[] lineSplit;
+        String time;
+        String doctorName;
+        String patientName;
 
-                patientName = lineSplit[0];
-                time = lineSplit[2];
-                doctorName = lineSplit[3];
+        for (String thisAptLine : DentistOffice.clientGetAppointments(client)) {
+            lineSplit = thisAptLine.split(",");
 
-                if (this.name.equals(doctorName)) {
-                    Appointment newApt = new Appointment(time);
-                    newApt.bookAppointment(patientName);
-                    bookedAppointments.add(newApt);
-                }
+            patientName = lineSplit[0];
+            time = lineSplit[2];
+            doctorName = lineSplit[3];
+
+            if (this.name.equals(doctorName)) {
+                Appointment newApt = new Appointment(time);
+                newApt.bookAppointment(patientName);
+                bookedAppointments.add(newApt);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+
     }
 
 
-    public HashMap[] getStatistics() {
+    public HashMap[] getStatistics(DentistClient client) {
         // returns an array of two hashmaps.
         // Map 1: a list of customers and corresponding # of appointments per customer
         // Map 2: a list of String time and corresponding # of appointments
-        this.loadBookedAppointments();
+        this.loadBookedAppointments(client);
 
         HashMap<String, Integer> customerData = new HashMap<String, Integer>(); // maps customer names to integer # of appointments
         HashMap<String, Integer> timeData = new HashMap<String, Integer>(); // maps times to frequency of appointment slot
