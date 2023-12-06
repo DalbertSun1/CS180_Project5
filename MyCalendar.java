@@ -1,9 +1,3 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -13,20 +7,11 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.*;
 import java.util.ArrayList;
-/**
- * Project 5
- * Dentist Office Calendar Marketplace
- *
- * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
- * @version November 13th, 2023
- */
 
 public class MyCalendar {
-    private Day[] days;
-    private String file;
-    private String month;
-    private int numberMonth;
-    private int year;
+    static boolean menu = false;
+    static int day;
+    static String username;
     static JTextField name;
     static JFrame frame;;
     static JFrame newFrame = new JFrame();
@@ -39,6 +24,12 @@ public class MyCalendar {
     static Appointment selectedAppointment;
 
     static JButton nameButton;
+
+    private static Day[] days;
+    private String file;
+    private String month;
+    private int numberMonth;
+    private int year;
 
     public MyCalendar(String file) {
         this.file = file;
@@ -268,6 +259,7 @@ public class MyCalendar {
 //        this.doctor = doctor;
 //    }
 
+
     public void viewCalendar() {
         frame = new JFrame("Calendar");
 
@@ -341,12 +333,33 @@ public class MyCalendar {
                     }
                     openTimeFrame(source.getText());
                 } else if (source == nameButton){
+                    frame.dispose();
+                    timeFrame.dispose();
+                    newFrame.dispose();
+                    pending.dispose();
+
                     selectedAppointment.bookAppointment(name.getText());
+                    username = name.getText();
+                    makeAppointmentLeBron(selectedAppointment.getDay(), selectedAppointment.getTime(), selectedDoctor.getName());
+
                     JFrame request = new JFrame();
                     request.setSize(600, 100);
-                    request.add(new JTextField("Your appointment has been requested!"));
+                    request.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    JPanel panel = new JPanel();
+                    panel.add(new JLabel("Your appointment has been requested!"));
+
+
+                    JButton ok = new JButton("Back to Menu");
+                    ok.addActionListener(actionListener);
+                    panel.add(ok);
+                    request.add(panel);
+
                     request.setLocationRelativeTo(null);
                     request.setVisible(true);
+                } else if (source.getText().equals("Back to Menu")) {
+                    System.out.println("menu is true fucker");
+
+                    menu = true;
                 }
 
 
@@ -381,8 +394,8 @@ public class MyCalendar {
         try {
             FileReader fr = new FileReader(f);
             BufferedReader bf = new BufferedReader(fr);
-
-            doctors = new ArrayList<Doctor>();
+            day = date;
+            doctors = days[date-1].getDoctors();
             Container content = newFrame.getContentPane();
             content.removeAll();
             newFrame.setTitle("Make An Appointment: July " + date + ", 2023");
@@ -404,7 +417,7 @@ public class MyCalendar {
             while ((line = bf.readLine()) != null) {
                 doctors.add(new Doctor(line));
             }
-
+            days[date-1].setDoctors(doctors);
             int height = 0;
             if (doctors.size() < 5) {
                 height = 70;
@@ -473,7 +486,10 @@ public class MyCalendar {
             for (int i = 0; i < 9; i++) {
                 JButton button = new JButton(selectedDoctor.getAppointments().get(i).toString());
                 button.setAlignmentX(Component.CENTER_ALIGNMENT);
-                button.addActionListener(actionListener);
+                if (!selectedDoctor.getAppointments().get(i).isBooked()){
+                    button.addActionListener(actionListener);
+                }
+
                 button.setMaximumSize(new java.awt.Dimension(300, height));
 
                 buttons.add(button);
@@ -517,61 +533,103 @@ public class MyCalendar {
         pending.setVisible(true);
 
     }
-
-    public String format(Day day, ArrayList<Doctor> doctors) {
-        int maxLength = Integer.MIN_VALUE;
-        String result = "[";
-//    	for (int i = 0; i < doctors.size(); i++) {
-//    		if (("Dr." + doctors.get(i).getName()).length() > maxLength) {
-//    			maxLength = ("Dr." + doctors.get(i).getName()).length();
-//    		}
-//    	}
-//    	maxLength+=2;
-//    	if (maxLength % 2 == 1) {
-//    		maxLength++;
-//    	}
-//    	if (maxLength > 4) {
-//    		for (int i = 0; i<(maxLength-4)/2; i++) {
-//        		result += " ";
-//        	}
-//
-//    	}
-//    	if (day.getDate() < 10) {
-//    		result += "0" + day.getDate();
-//    	} else {
-//    		result += day.getDate();
-//    	}
-//    	if (maxLength > 4) {
-//    		for (int i = 0; i<(maxLength-4)/2; i++) {
-//        		result += " ";
-//        	}
-//
-//    	}
-//    	result += "]\n";
-//    	for (int i = 0; i < doctors.size(); i++) {
-//    		result += "[Dr." + doctors.get(i);
-//    		for (int j = 0; j < (maxLength-2) - ("Dr." + doctors.get(i)).length(); j++) {
-//    			result += " ";
-//
-//    		}
-//    		result += "]\n";
-//    	}
-
-        return result;
-    }
-
-//    public void initializeDay(int dayIndex) {
-//        if (dayIndex >= 0 && dayIndex <= days.length) {
-//            String selectedDay = days[dayIndex];
-//            showDoctor(selectedDay);
-//        } else {
-//            System.out.println("Invalid day selection");
-//        }
-//    }
-
-
     public void showDoctor(String selectedDay) {
         System.out.println("The doctors avaliabile on " + selectedDay + ":");
     }
+    public boolean openMenu(){
+        if (menu == true){
+            menu = false;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public static void makeAppointmentLeBron(int date, String time, String nameDoctor) {
+        try {
+            File f = new File("pending.txt"); //creates pending appointments file
+            FileOutputStream fos = new FileOutputStream(f, true);
+            PrintWriter pw = new PrintWriter(fos);
+            pw.println(username + "," + day + "," + time + "," + nameDoctor);
+            pw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        if (((7 * i) + j) == 1) {button1 = tempButton; button1.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 2) {button2 = tempButton; button2.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 3) {button3 = tempButton; button3.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 4) {button4 = tempButton; button4.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 5) {button5 = tempButton; button5.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 6) {button6 = tempButton; button6.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 7) {button7 = tempButton; button7.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 8) {button8 = tempButton; button8.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 9) {button9 = tempButton; button9.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 10) {button10 = tempButton; button10.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 11) {button11 = tempButton; button11.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 12) {button12 = tempButton; button12.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 13) {button13 = tempButton; button13.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 14) {button14 = tempButton; button14.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 15) {button15 = tempButton; button15.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 16) {button16 = tempButton; button16.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 17) {button17 = tempButton; button17.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 18) {button18 = tempButton; button18.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 19) {button19 = tempButton; button19.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 20) {button20 = tempButton; button20.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 21) {button21 = tempButton; button21.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 22) {button22 = tempButton; button22.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 23) {button23 = tempButton; button23.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 24) {button24 = tempButton; button24.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 25) {button25 = tempButton; button25.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 26) {button26 = tempButton; button26.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 27) {button27 = tempButton; button27.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 28) {button28 = tempButton; button28.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 29) {button29 = tempButton; button29.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 30) {button30 = tempButton; button30.addActionListener(actionListener);}
+//        if (((7 * i) + j) == 31) {button31 = tempButton; button31.addActionListener(actionListener);}
+//    static JButton button1;
+//    static JButton button2;
+//    static JButton button3;
+//    static JButton button4;
+//    static JButton button5;
+//    static JButton button6;
+//    static JButton button7;
+//    static JButton button8;
+//    static JButton button9;
+//    static JButton button10;
+//    static JButton button11;
+//    static JButton button12;
+//    static JButton button13;
+//    static JButton button14;
+//    static JButton button15;
+//    static JButton button16;
+//    static JButton button17;
+//    static JButton button18;
+//    static JButton button19;
+//    static JButton button20;
+//    static JButton button21;
+//    static JButton button22;
+//    static JButton button23;
+//    static JButton button24;
+//    static JButton button25;
+//    static JButton button26;
+//    static JButton button27;
+//    static JButton button28;
+//    static JButton button29;
+//    static JButton button30;
+//    static JButton button31;
