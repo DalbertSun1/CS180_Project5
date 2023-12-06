@@ -98,9 +98,9 @@ public class Appointment {
             return "Available: " + time;
 
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            return "Available: " + time;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return "Available: " + time;
         }
 
     }
