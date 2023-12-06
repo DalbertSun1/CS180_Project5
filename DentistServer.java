@@ -41,7 +41,7 @@ public class DentistServer {
             System.out.println("rawMessage = " + rawMessage);
             String methodChoice = rawMessage.split(":")[0];
             System.out.println("methodChoice = " + methodChoice);
-            String[] params = rawMessage.split(":")[1].split(",");
+            String[] params = rawMessage.split("::")[1].split(",");
 
 
             DentistOffice d = new DentistOffice("My Dentist Office");
@@ -52,7 +52,7 @@ public class DentistServer {
                 case "authenticate" -> {
                     String username = params[0];
                     String password = params[1];
-                    println(Login.checkAccount(username, password) + "\n");
+                    println(Login.checkAccount(username, password) + "");
                 }
                 case "createAccount" -> {
                     println(Boolean.toString(Login.serverCreateAccount(params[0], params[1], params[2], params[3], params[4])));
@@ -63,15 +63,19 @@ public class DentistServer {
                 case "makeAppointment" -> {
                     String name = params[0];
                     int date = Integer.parseInt(params[1]);
-                    String appointmentTime = params[2];
-                    String doctorName = params[3];
+                    String appointmentTime = params[3];
+                    System.out.println(appointmentTime);
+                    String doctorName = params[2];
 
                     Appointment appointment = new Appointment(appointmentTime);
                     Doctor doctor = new Doctor(doctorName);
 
                     println(Patient.makeAppointment(name, date, doctor, appointment));
                 }
-                case "cancelAppointment" -> {}
+                case "cancelAppointment" -> {
+                    int choice = Integer.parseInt(params[0]);
+                    println(Patient.cancelAppointment(choice));
+                }
                 case "viewPatientApprovedAppointments" -> {}
 
 
@@ -87,7 +91,8 @@ public class DentistServer {
                     println(Boolean.toString(d.removeDoctor(new Doctor(params[0]))));
                 }
                 case "viewDoctorApprovedAppointments" -> {}
-                case "viewDoctorPendingAppointments" -> {}
+                case "viewPendingAppointments" -> {
+                }
                 case "approveAppointment" -> {}
                 case "declineAppointment" -> {}
                 case "rescheduleAppointment" -> {}

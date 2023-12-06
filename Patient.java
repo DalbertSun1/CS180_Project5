@@ -2,7 +2,6 @@
 
 
 import java.io.*;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -176,7 +175,8 @@ public class Patient {
                                         }
                                     }
                                     if (counter == 0) {
-                                        cancelAppointment(cancel, a);
+                                        clientCancelAppointment(cancel, client);
+                                        System.out.println("Appointment cancelled.");
                                     } else {
                                         System.out.println("Please enter a valid choice.");
                                         menu3 = true;
@@ -251,7 +251,7 @@ public class Patient {
         return "false";
     }
 
-    public void cancelAppointment(int cancel, String[] list) {
+    public static String cancelAppointment(int cancel) {
         try {
             ArrayList<String> list1 = new ArrayList<String>();
             BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
@@ -273,10 +273,12 @@ public class Patient {
                 pw.println(list1.get(i));
             }
             pw.close();
+            return "true";
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return "false";
     }
 
 
@@ -323,7 +325,7 @@ public class Patient {
             // send aptList to client
             StringBuilder output = new StringBuilder();
             for (String apt : aptList) {
-                output.append(apt + "|||");
+                output.append(apt + ";");
             }
             server.println(output.toString());
 
@@ -343,7 +345,7 @@ public class Patient {
 
         String input = client.readLine();
 
-        for (String apt : input.split("|||")) {
+        for (String apt : input.split(";")) {
             aptList.add(apt);
         }
 
@@ -565,9 +567,19 @@ public class Patient {
         return returnList;
     }
 
-    public static synchronized boolean clientPending(String name, int date, Doctor doctor, Appointment appointment, DentistClient client) {
+    public static boolean clientPending(String name, int date, Doctor doctor, Appointment appointment, DentistClient client) {
         // send to server
-        client.println("makeAppointment:" + name + "," + date + "," + doctor.getName() + "," + appointment.getTime());
+        client.println("makeAppointment::" + name + "," + date + "," + doctor.getName() + "," + appointment.getTime());
+
+        if (client.readLine().equals("true")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean clientCancelAppointment(int choice, DentistClient client) {
+        client.println("cancelAppointment::" + choice);
 
         if (client.readLine().equals("true")) {
             return true;
