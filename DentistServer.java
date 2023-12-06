@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class DentistServer {
 
@@ -115,13 +116,12 @@ public class DentistServer {
                     }
                 }
                 case "rescheduleAppointment" -> {
-                    int line = Integer.parseInt(params[0]);
-                    /*
+                    Scanner scan = new Scanner(System.in);
                     try {
-                        println(DentistOffice.rescheduleAppointment(scan) + "");
+                        println(Patient.rescheduleAppointment(scan) + "");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
-                    }*/
+                    }
                 }
                 case "importCalendar" -> {}
 

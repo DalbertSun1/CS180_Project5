@@ -195,7 +195,12 @@ public class Patient {
                         menu2 = true;
                         break;
                     case 4:
-                        rescheduleAppointment(scan);
+                        if (clientRescheduleAppointment(client)) {
+                            System.out.println("Rescheduled successfully.");
+                        }
+                        else {
+                            System.out.println("Could not reschedule appointment.");
+                        }
                         menu2 = true;
                         break;
                     case 5:
@@ -348,7 +353,7 @@ public class Patient {
 
 
 
-    public void rescheduleAppointment(Scanner scan) throws IOException {
+    public static boolean rescheduleAppointment(Scanner scan) throws IOException {
         BufferedReader reader1 = new BufferedReader(new FileReader("approved.txt"));
 
         int currentLine = 1;
@@ -479,6 +484,7 @@ public class Patient {
                                 writer1.write(thisLine + "\n");
                             }
                             writer1.close();
+                            return true;
 
 
                         }
@@ -493,6 +499,7 @@ public class Patient {
 
 
         reader1.close();
+        return false;
 
     }
 
@@ -566,6 +573,16 @@ public class Patient {
 
     public static boolean clientCancelAppointment(int choice, DentistClient client) {
         client.println("cancelAppointment::" + choice);
+
+        if (client.readLine().equals("true")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean clientRescheduleAppointment(DentistClient client) {
+        client.println("rescheduleAppointment::");
 
         if (client.readLine().equals("true")) {
             return true;
