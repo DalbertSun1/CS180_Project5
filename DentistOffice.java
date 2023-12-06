@@ -139,23 +139,95 @@ public class DentistOffice {
         return appointments;
     }
 
-    public void viewApprovedAppointments() {
-        try {
-            String[] appointments = getAppointments();
-            // Now you have the appointments in the 'appointments' array
-            if (appointments.length == 0) {
-                System.out.println("You have no approved appointments.");
-            } else {
-                for (int i = 0; i < appointments.length; i++) {
+    public void clientReadDoctorFile(DentistClient client) {
+        client.println("readDoctorFile::");
 
-                    System.out.println((i + 1) + ": " + appointments[i]);
+        ArrayList<String> aptList = new ArrayList<>();
 
-                }
+        String input = client.readLine(); // get apts from server
+
+        for (String apt : input.split(";")) { // turn apts into a list of strings
+            aptList.add(apt);
+        }
+
+        if (aptList.isEmpty()) {
+            System.out.println("You have no approved appointments.");
+        } else {
+            System.out.println("Approved appointments:");
+            for (int i = 0; i < aptList.size(); i++) {
+
+                System.out.println((i + 1) + ": " + aptList.get(i));
+
             }
+        }
+    }
+    public void serverReadDoctorFile(DentistServer server) {
+        try {
+            String[] aptList = getAppointments();
+            // Now you have the appointments in the 'appointments' array
+
+            // send aptList to client
+            StringBuilder output = new StringBuilder();
+            for (String apt : aptList) {
+                output.append(apt + ";");
+            }
+            server.println(output.toString());
+
         } catch (IOException e) {
             e.printStackTrace(); // Handle the IOException appropriately
         }
     }
+    public void serverReadDoctorPendingFile(DentistServer server) {
+        try {
+            // read pending apts
+            BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
+            ArrayList<String> appointmentsList = new ArrayList<>();
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                appointmentsList.add(line);
+            }
+            reader.close();
+            String[] aptList = appointmentsList.toArray(new String[0]);
+            // Now you have the pending appointments in the 'aptList' array
+
+            // send aptList to client
+            StringBuilder output = new StringBuilder();
+            for (String apt : aptList) {
+                output.append(apt + ";");
+            }
+            server.println(output.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the IOException appropriately
+        }
+    }
+    public void clientReadDoctorPendingFile(DentistClient client) {
+        client.println("readDoctorPendingFile::");
+
+        ArrayList<String> aptList = new ArrayList<>();
+
+        String input = client.readLine(); // get apts from server
+
+        for (String apt : input.split(";")) { // turn apts into a list of strings
+            aptList.add(apt);
+        }
+
+
+        if (aptList.isEmpty()) {
+            System.out.println("You have no pending appointments.");
+        } else {
+            System.out.println("Pending appointments:");
+            for (int i = 0; i < aptList.size(); i++) {
+
+                System.out.println((i + 1) + ": " + aptList.get(i));
+
+            }
+        }
+    }
+
+
+
 
 
     //displays pending appointments

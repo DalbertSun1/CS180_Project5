@@ -149,7 +149,7 @@ public class Login {
                                         }
                                         break;
                                     case 3:
-                                        d.viewApprovedAppointments();
+                                        d.clientReadDoctorFile(client);
                                         break;
                                     case 4:
                                         d.viewPending();
