@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class DentistServer {
@@ -131,7 +132,14 @@ public class DentistServer {
                         throw new RuntimeException(e);
                     }
                 }
-                case "importCalendar" -> {}
+                case "importCalendar" -> {
+                    MyCalendar calendar = new MyCalendar(params[0]);
+                    ArrayList<Doctor> addD = calendar.importCalendar();
+                    for (int j = 0; j < addD.size(); j++) {
+                        d.addDoctor(addD.get(j));
+                    }
+                    println("true");
+                }
 
                 // other functions
 

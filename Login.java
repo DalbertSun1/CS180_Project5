@@ -201,10 +201,9 @@ public class Login {
 
                                         System.out.println("Enter a filepath:");
                                         String path = scan.nextLine();
-                                        MyCalendar c = new MyCalendar(path);
-                                        ArrayList<Doctor> addD = c.importCalendar();
-                                        for (int j = 0; j < addD.size(); j++) {
-                                            d.addDoctor(addD.get(j));
+                                        client.println("importCalendar::" + path);
+                                        if (client.readLine().equals("true")) {
+                                            System.out.println("Calendar imported successfully!");
                                         }
 
                                     case 10:
