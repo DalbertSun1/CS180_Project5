@@ -1,4 +1,5 @@
 import java.io.*;
+import java.net.Socket;
 import java.sql.SQLOutput;
 import java.util.*;
 import javax.swing.*;
@@ -6,22 +7,19 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- * Project 4
+ * Project 5
  * Dentist Office Calendar Marketplace
  *
  * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
  * @version November 13th, 2023
  */
 
+
 public class Login extends JComponent{
 
     static Scanner scan;
 
-    public static void main(String[] args) throws IOException {
-
-//        SwingUtilities.invokeLater(new Login());
-//    }
-//    public void run() {
+    public static void main(String[] args, DentistClient client) throws IOException {
         int welcome1  = JOptionPane.showConfirmDialog(null, "Welcome to Dentist Office!", "Welcome", JOptionPane.OK_CANCEL_OPTION);
         if (welcome1 != JOptionPane.OK_OPTION) {
             JOptionPane.showMessageDialog(null, "Thank you for using the Dentist Office", "Dentist Office", JOptionPane.INFORMATION_MESSAGE);
@@ -29,7 +27,7 @@ public class Login extends JComponent{
         }
         scan = new Scanner(System.in);
         try {
-            menu(scan);
+            menu(scan, client);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -43,7 +41,7 @@ public class Login extends JComponent{
     public void start() throws IOException {
         menu(scan);
     }
-    public static void menu(Scanner scan) throws IOException {
+    public static void menu(Scanner scan, DentistClient client) throws IOException {
         boolean menu1 = false; //counter to rerun the loop if invalid choice is entered
         do {
             String[] options = {"Log in", "Create an Account", "Exit"};
@@ -97,7 +95,7 @@ public class Login extends JComponent{
                                     String username = usernameField.getText();
                                     String password = new String(passwordField.getPassword());
 
-                                    login(fullName, testOption, username, password, scan);
+                                    postLoginMenu(fullName, testOption, username, password, scan, client);
 
                                 } else if (loginResult == JOptionPane.CANCEL_OPTION) {
                                     menu(scan);
@@ -167,7 +165,7 @@ public class Login extends JComponent{
                                     String email = emailField.getText();
                                     String number = numberField.getText();
 
-                                    createAccount(testOption, fullName, username, password, email, number, scan);
+                                    clientCreateAccount(testOption, fullName, username, password, email, number, scan, client);
 
                                 }
                                 else {
@@ -197,14 +195,9 @@ public class Login extends JComponent{
         } while (menu1);
     }
 
-    public static void login(String fullName, int identity, String username, String password, Scanner scan) throws IOException {
-        DentistOffice d = new DentistOffice("My Dentist Office");
-
-        ArrayList<Doctor> readDoctorList;
-        readDoctorList = d.readDoctors();
-
-        d.setDoctorList(readDoctorList);
-        if (checkAccount(username, password)) {
+    public static void postLoginMenu(String fullName, int identity, String username, String password, Scanner scan, DentistClient client) throws IOException {
+        DentistOffice d = new DentistOffice("My Dentist Office", client);
+        if (clientAuthenticate(username, password, client)) {
             int welcome = JOptionPane.showConfirmDialog(null, "Welcome!", "Dentist Office", JOptionPane.OK_CANCEL_OPTION);
             if (welcome != JOptionPane.OK_OPTION) {
                 menu(scan);
@@ -215,7 +208,7 @@ public class Login extends JComponent{
                 switch (identity) {
                     case 1:
                         Patient p = new Patient(fullName); // continue as a patient
-                        p.go(scan, readDoctorList, d);
+                        p.go(scan, d.getDoctorList(), d, client);
                         break;
                     case 2:
                         // continue as a doctor
@@ -277,8 +270,10 @@ public class Login extends JComponent{
                                         if (loginResult == JOptionPane.OK_OPTION) {
                                             fullName = fullNameField.getText();
 
-                                            Doctor addDoctor = new Doctor(fullName);
-                                            d.addDoctor(addDoctor);
+                                            client.println("addDoctor::" + doctorName);
+                                            if (client.readLine().equals("true")) {
+                                                // TODO - dialog that confirms doctor was added successfully;
+                                            }
                                         }
                                         else if (loginResult == JOptionPane.CANCEL_OPTION) {
                                             JOptionPane.showMessageDialog(null, "Back to menu:");
@@ -297,21 +292,26 @@ public class Login extends JComponent{
 
                                         if (loginResult1 == JOptionPane.OK_OPTION) {
                                             fullName = fullNameField1.getText();
-                                            Doctor deleteDoctor = new Doctor(fullName);
-                                            d.deleteDoctor(deleteDoctor);
+                                            client.println("removeDoctor::" + doctorName);
+                                            if (client.readLine().equals("true")) {
+                                                System.out.println("Successfully removed Doctor");
+                                                // TODO TURN PRINTLN INTO DIALOG
+                                            }
                                         }
                                         else if (loginResult1 == JOptionPane.CANCEL_OPTION) {
                                             JOptionPane.showMessageDialog(null, "Back to menu:");
                                         }
                                         break;
                                     case "View Approved Appointments":
+                                        d.clientReadDoctorFile(client);
                                         d.viewApproved();
                                         break;
                                     case "View Pending Appointments":
                                         d.viewPending();
+                                        d.clientReadDoctorPendingFile(client);
                                         break;
                                     case "Approve Appointment":
-                                        String[] pendingAppointments = d.viewPending();
+                                        String[] pendingAppointments = d.clientGetPendingAppointments(client);
                                         String approveOption;
                                         if (pendingAppointments.length != 0) {
                                             approveOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to approve?",
@@ -322,15 +322,18 @@ public class Login extends JComponent{
                                                 menu3 = true;
                                                 break;
                                             } else {
-                                                d.approveAppointment(approveOption);
+                                                DentistOffice.clientApproveAppointment(String.parseInt(approveOption), client);
                                                 JOptionPane.showMessageDialog(null, "Appointment approved.", "Approve appointment",
                                                         JOptionPane.INFORMATION_MESSAGE);
+
                                             }
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("Please enter an integer.");
                                         }
                                         break;
 
                                     case "Decline Appointment":
-                                        String[] pendingAppointments1 = d.viewPending();
+                                        String[] pendingAppointments1 = d.clientGetPendingAppointments(client);
                                         String declineOption;
                                         if (pendingAppointments1.length != 0) {
                                             declineOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to decline?",
@@ -340,18 +343,22 @@ public class Login extends JComponent{
                                                 //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
                                                 menu3 = true;
                                             } else {
-                                                d.declineAppointment(declineOption);
+                                                DentistOffice.clientDeclineAppointment(declineOption, client);
                                                 JOptionPane.showMessageDialog(null, "Appointment declined.", "Decline appointment",
                                                         JOptionPane.INFORMATION_MESSAGE);
+
                                             }
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("Please enter an integer.");
                                         }
                                         break;
-
                                     case "Reschedule Appointment":
                                         d.rescheduleAppointment(scan);
+                                        DentistOffice.clientRescheduleAppointment(scan, client);
                                         break;
                                     case "View Statistics":
                                         OurStatistics.dentistOfficeDashboard(d, scan);
+                                        OurStatistics.dentistOfficeDashboard(d, scan, client);
                                         break;
                                     case "Import Calendar":
                                         try {
@@ -371,14 +378,9 @@ public class Login extends JComponent{
                                             if (loginResult2 == JOptionPane.OK_OPTION) {
                                                 String path = pathField.getText();
 
-                                                File file = new File(path);
-                                                if (!file.exists()) {
-                                                    throw new FileNotFoundException();
-                                                }
-                                                MyCalendar c = new MyCalendar(path);
-                                                ArrayList<Doctor> addD = c.importCalendar();
-                                                for (int j = 0; j < addD.size(); j++) {
-                                                    d.addDoctor(addD.get(j));
+                                                client.println("importCalendar::" + path);
+                                                if (client.readLine().equals("true")) {
+                                                    System.out.println("Calendar imported successfully!");
                                                 }
                                             }
                                             else if (loginResult2 == JOptionPane.CANCEL_OPTION) {
@@ -391,6 +393,7 @@ public class Login extends JComponent{
                                     case "Log Out":
                                         JOptionPane.showMessageDialog(null, "You have logged out.");
                                         menu(scan);
+
                                         menu3 = false;
                                         break;
                                     default:
@@ -414,34 +417,69 @@ public class Login extends JComponent{
             } while (menu2);
         } else {
             JOptionPane.showMessageDialog(null, "Error! Account doesn't exist.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
-            menu(scan);
+            menu(scan, client);
         }
 
     }
 
-    public static void createAccount(int identity, String fullName, String username,
-                                     String password, String email, String phoneNumber, Scanner scan) {
+    public static boolean clientAuthenticate(String username, String password, DentistClient client) throws IOException {
+
+        // send to server to authenticate
+        client.println("authenticate::" + username + "," + password);
+
+        // receive server response
+        if (client.readLine().equals("true")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //creates a new account
+    //prints error if account already exists - to do
+    public static void clientCreateAccount(String fullName, String username,
+                                           String password, String email, String phoneNumber, Scanner scan, DentistClient client) {
+        try {
+
+            if (clientAuthenticate(username, password, client)) {
+                JOptionPane.showMessageDialog(null, "Error! Account doesn't exist.", "Create an Account", JOptionPane.ERROR_MESSAGE);
+            } else {
+                //adding the account details to the file
+                client.println("createAccount::" + fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
+                if (Boolean.parseBoolean(client.readLine())) {
+                    int success  = JOptionPane.showConfirmDialog(null, "Account successfully created!", "Create an Account", JOptionPane.OK_CANCEL_OPTION);
+                    if (success != JOptionPane.OK_OPTION) {
+                        menu(scan);
+                        return;
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Account could not be created.");
+                }
+
+            }
+
+            menu(scan, client);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static boolean serverCreateAccount(String fullName, String username,
+                                              String password, String email, String phoneNumber) {
         try {
             File f = new File("accounts.txt"); //creates accounts file
             FileOutputStream fos = new FileOutputStream(f, true);
             PrintWriter pw = new PrintWriter(fos);
             //username is FIRST, password is LAST - more convenient to check
-            if (checkAccount(username, password)) {
-                JOptionPane.showMessageDialog(null, "Error! Account doesn't exist.", "Create an Account", JOptionPane.ERROR_MESSAGE);
-            } else {
-                //adding the account details to the file
-                pw.println(fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
-                int success  = JOptionPane.showConfirmDialog(null, "Account successfully created!", "Create an Account", JOptionPane.OK_CANCEL_OPTION);
-                if (success != JOptionPane.OK_OPTION) {
-                    menu(scan);
-                    return;
-                }
-            }
-            pw.close();
-            login(fullName, identity, username, password, scan);
+            //if the username and password match a case in accounts.txt, then new account will not be created
 
+            pw.println(fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
+            System.out.println("Account successfully created!");
+            pw.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -475,16 +513,11 @@ public class Login extends JComponent{
         return exists;
     }
 
-    public static int numPending() throws IOException {
+    public static int numPending(DentistClient client) throws IOException {
         int num = 0;
-        BufferedReader reader = new BufferedReader(new FileReader("pending.txt"));
-        String line;
-
-        while ((line = reader.readLine()) != null) {
+        for (String apt : DentistOffice.clientGetPendingAppointments(client)) {
             num++;
         }
-
-        reader.close();
         return num;
     }
 

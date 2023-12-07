@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class OurStatistics { // handles the statistics section of our projection
 
-    public static void dentistOfficeDashboard(DentistOffice dentistOffice, Scanner scanner) {
+    public static void dentistOfficeDashboard(DentistOffice dentistOffice, Scanner scanner, DentistClient client) {
         HashMap<String, Integer> patientFrequency = new HashMap<>(); // maps patient names to # of apts
         HashMap<Doctor, String> doctorTimeData = new HashMap<>(); // maps Doctors to their most frequent time
 
@@ -23,8 +23,8 @@ public class OurStatistics { // handles the statistics section of our projection
             HashMap<String, Integer> patientData; // maps patient names to integer # of appointments
             HashMap<String, Integer> timeData; // maps string time to frequency of appointment slot
 
-            patientData = doctor.getStatistics()[0];
-            timeData = doctor.getStatistics()[1];
+            patientData = doctor.getStatistics(client)[0];
+            timeData = doctor.getStatistics(client)[1];
 
 
             for (String name : patientData.keySet()) {
@@ -139,7 +139,7 @@ public class OurStatistics { // handles the statistics section of our projection
     }
 
 
-    public static void patientDashboard(DentistOffice dentistOffice, Scanner scanner) {
+    public static void patientDashboard(DentistOffice dentistOffice, Scanner scanner, DentistClient client) {
         // Data will include a list of Doctors by number of patients and the most popular appointment windows by Doctor.
         // Customers can choose to sort the dashboard.
 
@@ -150,8 +150,8 @@ public class OurStatistics { // handles the statistics section of our projection
             HashMap<String, Integer> patientData; // maps patient names to integer # of appointments
             HashMap<String, Integer> timeData; // maps String time to frequency of appointment slot
 
-            patientData = doctor.getStatistics()[0];
-            timeData = doctor.getStatistics()[1];
+            patientData = doctor.getStatistics(client)[0];
+            timeData = doctor.getStatistics(client)[1];
 
             // create a hashmap with key Doctor, value = # of patients
             doctorPatientData.put(doctor, patientData.keySet().size());
