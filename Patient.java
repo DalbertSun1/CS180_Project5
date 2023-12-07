@@ -164,6 +164,7 @@ public class Patient {
                             String[] a = clientReadFile(scan, client); //display approved appointments
                             if (a.length == 0) {
                                 System.out.println("You have no approved appointments to cancel.");
+                                menu3 = false;
                             } else {
                                 System.out.println("Choose an appointment to cancel:");
                                 try {
@@ -182,6 +183,7 @@ public class Patient {
                                         String thisName = scan.nextLine();
                                         if (clientCancelAppointment(thisName, cancel, client)) {
                                             System.out.println("Appointment cancelled.");
+                                            menu3 = false;
                                         }
                                     } else {
                                         System.out.println("Please enter a valid choice.");
@@ -189,6 +191,7 @@ public class Patient {
                                     }
                                 } catch (NumberFormatException e) {
                                     System.out.println("Please enter an integer.");
+                                    menu3 = true;
                                 }
                             }
                         } while (menu3);
@@ -251,7 +254,7 @@ public class Patient {
             int cancelIndex = -1;
             int nameCounter = 0;
             for (int i = 0; i < initialAppointments.size(); i++) {
-                String[] lineSplit = initialAppointments.get(i).split(",");
+                String[] lineSplit = initialAppointments.get(i). split(",");
                 if (lineSplit[0].equals(patientName)) {
                     nameCounter++;
                     if (nameCounter == userIndex) {
@@ -259,6 +262,9 @@ public class Patient {
                         break;
                     }
                 }
+            }
+            if (cancelIndex == -1) {
+                return false;
             }
 
             ArrayList<String> updatedAppointments = new ArrayList<>();
