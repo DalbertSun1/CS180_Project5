@@ -126,7 +126,8 @@ public class DentistServer {
                 case "rescheduleAppointment" -> {
                     Scanner scan = new Scanner(System.in);
                     try {
-                        println(Patient.rescheduleAppointment(scan) + "");
+                        println(String.valueOf(Patient.serverRescheduleAppointment(params[0],
+                                params[1], params[2], params[3], Integer.valueOf(params[4]))));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

@@ -191,7 +191,7 @@ public class Login {
 
                                         break;
                                     case 7:
-                                        d.rescheduleAppointment(scan);
+                                        DentistOffice.clientRescheduleAppointment(scan, client);
                                         break;
                                     case 8:
                                         OurStatistics.dentistOfficeDashboard(d, scan, client);
@@ -260,7 +260,12 @@ public class Login {
             } else {
                 //adding the account details to the file
                 client.println("createAccount::" + fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
-                System.out.println("Account successfully created!");
+                if (Boolean.parseBoolean(client.readLine())) {
+                    System.out.println("Account successfully created!");
+                } else {
+                    System.out.println("Account could not be created.");
+                }
+
             }
 
             menu(scan, client);

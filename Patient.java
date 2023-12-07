@@ -196,7 +196,7 @@ public class Patient {
                         menu2 = true;
                         break;
                     case 4:
-                        if (clientRescheduleAppointment(client)) {
+                        if (clientRescheduleAppointment(scan, client)) {
                             System.out.println("Rescheduled successfully.");
                         }
                         else {
@@ -302,13 +302,12 @@ public class Patient {
                 doctors[i] = list.get(i)[3];
             }
 
-            String[] aptList = new String[list2.size()];
-
+            ArrayList<String> aptList = new ArrayList<String>();
             System.out.println("Approved appointments:");
             //displays the approved appointments for that person
-            for (int i = 0; i < aptList.length; i++) {
+            for (int i = 0; i < list2.size(); i++) {
                 if (name.equals(names[i])) {
-                    aptList[i] = list2.get(i);
+                    aptList.add(list2.get(i));
                 }
             }
 
@@ -326,7 +325,7 @@ public class Patient {
 
         }
     }
-    public String[] clientReadFile(Scanner scan, DentistClient client) { // returns a list of the apts corresponding to
+    public static String[] clientReadFile(Scanner scan, DentistClient client) { // returns a list of the apts corresponding to
         // the Patient's name
 
         System.out.println("Enter your name:");
@@ -337,14 +336,17 @@ public class Patient {
 
         String input = client.readLine();
 
-        for (String apt : input.split(";")) {
-            aptList.add(apt);
+        if (!input.isEmpty()) {
+            for (String apt : input.split(";")) {
+                aptList.add(apt);
+            }
         }
-
         System.out.println("Approved appointments:");
+        System.out.println("Choice #, Patient Name, Day of Month, Time, Doctor Name");
         //displays the approved appointments for that person
+        int i = 1;
         for (String apt : aptList) {
-            System.out.println(apt);
+            System.out.println(i++ + ":" + apt);
         }
 
         return aptList.toArray(new String[0]);
@@ -354,30 +356,32 @@ public class Patient {
 
 
 
-    public static boolean rescheduleAppointment(Scanner scan) throws IOException {
-        BufferedReader reader1 = new BufferedReader(new FileReader("approved.txt"));
+    public static boolean clientRescheduleAppointment(Scanner scan, DentistClient client) throws IOException {
 
-        int currentLine = 1;
-        boolean found1 = false;
-        String line;
-        ArrayList<String> lines = new ArrayList<>();
-        String[] lineSplit;
+        System.out.println("Enter your name:");
+        String name = scan.nextLine();
+        client.println("readFile::" + name);
 
-        System.out.println("Enter your name: ");
-        String checkName = scan.nextLine();
+        ArrayList<String> aptList = new ArrayList<>();
 
-        System.out.println("Choice #, Patient Name, Day of Month, Time, Doctor Name");
-        while ((line = reader1.readLine()) != null) {
-            lines.add(line);
-            lineSplit = line.split(",");
-            if (lineSplit[0].equals(checkName)) {
-                System.out.println(currentLine + ": " + line);
-                currentLine++;
-                found1 = true;
+        String input = client.readLine();
+
+        if (!input.isEmpty()) {
+            for (String apt : input.split(";")) {
+                aptList.add(apt);
             }
         }
 
-        if (!found1) {
+        System.out.println("Approved appointments:");
+        System.out.println("Choice #, Patient Name, Day of Month, Time, Doctor Name");
+        //displays the approved appointments for that person
+        int i = 1;
+        for (String apt : aptList) {
+            System.out.println(i++ + ":" + apt);
+        }
+
+
+        if (aptList.isEmpty()) {
             System.out.println("You have no approved appointments at this time.");
         } else {
             System.out.println("Which appointment would you like to change?");
@@ -451,44 +455,22 @@ public class Patient {
                         } while (newTimeInt < 1 || newTimeInt > 9);
 
 
-                        // check if given time is already taken
-                        line = lines.get(userIndex);
-                        lineSplit = line.split(",");
-                        // get this line, turn into a list, switch
+                        String doctorName = aptList.get(userIndex).split(",")[3];
 
-                        String doctorName = lineSplit[3];
-
-
-                        for (String thisLine : lines) {
-                            lineSplit = thisLine.split(",");
-                            if (lineSplit[3].equals(doctorName)) {
-                                if (lineSplit[1].equals(Integer.toString(newDay))) {
-                                    if (lineSplit[2].equals(newTime)) {
-                                        System.out.println("Time unavailable. Try again.");
-                                        timeIsBooked = true;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (!timeIsBooked) {
-                            lineSplit[2] = newTime;
-                            lineSplit[1] = Integer.toString(newDay);
-                            String newApt = "";
-                            for (String x : lineSplit) {
-                                newApt += x + ",";
-                            }
-                            newApt = newApt.substring(0, newApt.length() - 1);
-                            lines.set(userIndex, newApt);
-                            BufferedWriter writer1 = new BufferedWriter(new FileWriter("approved.txt"));
-                            for (String thisLine : lines) {
-                                writer1.write(thisLine + "\n");
-                            }
-                            writer1.close();
+                        client.println("rescheduleAppointment::" + name + ","
+                        + newDay + "," + newTime + "," + doctorName + "," + (userIndex + 1));
+                        if (!Boolean.parseBoolean(client.readLine())) {
+                            timeIsBooked = true;
+                            System.out.println("That time and day is already taken. Please choose another.");
+                        } else {
                             return true;
-
-
                         }
+
+
+
+
+
+
                     } catch (NumberFormatException e) {
                         System.out.println("Please enter an integer.");
                     }
@@ -499,9 +481,52 @@ public class Patient {
         }
 
 
-        reader1.close();
+
         return false;
 
+    }
+    public static boolean serverRescheduleAppointment(String patientName, String day, String time, String doctorName, int userIndex) throws IOException {
+        ArrayList<String> lines = new ArrayList<String>(Arrays.asList(DentistOffice.serverGetAppointments()));
+        String[] lineSplit = new String[4];
+
+
+        int fileCounter = 0;
+        int nameCounter = 0;
+        int fileIndex = 0;
+        for (String thisLine : lines) {
+            lineSplit = thisLine.split(",");
+
+            if (lineSplit[0].equals(patientName)) {
+                nameCounter++;
+                if (nameCounter == userIndex) {
+                    fileIndex = fileCounter;
+                }
+            }
+
+            if (lineSplit[3].equals(doctorName)) {
+                if (lineSplit[1].equals(day)) {
+                    if (lineSplit[2].equals(time)) {
+                         return false;
+                    }
+                }
+            }
+            fileCounter++;
+        }
+
+
+
+
+
+
+        String newApt = patientName + "," + day + "," + time + "," + doctorName;
+        lines.set(fileIndex, newApt);
+
+        BufferedWriter writer1 = new BufferedWriter(new FileWriter("approved.txt"));
+        for (String thisLine : lines) {
+            writer1.write(thisLine + "\n");
+        }
+        writer1.close();
+        return true;
     }
 
     private ArrayList<String> printAppointments(Day day, Doctor doctor, DentistClient client) throws IOException {
@@ -585,13 +610,5 @@ public class Patient {
         }
     }
 
-    public static boolean clientRescheduleAppointment(DentistClient client) {
-        client.println("rescheduleAppointment::");
 
-        if (client.readLine().equals("true")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
