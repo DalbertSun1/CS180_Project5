@@ -78,8 +78,9 @@ public class DentistServer {
                 }
 
                 case "cancelAppointment" -> {
-                    int choice = Integer.parseInt(params[0]);
-                    println(Patient.cancelAppointment(choice) + "");
+                    int choice = Integer.parseInt(params[1]);
+                    String name = params[0];
+                    println(Patient.cancelAppointment(name, choice) + "");
                 }
 
 

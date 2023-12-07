@@ -178,7 +178,9 @@ public class Patient {
                                         }
                                     }
                                     if (counter == 0) {
-                                        if (clientCancelAppointment(cancel, client)) {
+                                        System.out.println("Enter your name: ");
+                                        String thisName = scan.nextLine();
+                                        if (clientCancelAppointment(thisName, cancel, client)) {
                                             System.out.println("Appointment cancelled.");
                                         }
                                     } else {
@@ -242,28 +244,43 @@ public class Patient {
         return "false";
     }
 
-    public static boolean cancelAppointment(int cancel) {
+    public static boolean cancelAppointment(String patientName, int userIndex) {
         try {
-            ArrayList<String> list1 = new ArrayList<String>();
-            BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
-            String line = bfr.readLine();
-            int counter = 1;
-            while (line != null) {
-                if (counter != cancel) {
-                    list1.add(line);
+            ArrayList<String> initialAppointments = new ArrayList<>(Arrays.asList(DentistOffice.serverGetAppointments()));
+
+            int cancelIndex = -1;
+            int nameCounter = 0;
+            for (int i = 0; i < initialAppointments.size(); i++) {
+                String[] lineSplit = initialAppointments.get(i).split(",");
+                if (lineSplit[0].equals(patientName)) {
+                    nameCounter++;
+                    if (nameCounter == userIndex) {
+                        cancelIndex = i;
+                        break;
+                    }
                 }
-                line = bfr.readLine();
+            }
+
+            ArrayList<String> updatedAppointments = new ArrayList<>();
+            BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
+            String line;
+            int counter = 0;
+            while ((line = bfr.readLine()) != null) {
+                if (counter != cancelIndex) {
+                    updatedAppointments.add(line);
+                }
                 counter++;
             }
             bfr.close();
 
+// Write updatedAppointments to file
             File f = new File("approved.txt");
-            FileOutputStream fos = new FileOutputStream(f);
-            PrintWriter pw = new PrintWriter(fos);
-            for (int i = 0; i < list1.size(); i++) {
-                pw.println(list1.get(i));
+            PrintWriter pw = new PrintWriter(new FileOutputStream(f, false));
+            for (String appointment : updatedAppointments) {
+                pw.println(appointment);
             }
             pw.close();
+
             return true;
 
         } catch (Exception e) {
@@ -601,8 +618,9 @@ public class Patient {
         }
     }
 
-    public static boolean clientCancelAppointment(int choice, DentistClient client) {
-        client.println("cancelAppointment::" + choice);
+    public static boolean clientCancelAppointment(String name, int choice, DentistClient client) {
+
+        client.println("cancelAppointment::" + name + "," + choice);
 
         if (client.readLine().equals("true")) {
             return true;
