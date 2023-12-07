@@ -1,9 +1,10 @@
-
-
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLOutput;
 import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 /**
  * Project 5
@@ -13,103 +14,195 @@ import java.util.*;
  * @version November 13th, 2023
  */
 
-public class Login {
+
+public class Login extends JComponent{
+
+    static Scanner scan;
+
     public static void main(String[] args, DentistClient client) throws IOException {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Welcome to the Dentist's Office!");
-        menu(scan, client);
+        int welcome1  = JOptionPane.showConfirmDialog(null, "Welcome to Dentist Office!", "Welcome", JOptionPane.OK_CANCEL_OPTION);
+        if (welcome1 != JOptionPane.OK_OPTION) {
+            JOptionPane.showMessageDialog(null, "Thank you for using the Dentist Office", "Dentist Office", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        scan = new Scanner(System.in);
+        try {
+            menu(scan, client);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    private static JTextField noEdit(String prompt) {
+        JTextField textField = new JTextField(prompt);
+        textField.setEditable(false);
+        return textField;
+    }
+    public void start() throws IOException {
+        menu(scan);
+    }
     public static void menu(Scanner scan, DentistClient client) throws IOException {
         boolean menu1 = false; //counter to rerun the loop if invalid choice is entered
         do {
-            System.out.println("Menu\n1. Log in\n2. Create an account");
+            String[] options = {"Log in", "Create an Account", "Exit"};
+
+            int result = JOptionPane.showOptionDialog(null, "Choose an option:", "Dentist Office",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                    null, options, options[1]);
             try {
-                String input1 = scan.nextLine();
-                int login = Integer.parseInt(input1);
 
                 String fullName = "";
 
-                switch (login) {
-                    case 1: // log in
-                        boolean menu2 = false;
+                switch (result) {
+                    case 0: // log in
+                        boolean menu2;
                         do {
-                            menu2 = false;
-                            System.out.println("Log in as\n1. Patient\n2. Dentist Office\n3. Back");
+                            String[] userMenu = {"Patient", "Doctor"};
+                            String userOption;
                             try {
-                                String input2 = scan.nextLine();
-                                int identity2 = Integer.parseInt(input2);
 
-                                if (identity2 == 1 || identity2 == 2) {
-                                    System.out.println("Enter your user name:");
-                                    String username2 = scan.nextLine();
-                                    System.out.println("Enter your password:");
-                                    String password2 = scan.nextLine();
-                                    postLoginMenu(fullName, identity2, username2, password2, scan, client);
-                                } else if (identity2 == 3) {
-                                    menu1 = true;
+                                userOption = (String) JOptionPane.showInputDialog(null, "Log in as",
+                                        "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
+                                if ((userOption == null) || (userOption.isEmpty())) {
+//                                    JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                    menu(scan);
+                                    return;
+                                }
+
+                                int testOption;
+                                if (userOption.equals("Patient")) {
+                                    testOption = 1;
+                                } else if (userOption.equals("Doctor")) {
+                                    testOption = 2;
                                 } else {
-                                    System.out.println("Please enter a valid choice.");
-                                    menu2 = true;
+                                    testOption = 3;
+                                }
+
+                                menu2 = false;
+                                JPanel panel = new JPanel(new GridLayout(2, 2));
+                                JTextField usernameField = new JTextField();
+                                JPasswordField passwordField = new JPasswordField();
+
+                                panel.add(noEdit("Username:"));
+                                panel.add(usernameField);
+                                panel.add(noEdit("Password:"));
+                                panel.add(passwordField);
+
+                                int loginResult = JOptionPane.showConfirmDialog(null, panel, "Log in",
+                                        JOptionPane.OK_CANCEL_OPTION);
+
+                                if (loginResult == JOptionPane.OK_OPTION) {
+                                    String username = usernameField.getText();
+                                    String password = new String(passwordField.getPassword());
+
+                                    postLoginMenu(fullName, testOption, username, password, scan, client);
+
+                                } else if (loginResult == JOptionPane.CANCEL_OPTION) {
+                                    menu(scan);
+                                }
+                                else {
+                                    menu(scan);
+                                    return;
                                 }
                             } catch (NumberFormatException e) {
-                                System.out.println("Please enter an integer.");
+                                JOptionPane.showMessageDialog(null, "Please choose a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
                                 menu2 = true;
                             }
+
                         } while (menu2);
                         break;
-                    case 2: // create an account
-                        boolean menu3 = false;
-                        do {
-                            menu3 = false;
-                            System.out.println("Create an account as\n1. Patient\n2. Doctor\n3. Back");
-                            try {
-                                String input2 = scan.nextLine();
-                                int identity = Integer.parseInt(input2);
 
-                                if (identity == 1 || identity == 2) {
-                                    System.out.println("Enter your full name:");
-                                    fullName = scan.nextLine();
-                                    System.out.println("Enter a user name:");
-                                    String username = scan.nextLine();
-                                    System.out.println("Enter a password:");
-                                    String password = scan.nextLine();
-                                    System.out.println("Enter your email:");
-                                    String email = scan.nextLine();
-                                    System.out.println("Enter your phone number:");
-                                    String phoneNumber = scan.nextLine();
-                                    clientCreateAccount(fullName, username, password, email, phoneNumber, scan, client);
-                                } else if (identity == 3) {
-                                    menu1 = true;
+                    case 1: // create an account
+                        boolean menu3;
+                        do {
+                            String[] userMenu = {"Patient", "Doctor"};
+                            String userOption2;
+                            try {
+                                userOption2 = (String) JOptionPane.showInputDialog(null, "Create an account as",
+                                        "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
+                                if ((userOption2 == null) || (userOption2.isEmpty())) {
+                                    menu(scan);
+                                    return;
+                                }
+
+                                int testOption;
+                                if (userOption2.equals("Patient")) {
+                                    testOption = 1;
+                                } else if (userOption2.equals("Doctor")) {
+                                    testOption = 2;
                                 } else {
-                                    System.out.println("Please enter a valid choice.");
-                                    menu3 = true;
+                                    testOption = 3;
+                                }
+
+                                menu3 = false;
+
+
+                                JPanel panel = new JPanel(new GridLayout(5, 2));
+                                JTextField fullNameField = new JTextField();
+                                JTextField usernameField = new JTextField();
+                                JPasswordField passwordField = new JPasswordField();
+                                JTextField emailField = new JTextField();
+                                JTextField numberField = new JTextField();
+
+                                panel.add(noEdit("Full Name:"));
+                                panel.add(fullNameField);
+                                panel.add(noEdit("Username:"));
+                                panel.add(usernameField);
+                                panel.add(noEdit("Password:"));
+                                panel.add(passwordField);
+                                panel.add(noEdit("Email:"));
+                                panel.add(emailField);
+                                panel.add(noEdit("Phone Number:"));
+                                panel.add(numberField);
+
+                                int loginResult = JOptionPane.showConfirmDialog(null, panel, "Create Account",
+                                        JOptionPane.OK_CANCEL_OPTION);
+
+                                if (loginResult == JOptionPane.OK_OPTION) {
+                                    fullName = fullNameField.getText();
+                                    String username = usernameField.getText();
+                                    String password = new String(passwordField.getPassword());
+                                    String email = emailField.getText();
+                                    String number = numberField.getText();
+
+                                    clientCreateAccount(testOption, fullName, username, password, email, number, scan, client);
+
+                                }
+                                else {
+                                    //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                    menu(scan);
+                                    return;
                                 }
                             } catch (NumberFormatException e) {
-                                System.out.println("Please enter an integer.");
+                                JOptionPane.showMessageDialog(null, "Please choose a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
                                 menu3 = true;
                             }
 
                         } while (menu3);
                         break;
-                    default: // invalid choice
-                        System.out.println("Please enter a valid choice.");
-                        menu1 = true;
+
+                    case 2: // logout
+                        JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!", "Dentist Office", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    default:
+                        JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!", "Dentist Office", JOptionPane.INFORMATION_MESSAGE);
                         break;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Please enter an integer.");
+                JOptionPane.showMessageDialog(null, "Please enter a valid number.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
                 menu1 = true;
             }
         } while (menu1);
     }
 
     public static void postLoginMenu(String fullName, int identity, String username, String password, Scanner scan, DentistClient client) throws IOException {
-
         DentistOffice d = new DentistOffice("My Dentist Office", client);
         if (clientAuthenticate(username, password, client)) {
-            System.out.println("Welcome!");
-            // continue as a doctor or patient
+            int welcome = JOptionPane.showConfirmDialog(null, "Welcome!", "Dentist Office", JOptionPane.OK_CANCEL_OPTION);
+            if (welcome != JOptionPane.OK_OPTION) {
+                menu(scan);
+                return;
+            }
             boolean menu2 = false;
             do {
                 switch (identity) {
@@ -123,113 +216,207 @@ public class Login {
                         boolean menu3 = true;
 
                         do {
-                            System.out.println("1. Add Doctor \n2. Remove Doctor \n3. View Approved Appointments " +
-                                    "\n4. View Pending Appointments \n5. Approve Appointment \n" +
-                                    "6. Decline Appointment \n7. Reschedule Appointment \n8. View Statistics \n9. Import Calendar\n" +
-                                    "10. Log out");
+                            String[] userMenu = {"Add Doctor", "Remove Doctor", "View Approved Appointments", "View Pending Appointments",
+                                    "Approve Appointment", "Decline Appointment", "Reschedule Appointment", "View Statistics", "Import Calendar",
+                                    "Log Out"};
+                            String userOption;
+
                             try {
-                                String input1 = scan.nextLine();
-                                int choice = Integer.parseInt(input1);
+                                userOption = (String) JOptionPane.showInputDialog(null, "Choose an option",
+                                        "Menu", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
+                                if ((userOption == null) || (userOption.isEmpty())) {
+                                    //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                    menu(scan);
+                                    return;
+                                }
 
-                                switch (choice) {
-                                    case 1:
-                                        System.out.println("Enter the new doctor's full name: ");
-                                        doctorName = scan.nextLine();
-                                        client.println("addDoctor::" + doctorName);
-                                        if (client.readLine().equals("true")) {
-                                            System.out.println("Successfully added Doctor");
+
+
+                                int testOption;
+                                if (userOption.equals("Add Doctor")) {
+                                    testOption = 1;
+                                } else if (userOption.equals("Remove Doctor")) {
+                                    testOption = 2;
+                                } else if (userOption.equals("View Approved Appointments")) {
+                                    testOption = 3;
+                                }else if (userOption.equals("View Pending Appointments")) {
+                                    testOption = 4;
+                                }else if (userOption.equals("Approve Appointment")) {
+                                    testOption = 5;
+                                }else if (userOption.equals("Decline Appointment")) {
+                                    testOption = 6;
+                                }else if (userOption.equals("Reschedule Appointment")) {
+                                    testOption = 7;
+                                } else if (userOption.equals("View Statistics")) {
+                                    testOption = 8;
+                                }else if (userOption.equals("Import Calendar")) {
+                                    testOption = 9;
+                                } else {
+                                    testOption = 10;
+                                }
+
+                                switch (userOption) {
+                                    case "Add Doctor":
+                                        JPanel panel = new JPanel(new GridLayout(1, 1));
+                                        JTextField fullNameField = new JTextField();
+
+
+                                        panel.add(noEdit("Enter the new doctor's full name:"));
+                                        panel.add(fullNameField);
+
+                                        int loginResult = JOptionPane.showConfirmDialog(null, panel, "Add Doctor",
+                                                JOptionPane.OK_CANCEL_OPTION);
+
+                                        if (loginResult == JOptionPane.OK_OPTION) {
+                                            fullName = fullNameField.getText();
+
+                                            client.println("addDoctor::" + doctorName);
+                                            if (client.readLine().equals("true")) {
+                                                // TODO - dialog that confirms doctor was added successfully;
+                                            }
+                                        }
+                                        else if (loginResult == JOptionPane.CANCEL_OPTION) {
+                                            JOptionPane.showMessageDialog(null, "Back to menu:");
                                         }
                                         break;
-                                    case 2:
-                                        System.out.println("Enter the doctor's full name: ");
-                                        doctorName = scan.nextLine();
-                                        client.println("removeDoctor::" + doctorName);
-                                        if (client.readLine().equals("true")) {
-                                            System.out.println("Successfully removed Doctor");
+                                    case "Remove Doctor":
+                                        JPanel panel1 = new JPanel(new GridLayout(1, 1));
+                                        JTextField fullNameField1 = new JTextField();
+
+
+                                        panel1.add(noEdit("Enter the doctor's full name:"));
+                                        panel1.add(fullNameField1);
+
+                                        int loginResult1 = JOptionPane.showConfirmDialog(null, panel1, "Remove Doctor",
+                                                JOptionPane.OK_CANCEL_OPTION);
+
+                                        if (loginResult1 == JOptionPane.OK_OPTION) {
+                                            fullName = fullNameField1.getText();
+                                            client.println("removeDoctor::" + doctorName);
+                                            if (client.readLine().equals("true")) {
+                                                System.out.println("Successfully removed Doctor");
+                                                // TODO TURN PRINTLN INTO DIALOG
+                                            }
+                                        }
+                                        else if (loginResult1 == JOptionPane.CANCEL_OPTION) {
+                                            JOptionPane.showMessageDialog(null, "Back to menu:");
                                         }
                                         break;
-                                    case 3:
+                                    case "View Approved Appointments":
                                         d.clientReadDoctorFile(client);
+                                        d.viewApproved();
                                         break;
-                                    case 4:
+                                    case "View Pending Appointments":
+                                        d.viewPending();
                                         d.clientReadDoctorPendingFile(client);
                                         break;
-                                    case 5:
-                                        d.clientReadDoctorPendingFile(client);
-                                        try {
-                                            System.out.println("Enter appointment number to approve: ");
-                                            String input2 = scan.nextLine();
-                                            int approveNum = Integer.parseInt(input2);
-
-                                            if (approveNum > numPending(client)) {
-                                                System.out.println("Please enter a valid choice.");
+                                    case "Approve Appointment":
+                                        String[] pendingAppointments = d.clientGetPendingAppointments(client);
+                                        String approveOption;
+                                        if (pendingAppointments.length != 0) {
+                                            approveOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to approve?",
+                                                    "Approve appointment", JOptionPane.QUESTION_MESSAGE, null, pendingAppointments,
+                                                    pendingAppointments[0]);
+                                            if ((approveOption == null) || (approveOption.isEmpty())) {
+                                                //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                                menu3 = true;
+                                                break;
                                             } else {
-                                                DentistOffice.clientApproveAppointment(approveNum, client);
-                                                System.out.println("Appointment approved!");
+                                                DentistOffice.clientApproveAppointment(String.parseInt(approveOption), client);
+                                                JOptionPane.showMessageDialog(null, "Appointment approved.", "Approve appointment",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+
                                             }
                                         } catch (NumberFormatException e) {
                                             System.out.println("Please enter an integer.");
                                         }
-
                                         break;
-                                    case 6:
-                                        d.clientReadDoctorPendingFile(client);
-                                        try {
-                                            System.out.println("Enter appointment number to decline: ");
-                                            String input3 = scan.nextLine();
-                                            int declineNum = Integer.parseInt(input3);
 
-                                            if (declineNum > numPending(client)) {
-                                                System.out.println("Please enter a valid choice.");
+                                    case "Decline Appointment":
+                                        String[] pendingAppointments1 = d.clientGetPendingAppointments(client);
+                                        String declineOption;
+                                        if (pendingAppointments1.length != 0) {
+                                            declineOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to decline?",
+                                                    "Decline appointment", JOptionPane.QUESTION_MESSAGE, null, pendingAppointments1,
+                                                    pendingAppointments1[0]);
+                                            if ((declineOption == null) || (declineOption.isEmpty())) {
+                                                //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
+                                                menu3 = true;
                                             } else {
-                                                DentistOffice.clientDeclineAppointment(declineNum, client);
-                                                System.out.println("Appointment declined!");
+                                                DentistOffice.clientDeclineAppointment(declineOption, client);
+                                                JOptionPane.showMessageDialog(null, "Appointment declined.", "Decline appointment",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+
                                             }
                                         } catch (NumberFormatException e) {
                                             System.out.println("Please enter an integer.");
                                         }
-
                                         break;
-                                    case 7:
+                                    case "Reschedule Appointment":
+                                        d.rescheduleAppointment(scan);
                                         DentistOffice.clientRescheduleAppointment(scan, client);
                                         break;
-                                    case 8:
+                                    case "View Statistics":
+                                        OurStatistics.dentistOfficeDashboard(d, scan);
                                         OurStatistics.dentistOfficeDashboard(d, scan, client);
                                         break;
-                                    case 9:
-                                        System.out.println("Please format your .csv file by rows in orders of [1] Doctor [2] Date (Month/Day/Year) [3] Start Time [4] End Time [5] Max Attendees");
+                                    case "Import Calendar":
+                                        try {
+                                            JOptionPane.showMessageDialog(null, "Please format your .csv file by rows in orders of [1] Doctor " +
+                                                    "[2] Date (Month/Day/Year) [3] Start Time [4] End Time [5] Max Attendees");
 
-                                        System.out.println("Enter a filepath:");
-                                        String path = scan.nextLine();
-                                        client.println("importCalendar::" + path);
-                                        if (client.readLine().equals("true")) {
-                                            System.out.println("Calendar imported successfully!");
+                                            JPanel panel2 = new JPanel(new GridLayout(1, 1));
+                                            JTextField pathField = new JTextField();
+
+
+                                            panel2.add(noEdit("Enter a filepath:"));
+                                            panel2.add(pathField);
+
+                                            int loginResult2 = JOptionPane.showConfirmDialog(null, panel2, "Import Calendar",
+                                                    JOptionPane.OK_CANCEL_OPTION);
+
+                                            if (loginResult2 == JOptionPane.OK_OPTION) {
+                                                String path = pathField.getText();
+
+                                                client.println("importCalendar::" + path);
+                                                if (client.readLine().equals("true")) {
+                                                    System.out.println("Calendar imported successfully!");
+                                                }
+                                            }
+                                            else if (loginResult2 == JOptionPane.CANCEL_OPTION) {
+                                                JOptionPane.showMessageDialog(null, "Back to Menu:", "Error", JOptionPane.ERROR_MESSAGE);
+                                            }
+                                        } catch (FileNotFoundException e) {
+                                            JOptionPane.showMessageDialog(null, "Please enter a valid file path.", "Import Calendar", JOptionPane.ERROR_MESSAGE);
                                         }
+                                        break;
+                                    case "Log Out":
+                                        JOptionPane.showMessageDialog(null, "You have logged out.");
+                                        menu(scan);
 
-                                    case 10:
-                                        System.out.println("You have logged out.");
-                                        menu(scan, client);
                                         menu3 = false;
                                         break;
                                     default:
-                                        System.out.println("Please enter a valid choice.");
+                                        JOptionPane.showMessageDialog(null, "Please select a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
                                         break;
                                 }
+
+
                             } catch (NumberFormatException e) {
-                                System.out.println("Please enter an integer.");
+                                JOptionPane.showMessageDialog(null, "Please select a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
                             }
 
                         } while (menu3);
                         break;
                     default:
-                        System.out.println("Please enter a valid choice.");
+                        JOptionPane.showMessageDialog(null, "Please select a valid choice.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
                         menu2 = true;
                         break;
                 }
 
             } while (menu2);
         } else {
-            System.out.println("Error! Account does not exist");
+            JOptionPane.showMessageDialog(null, "Error! Account doesn't exist.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
             menu(scan, client);
         }
 
@@ -255,14 +442,18 @@ public class Login {
         try {
 
             if (clientAuthenticate(username, password, client)) {
-                System.out.println("Error! Account already exists");
+                JOptionPane.showMessageDialog(null, "Error! Account doesn't exist.", "Create an Account", JOptionPane.ERROR_MESSAGE);
             } else {
                 //adding the account details to the file
                 client.println("createAccount::" + fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
                 if (Boolean.parseBoolean(client.readLine())) {
-                    System.out.println("Account successfully created!");
+                    int success  = JOptionPane.showConfirmDialog(null, "Account successfully created!", "Create an Account", JOptionPane.OK_CANCEL_OPTION);
+                    if (success != JOptionPane.OK_OPTION) {
+                        menu(scan);
+                        return;
+                    }
                 } else {
-                    System.out.println("Account could not be created.");
+                    JOptionPane.showMessageDialog(null, "Account could not be created.");
                 }
 
             }
@@ -329,5 +520,6 @@ public class Login {
         }
         return num;
     }
+
 
 }

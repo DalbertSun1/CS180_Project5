@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 /**
  * Project 4
  * Dentist Office Calendar Marketplace
@@ -73,10 +78,35 @@ public class Appointment {
 
     @Override
     public String toString() {
-        if (isBooked) {
-            return "Booked: " + time + " with " + customerName;
-        } else {
+        try {
+            BufferedReader bf = new BufferedReader(new FileReader(new File("approved.txt")));
+            String line = "";
+
+            if (time != null && day != -1 && doctor != null) {
+                while ((line = bf.readLine()) != null){
+                    String[] split = line.split(",");
+                    if (time.equals(split[2]) && day == Integer.parseInt(split[1]) && doctor.equals(split[3])) {
+                        return "Booked: " + time + " with " + split[0];
+                    }
+                }
+                BufferedReader bfr = new BufferedReader(new FileReader(new File("pending.txt")));
+                String line2 = "";
+                while ((line2 = bfr.readLine()) != null){
+                    String[] split = line2.split(",");
+                    if (time.equals(split[2]) && day == Integer.parseInt(split[1]) && doctor.equals(split[3])) {
+                        return "Pending: " + time + " with " + split[0];
+                    }
+                }
+            }
+
+
+            return "Available: " + time;
+
+        } catch (FileNotFoundException e) {
+            return "Available: " + time;
+        } catch (IOException e) {
             return "Available: " + time;
         }
+
     }
 }
