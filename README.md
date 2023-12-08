@@ -1,7 +1,7 @@
 # CS180_Project5
 CS 18000 Project 5
 
-1. In order to compile and run our project, you need to first compile each of the classes on Vocareum. Then open Login.java and run it. Once you run it you can go through the prompts that pop up and follow our project as a user.
+1. In order to compile and run our project, you need to first compile each of the classes on Vocareum. Then, you need to run DentistServer.java followed by DentistClient.java. Once you run it you can go through the prompts that pop up and follow our project as a user.
 2. Dalbert Sun submitted the Vocareum Workspace. Vihaan Chadha sumbitted the report.
 3. Detailed description of each class:
 
@@ -32,7 +32,7 @@ The Patient class manages patient appointments. The methods enable making, cance
 
 **DentistOffice**
 
-The DentistOffice class oversees all the doctor-related operations and appointment creations. The addDoctor, deleteDoctor, readDoctors methods: handle the addition and removal of doctors from the pending.txt and approved.txt files and manage the reading of existing doctor details. For Appointments the methods approveAppointment, declineAppointment allow for the approval or rejection of pending appointments, and updated them to the approved.txt file as they become approved by the doctor. Then we have viewApprovedAppointments, and viewPending. These methods allow the user to view both approved and pending appointments from their respective files. Then we have the rescheduleAppointment method for sellers. This function allows the seller to go through their approved appointments and change the time and day of a specifc customer's appointment to a new time that works better for them. 
+The DentistOffice class oversees all the doctor-related operations and appointment creations. The readDoctors method reads doctor information from a file and add it to the doctorList. The client version communicates with the server to obtain the list. The addDoctor and deleteDoctor methods: handle the addition and removal of doctors from the pending.txt and approved.txt files. For Appointments the methods approveAppointment, declineAppointment allow for the approval or rejection of pending appointments, and updated them to the approved.txt file as they become approved by the doctor. The methods serverGetAppointments and clientGetAppointments retrieve approved appointments, and display them to the user and for both server and client. ViewPending, serverViewPending, clientReadDoctorPendingFile, and clientGetPendingAppointments display the pending appointments. Then we have the rescheduleAppointment method for sellers. This function allows the seller to go through their approved appointments and change the time and day of a specifc customer's appointment to a new time that works better for them. We use JOptionPane for input and output where we ask the user questions and take their inputs for our functions.
 
 **Relationship:** DentistOffice uses methods from Doctor, Patient, Day, and Appointment in order to facilliate doing the operations of a doctor. It also then is refrenced by Login when we create a menu and do case statements that call all the methods from DentistOffice and use them to run the operations from the seller(doctor) side. It is one of our main classes and is similar to patient in the way it handles everything for the doctor.
 
