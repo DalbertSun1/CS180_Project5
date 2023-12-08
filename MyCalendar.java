@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class MyCalendar extends Login {
     boolean menu = false;
+    DentistClient client;
 
     JFrame request;
     int apptIndex = -1;
@@ -263,7 +264,8 @@ public class MyCalendar extends Login {
 //    }
 
 
-    public void viewCalendar() {
+    public void viewCalendar(DentistClient theClient) {
+        client = theClient;
         frame = new JFrame("Calendar");
 
         frame.setSize(600, 400);
@@ -315,7 +317,7 @@ public class MyCalendar extends Login {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof JButton source) {
                 if (isInt(source.getText())) {
-                    openNewFrame("July " + source.getText() + ", 2023", Integer.parseInt(source.getText()));
+                    openNewFrame("July " + source.getText() + ", 2023", Integer.parseInt(source.getText()), client);
                 } else if (source.getText().substring(0,4).equals("Dr. ")){
                     for (Doctor d : doctors){
 //                        System.out.println("d.getname: " + d.getName());
@@ -397,67 +399,49 @@ public class MyCalendar extends Login {
 
         return tempButton;
     }
-    private void openNewFrame(String title, int date) {
-        File f = new File("doctors.txt");
-        try {
-            FileReader fr = new FileReader(f);
-            BufferedReader bf = new BufferedReader(fr);
-            day = date;
-            doctors = days[date-1].getDoctors();
-            Container content = newFrame.getContentPane();
-            content.removeAll();
-            newFrame.setTitle("Make An Appointment: July " + date + ", 2023");
-            newFrame.setSize(600, 400);
+    private void openNewFrame(String title, int date, DentistClient client) {
+        day = date;
+        doctors = days[date-1].getDoctors();
+        Container content = newFrame.getContentPane();
+        content.removeAll();
+        newFrame.setTitle("Make An Appointment: July " + date + ", 2023");
+        newFrame.setSize(600, 400);
 //
 //            JLabel label = new JLabel("July " + date + ", 2023");
 //            label.setHorizontalAlignment(SwingConstants.CENTER);
 //            newFrame.add(label, BorderLayout.NORTH);
 
 
-            JPanel buttons = new JPanel();
-            buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
+        JPanel buttons = new JPanel();
+        buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
 
 
-
-
-
-            String line;
-            while ((line = bf.readLine()) != null) {
-                if (!line.equals("")) {
-
-                    doctors.add(new Doctor(line));
-                }
-            }
-            days[date-1].setDoctors(doctors);
-            int height = 0;
-            if (doctors.size() < 5) {
-                height = 70;
-            } else {
-                height = 400/doctors.size();
-            }
-
-            for (int i = 0; i < doctors.size(); i++) {
-                JButton button = new JButton("Dr. " + doctors.get(i).getName());
-                button.setAlignmentX(Component.CENTER_ALIGNMENT);
-                button.addActionListener(actionListener);
-                button.setMaximumSize(new java.awt.Dimension(300, height));
-
-                buttons.add(button);
-
-            }
-
-
-            newFrame.add(buttons);
-
-
-
-            newFrame.setLocationRelativeTo(null);
-            newFrame.setVisible(true);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        DentistOffice d = new DentistOffice("My Dentist Office");
+        doctors = d.clientReadDoctors(client);
+        days[date-1].setDoctors(doctors);
+        int height = 0;
+        if (doctors.size() < 5) {
+            height = 70;
+        } else {
+            height = 400/doctors.size();
         }
+
+        for (int i = 0; i < doctors.size(); i++) {
+            JButton button = new JButton("Dr. " + doctors.get(i).getName());
+            button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            button.addActionListener(actionListener);
+            button.setMaximumSize(new Dimension(300, height));
+
+            buttons.add(button);
+
+        }
+
+
+        newFrame.add(buttons);
+
+
+        newFrame.setLocationRelativeTo(null);
+        newFrame.setVisible(true);
     }
     private void openDoctorFrame(String doctor) {
         //File f = new File("doctors.txt");

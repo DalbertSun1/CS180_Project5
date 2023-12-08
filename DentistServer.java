@@ -104,10 +104,10 @@ public class DentistServer {
 
                 }
                 case "readDoctorFile" -> {
-                    d.serverReadDoctorFile(this);
+                    DentistOffice.serverReadDoctorFile(this);
                 }
                 case "readDoctorPendingFile" -> {
-                    d.serverReadDoctorPendingFile(this);
+                    DentistOffice.serverReadDoctorPendingFile(this);
                 }
                 case "approveAppointment" -> {
                     String line = (params[0]);

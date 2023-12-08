@@ -85,7 +85,7 @@ public class Patient extends Login {
                         boolean invalidInput = false;
                         int date = 0;
                         do {
-                            cal.viewCalendar();
+                            cal.viewCalendar(client);
                             //System.out.println(cal.viewCalendar()); // display calendar
                             //System.out.println("Select a day to view available doctors:");
                             try {
