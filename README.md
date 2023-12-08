@@ -1,5 +1,5 @@
-# CS180_Project4
-CS 18000 Project 4
+# CS180_Project5
+CS 18000 Project 5
 
 1. In order to compile and run our project, you need to first compile each of the classes on Vocareum. Then open Login.java and run it. Once you run it you can go through the prompts that pop up and follow our project as a user.
 2. Dalbert Sun submitted the Vocareum Workspace. Vihaan Chadha sumbitted the report.
