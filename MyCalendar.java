@@ -355,23 +355,17 @@ public class MyCalendar extends Login {
                     panel.add(new JLabel("Your appointment has been requested!"));
 
 
-                    JButton ok = new JButton("Back to Menu");
+                    JButton ok = new JButton("Exit");
                     ok.addActionListener(actionListener);
                     panel.add(ok);
                     request.add(panel);
 
                     request.setLocationRelativeTo(null);
                     request.setVisible(true);
-                } else if (source.getText().equals("Back to Menu")) {
+                } else if (source.getText().equals("Exit")) {
                     //System.out.println("menu is true fucker");
-                    try {
-                        request.dispose();
-                        MyCalendar.super.start();
+                    request.dispose();
 
-
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
 
                     menu = true;
                 }

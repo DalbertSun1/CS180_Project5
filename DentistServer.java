@@ -78,8 +78,8 @@ public class DentistServer {
                 }
 
                 case "cancelAppointment" -> {
-                    int choice = Integer.parseInt(params[1]);
                     String name = params[0];
+                    String choice = params[1];
                     println(Patient.cancelAppointment(name, choice) + "");
                 }
 
@@ -110,7 +110,7 @@ public class DentistServer {
                     d.serverReadDoctorPendingFile(this);
                 }
                 case "approveAppointment" -> {
-                    int line = Integer.parseInt(params[0]);
+                    String line = (params[0]);
                     try {
                         println(DentistOffice.approveAppointment(line) + "");
                     } catch (IOException e) {
@@ -118,7 +118,7 @@ public class DentistServer {
                     }
                 }
                 case "declineAppointment" -> {
-                    int line = Integer.parseInt(params[0]);
+                    String line = (params[0]);
                     try {
                         println(DentistOffice.declineAppointment(line) + "");
                     } catch (IOException e) {
