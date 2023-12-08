@@ -86,6 +86,10 @@ public class Patient extends Login {
                         int date = 0;
                         do {
                             cal.viewCalendar(client);
+                            while(cal.getResultComplete() == false) {
+                                continue;
+                            }
+                            clientPending(cal.getResult(), client);
                             //System.out.println(cal.viewCalendar()); // display calendar
                             //System.out.println("Select a day to view available doctors:");
                             try {
@@ -159,9 +163,9 @@ public class Patient extends Login {
                                 clientPending(name, date, doc, appointment, client);
 
                                 if (clientPending(name, date, doc, appointment, client)) {  // send info to server
-                                     JOptionPane.showMessageDialog(null, "Appointment booked!");
+                                    JOptionPane.showMessageDialog(null, "Appointment booked!");
                                 } else {
-                                      JOptionPane.showMessageDialog(null, "Error during appointment booking!");
+                                    JOptionPane.showMessageDialog(null, "Error during appointment booking!");
                                 }
                                 menu2 = true;
                             } catch (NumberFormatException e) {
@@ -186,15 +190,15 @@ public class Patient extends Login {
                                 b[i] = apptList.get(i);
                             }
                             if (a.length == 0) {
-                      
+
                                 JOptionPane.showMessageDialog(null, "You have no approved appointments to cancel.", "Cancel an appointment",
                                         JOptionPane.ERROR_MESSAGE);
-                               
+
                             } else if (b.length == 0) {
                                 menu2 = true;
 
                             } else {
-                             
+
                                 String cancelOption = (String) JOptionPane.showInputDialog(null, "Choose an appointment to cancel.",
                                         "Cancel an appointment", JOptionPane.QUESTION_MESSAGE, null, b,
                                         b[0]);
@@ -241,7 +245,7 @@ public class Patient extends Login {
                         break;
                     case "View approved appointments":
                         clientReadFile(scan, client);
-                    
+
                         menu2 = true;
                         break;
                     case "Reschedule an appointment":
@@ -260,7 +264,7 @@ public class Patient extends Login {
                     case "Log Out":
                         JOptionPane.showMessageDialog(null, "You have logged out.");
                         Login l = new Login();
-                    
+
                         l.menu(scan, client);
                         break;
                     default:
@@ -405,7 +409,7 @@ public class Patient extends Login {
         // the Patient's name
 
         String name = JOptionPane.showInputDialog(null, "Enter your name",
-                    "Appointments", JOptionPane.QUESTION_MESSAGE);
+                "Appointments", JOptionPane.QUESTION_MESSAGE);
         client.println("readFile::" + name);
 
         ArrayList<String> aptList = new ArrayList<>();
@@ -418,7 +422,7 @@ public class Patient extends Login {
                 aptList.add(apt);
             }
             JOptionPane.showMessageDialog(null, "Oops try again.", "Approved appointments",
-                      JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, aptList, "Approved appointments",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -432,7 +436,7 @@ public class Patient extends Login {
     public static boolean clientRescheduleAppointment(Scanner scan, DentistClient client) throws IOException {
 
         String name = JOptionPane.showInputDialog(null, "Enter your name",
-                  "Reschedule appointment", JOptionPane.QUESTION_MESSAGE);
+                "Reschedule appointment", JOptionPane.QUESTION_MESSAGE);
         client.println("readFile::" + name);
 
         ArrayList<String> aptList = new ArrayList<>();
@@ -531,7 +535,7 @@ public class Patient extends Login {
                         //String doctorName = aptList.get(userIndex).split(",")[3];
 
                         client.println("rescheduleAppointment::" + name + ","
-                        + newDate + "," + newTime + "," + doctorName + "," + lineSplit[0]);
+                                + newDate + "," + newTime + "," + doctorName + "," + lineSplit[0]);
                         if (!Boolean.parseBoolean(client.readLine())) {
                             timeIsBooked = true;
                             System.out.println("That time and day is already taken. Please choose another.");
@@ -575,7 +579,7 @@ public class Patient extends Login {
             if (lineSplit[3].equals(doctorName)) {
                 if (lineSplit[1].equals(day)) {
                     if (lineSplit[2].equals(time)) {
-                         return false;
+                        return false;
                     }
                 }
             }
@@ -661,6 +665,16 @@ public class Patient extends Login {
     public static boolean clientPending(String name, int date, Doctor doctor, Appointment appointment, DentistClient client) {
         // send to server
         client.println("makeAppointment::" + name + "," + date + "," + doctor.getName() + "," + appointment.getTime());
+
+        if (client.readLine().equals("true")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public static boolean clientPending(String string, DentistClient client) {
+        // send to server
+        client.println("makeAppointment::" + string);
 
         if (client.readLine().equals("true")) {
             return true;

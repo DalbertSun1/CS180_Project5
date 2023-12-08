@@ -81,35 +81,35 @@ public class DentistOffice {
 
 
     public boolean addDoctor(Doctor doctor) {
-    try {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", true));
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", true));
 
-        int counter = 0;
+            int counter = 0;
         /*for (int i = 0; i < doctorList.size(); i++) {
             if (doctorList.get(i). equals(doctor)) {
                 counter++;
             }
         }*/
 
-        BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            if (String.valueOf(doctor).equals(line)) {
-                counter++;
+            BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (String.valueOf(doctor).equals(line)) {
+                    counter++;
+                }
             }
-        }
 
-        if (counter == 0) {
-            doctorList.add(doctor);
-            writer.write(String.valueOf(doctor) + "\n");
-            JOptionPane.showMessageDialog(null, "Successfully added doctor " + doctor.getName() + " to " + this.name);
+            if (counter == 0) {
+                doctorList.add(doctor);
+                writer.write(String.valueOf(doctor) + "\n");
+                JOptionPane.showMessageDialog(null, "Successfully added doctor " + doctor.getName() + " to " + this.name);
 
-        } else {
-            JOptionPane.showMessageDialog(null,"Doctor " + doctor.getName() + " is already in " + this.name);
-        }
-        writer.close();
-        reader.close();
-        return true;
+            } else {
+                JOptionPane.showMessageDialog(null,"Doctor " + doctor.getName() + " is already in " + this.name);
+            }
+            writer.close();
+            reader.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -205,6 +205,8 @@ public class DentistOffice {
 
         String input = client.readLine(); // get apts from server
 
+        String[] approvedAppointments = new String[0];
+
         for (String apt : input.split(";")) { // turn apts into a list of strings
             aptList.add(apt);
         }
@@ -213,22 +215,30 @@ public class DentistOffice {
             JOptionPane.showMessageDialog(null, "You have no approved appointments at this time.", "Approved appointments",
                     JOptionPane.ERROR_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(null, aptList, "Approved appointments",
-                    JOptionPane.INFORMATION_MESSAGE);
+            approvedAppointments = new String[aptList.size()];
+            for (int i = 0; i < approvedAppointments.length; i++) {
+                approvedAppointments[i] = aptList.get(i);
+            }
+
+            JOptionPane.showConfirmDialog(null, approvedAppointments, "Approved appointments",
+                    JOptionPane.OK_CANCEL_OPTION);
+
         }
     }
 
     public static void serverReadDoctorFile(DentistServer server) {
         try {
+            // read pending apts
+            BufferedReader reader = new BufferedReader(new FileReader("approved.txt"));
+            ArrayList<String> appointmentsList = new ArrayList<>();
 
-            String[] aptList = serverGetAppointments();
-            // Now you have the appointments in the 'appointments' array
-            if (aptList.length == 0) {
-                //System.out.println("You have no approved appointments.");
-                JOptionPane.showMessageDialog(null, "You have no approved appointments at this time.", "Approved appointments",
-                        JOptionPane.ERROR_MESSAGE);
-            } else {
-
+            String line;
+            while ((line = reader.readLine()) != null) {
+                appointmentsList.add(line);
+            }
+            reader.close();
+            String[] aptList = appointmentsList.toArray(new String[0]);
+            // Now you have the approved appointments in the 'aptList' array
 
             // send aptList to client
             StringBuilder output = new StringBuilder();
@@ -236,10 +246,7 @@ public class DentistOffice {
                 output.append(apt + ";");
             }
             server.println(output.toString());
-                
-                JOptionPane.showMessageDialog(null, aptList, "Approved appointments",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
+
         } catch (IOException e) {
             e.printStackTrace(); // Handle the IOException appropriately
         }
@@ -276,20 +283,25 @@ public class DentistOffice {
 
         String input = client.readLine(); // get apts from server
 
+        String[] pendingAppointments = new String[0];
+
         for (String apt : input.split(";")) { // turn apts into a list of strings
             aptList.add(apt);
         }
 
 
         if (aptList.isEmpty()) {
-            System.out.println("You have no pending appointments.");
+            JOptionPane.showMessageDialog(null, "You have no pending appointments at this time.", "Pending appointments",
+                    JOptionPane.ERROR_MESSAGE);
         } else {
-            System.out.println("Pending appointments:");
-            for (int i = 0; i < aptList.size(); i++) {
-
-                System.out.println((i + 1) + ": " + aptList.get(i));
-
+            pendingAppointments = new String[aptList.size()];
+            for (int i = 0; i < pendingAppointments.length; i++) {
+                pendingAppointments[i] = aptList.get(i);
             }
+
+            JOptionPane.showConfirmDialog(null, pendingAppointments, "Pending appointments",
+                    JOptionPane.OK_CANCEL_OPTION);
+
         }
     }
 

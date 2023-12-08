@@ -306,7 +306,6 @@ public class Login extends JComponent{
                                         d.clientReadDoctorFile(client);
                                         break;
                                     case "View Pending Appointments":
-                                        d.viewPending();
                                         d.clientReadDoctorPendingFile(client);
                                         break;
                                     case "Approve Appointment":
@@ -356,30 +355,30 @@ public class Login extends JComponent{
                                         break;
                                     case "Import Calendar":
                                         //try {
-                                            JOptionPane.showMessageDialog(null, "Please format your .csv file by rows in orders of [1] Doctor " +
-                                                    "[2] Date (Month/Day/Year) [3] Start Time [4] End Time [5] Max Attendees");
+                                        JOptionPane.showMessageDialog(null, "Please format your .csv file by rows in orders of [1] Doctor " +
+                                                "[2] Date (Month/Day/Year) [3] Start Time [4] End Time [5] Max Attendees");
 
-                                            JPanel panel2 = new JPanel(new GridLayout(1, 1));
-                                            JTextField pathField = new JTextField();
+                                        JPanel panel2 = new JPanel(new GridLayout(1, 1));
+                                        JTextField pathField = new JTextField();
 
 
-                                            panel2.add(noEdit("Enter a filepath:"));
-                                            panel2.add(pathField);
+                                        panel2.add(noEdit("Enter a filepath:"));
+                                        panel2.add(pathField);
 
-                                            int loginResult2 = JOptionPane.showConfirmDialog(null, panel2, "Import Calendar",
-                                                    JOptionPane.OK_CANCEL_OPTION);
+                                        int loginResult2 = JOptionPane.showConfirmDialog(null, panel2, "Import Calendar",
+                                                JOptionPane.OK_CANCEL_OPTION);
 
-                                            if (loginResult2 == JOptionPane.OK_OPTION) {
-                                                String path = pathField.getText();
+                                        if (loginResult2 == JOptionPane.OK_OPTION) {
+                                            String path = pathField.getText();
 
-                                                client.println("importCalendar::" + path);
-                                                if (client.readLine().equals("true")) {
-                                                    System.out.println("Calendar imported successfully!");
-                                                }
+                                            client.println("importCalendar::" + path);
+                                            if (client.readLine().equals("true")) {
+                                                System.out.println("Calendar imported successfully!");
                                             }
-                                            else if (loginResult2 == JOptionPane.CANCEL_OPTION) {
-                                                JOptionPane.showMessageDialog(null, "Back to Menu:", "Error", JOptionPane.ERROR_MESSAGE);
-                                            }
+                                        }
+                                        else if (loginResult2 == JOptionPane.CANCEL_OPTION) {
+                                            JOptionPane.showMessageDialog(null, "Back to Menu:", "Error", JOptionPane.ERROR_MESSAGE);
+                                        }
                                         /*}
                                         catch (FileNotFoundException e) {
                                             JOptionPane.showMessageDialog(null, "Please enter a valid file path.", "Import Calendar", JOptionPane.ERROR_MESSAGE);

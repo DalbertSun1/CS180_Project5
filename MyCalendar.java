@@ -10,8 +10,12 @@ import java.util.ArrayList;
 
 public class MyCalendar extends Login {
     boolean menu = false;
+
+
     DentistClient client;
 
+    boolean resultComplete = false;
+    String result = "";
     JFrame request;
     int apptIndex = -1;
     int day;
@@ -265,8 +269,12 @@ public class MyCalendar extends Login {
 
 
     public void viewCalendar(DentistClient theClient) {
-        client = theClient;
+        resultComplete = false;
         frame = new JFrame("Calendar");
+        //client = theClient;
+
+        DentistOffice d = new DentistOffice("My Dentist Office", theClient);
+        doctors = d.clientReadDoctors(theClient);
 
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
@@ -310,6 +318,12 @@ public class MyCalendar extends Login {
 
         return panel;
     }
+    public String getResult() {
+        return result;
+    }
+    public boolean getResultComplete() {
+        return resultComplete;
+    }
 
     ActionListener actionListener = new ActionListener() {
 
@@ -317,7 +331,7 @@ public class MyCalendar extends Login {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof JButton source) {
                 if (isInt(source.getText())) {
-                    openNewFrame("July " + source.getText() + ", 2023", Integer.parseInt(source.getText()), client);
+                    openNewFrame("July " + source.getText() + ", 2023", Integer.parseInt(source.getText()));
                 } else if (source.getText().substring(0,4).equals("Dr. ")){
                     for (Doctor d : doctors){
 //                        System.out.println("d.getname: " + d.getName());
@@ -348,8 +362,9 @@ public class MyCalendar extends Login {
                     username = name.getText();
                     selectedDoctor.getAppointments().set(apptIndex, selectedAppointment);
 
-                    makeAppointmentLeBron(selectedAppointment.getTime(), selectedDoctor.getName());
-
+                    //makeAppointmentLeBron(selectedAppointment.getTime(), selectedDoctor.getName());
+                    result = username + "," + day + "," + selectedDoctor.getName() + "," + selectedAppointment.getTime();
+                    resultComplete = true;
                     request = new JFrame();
                     request.setSize(600, 100);
                     request.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -399,9 +414,9 @@ public class MyCalendar extends Login {
 
         return tempButton;
     }
-    private void openNewFrame(String title, int date, DentistClient client) {
+    private void openNewFrame(String title, int date) {
         day = date;
-        doctors = days[date-1].getDoctors();
+        //doctors = days[date-1].getDoctors();
         Container content = newFrame.getContentPane();
         content.removeAll();
         newFrame.setTitle("Make An Appointment: July " + date + ", 2023");
@@ -415,9 +430,6 @@ public class MyCalendar extends Login {
         JPanel buttons = new JPanel();
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
 
-
-        DentistOffice d = new DentistOffice("My Dentist Office");
-        doctors = d.clientReadDoctors(client);
         days[date-1].setDoctors(doctors);
         int height = 0;
         if (doctors.size() < 5) {
@@ -562,15 +574,19 @@ public class MyCalendar extends Login {
     }
 
     public void makeAppointmentLeBron(String time, String nameDoctor) {
-        try {
-            File f = new File("pending.txt"); //creates pending appointments file
-            FileOutputStream fos = new FileOutputStream(f, true);
-            PrintWriter pw = new PrintWriter(fos);
-            pw.println(username + "," + day + "," + time + "," + nameDoctor);
-            pw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            File f = new File("pending.txt"); //creates pending appointments file
+//            FileOutputStream fos = new FileOutputStream(f, true);
+//            PrintWriter pw = new PrintWriter(fos);
+        client.println(username + "," + day + "," + time + "," + nameDoctor);
+//            pw.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+    public void appt() {
+        System.out.println(username + " " + day + " " + selectedDoctor + " " + selectedAppointment);
+        Patient.clientPending(username, day, selectedDoctor, selectedAppointment, client);
     }
 
 }
