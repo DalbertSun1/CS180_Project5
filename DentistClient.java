@@ -1,3 +1,4 @@
+import javax.management.relation.RoleUnresolved;
 import java.io.*;
 import java.net.*;
 
@@ -36,9 +37,13 @@ public class DentistClient {
 
 
 
-    public synchronized static void main(String[] args) {
-        DentistClient thisClient = new DentistClient();
-        thisClient.run();
+    public static void main(String[] args) {
+        try {
+            DentistClient thisClient = new DentistClient();
+            thisClient.run();
+        } catch (Exception r) {
+            r.printStackTrace();
+        }
     }
 
 
@@ -48,11 +53,13 @@ public class DentistClient {
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("ERROR!");
+        } catch (RuntimeException r) {
+            throw new RuntimeException();
         }
     }
 
 
-    public String readLine() {
+    public synchronized String readLine() {
         try {
             String line = reader.readLine();
             System.out.println("Read from server -> " + line);

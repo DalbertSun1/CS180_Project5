@@ -7,33 +7,28 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class DentistServer {
+public class DentistServer implements Runnable {
 
     static final int port = 6000;
     ServerSocket serverSocket;
     Socket socket;
     BufferedReader reader;
     PrintWriter writer;
+    public static Object obj = new Object();
 
-    public DentistServer() {
+    public DentistServer(Socket socket) {
+        this.socket = socket;
+
+
+    }
+
+    public void run() {
         try {
-            serverSocket = new ServerSocket(port);
-            System.out.println("Waiting for client....");
-            socket = serverSocket.accept();
-            System.out.println("Client connected.");
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-    }
-    public synchronized static void main(String[] args) {
-        DentistServer thisServer = new DentistServer();
-        thisServer.run();
-    }
-
-    synchronized void run() {
         boolean clientConnected = true;
         int i = 0;
         while (clientConnected) {
@@ -57,10 +52,14 @@ public class DentistServer {
                 case "authenticate" -> {
                     String username = params[0];
                     String password = params[1];
-                    println(Login.checkAccount(username, password) + "");
+                    synchronized (obj) {
+                        println(Login.checkAccount(username, password) + "");
+                    }
                 }
                 case "createAccount" -> {
-                    println(Boolean.toString(Login.serverCreateAccount(params[0], params[1], params[2], params[3], params[4])));
+                    synchronized (obj) {
+                        println(Boolean.toString(Login.serverCreateAccount(params[0], params[1], params[2], params[3], params[4])));
+                    }
                 }
 
 
@@ -71,16 +70,20 @@ public class DentistServer {
                     String appointmentTime = params[3];
                     String doctorName = params[2];
 
-                    Appointment appointment = new Appointment(appointmentTime);
-                    Doctor doctor = new Doctor(doctorName);
+                    synchronized (obj) {
+                        Appointment appointment = new Appointment(appointmentTime);
+                        Doctor doctor = new Doctor(doctorName);
 
-                    println(Patient.makeAppointment(name, date, doctor, appointment));
+                        println(Patient.makeAppointment(name, date, doctor, appointment));
+                    }
                 }
 
                 case "cancelAppointment" -> {
                     String name = params[0];
                     String choice = params[1];
-                    println(Patient.cancelAppointment(name, choice) + "");
+                    synchronized (obj) {
+                        println(Patient.cancelAppointment(name, choice) + "");
+                    }
                 }
 
 
@@ -90,68 +93,92 @@ public class DentistServer {
                 // DentistOffice functions
 
                 case "addDoctor" -> {
-                    println(Boolean.toString(d.addDoctor(new Doctor(params[0]))));
+                    synchronized (obj) {
+                        boolean result = d.addDoctor(new Doctor(params[0]));
+                        println(String.valueOf(result));
+                    }
                 }
                 case "removeDoctor" -> {
-                    println(Boolean.toString(d.removeDoctor(new Doctor(params[0]))));
+                    synchronized (obj) {
+                        boolean result = d.removeDoctor(new Doctor(params[0]));
+                        println(String.valueOf(result));
+                    }
                 }
                 case "readDoctors" -> {
-                    StringBuilder output = new StringBuilder();
-                    for (Doctor doctor : d.getDoctorList()) {
-                        output.append(doctor.getName()).append(",");
+                    synchronized (obj) {
+                        StringBuilder output = new StringBuilder();
+                        for (Doctor doctor : d.getDoctorList()) {
+                            output.append(doctor.getName()).append(",");
+                        }
+                        println(output.toString());
                     }
-                    println(output.toString());
 
                 }
                 case "readDoctorFile" -> {
-                    d.serverReadDoctorFile(this);
+                    synchronized (obj) {
+                        d.serverReadDoctorFile(this);
+                    }
                 }
                 case "readDoctorPendingFile" -> {
-                    d.serverReadDoctorPendingFile(this);
+                    synchronized (obj) {
+                        d.serverReadDoctorPendingFile(this);
+                    }
                 }
                 case "approveAppointment" -> {
                     String line = (params[0]);
-                    try {
-                        println(DentistOffice.approveAppointment(line) + "");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    synchronized (obj) {
+                        try {
+                            println(DentistOffice.approveAppointment(line) + "");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
                 case "declineAppointment" -> {
                     String line = (params[0]);
-                    try {
-                        println(DentistOffice.declineAppointment(line) + "");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    synchronized (obj) {
+                        try {
+                            println(DentistOffice.declineAppointment(line) + "");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
                 case "rescheduleAppointment" -> {
                     Scanner scan = new Scanner(System.in);
-                    try {
-                        println(String.valueOf(Patient.serverRescheduleAppointment(params[0],
-                                params[1], params[2], params[3], Integer.valueOf(params[4]))));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    synchronized (obj) {
+                        try {
+                            println(String.valueOf(Patient.serverRescheduleAppointment(params[0],
+                                    params[1], params[2], params[3], Integer.valueOf(params[4]))));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
                 case "importCalendar" -> {
-                    MyCalendar calendar = new MyCalendar(params[0]);
-                    ArrayList<Doctor> addD = calendar.importCalendar();
-                    for (int j = 0; j < addD.size(); j++) {
-                        d.addDoctor(addD.get(j));
+                    synchronized (obj) {
+                        MyCalendar calendar = new MyCalendar(params[0]);
+                        ArrayList<Doctor> addD = calendar.importCalendar();
+                        for (int j = 0; j < addD.size(); j++) {
+                            d.addDoctor(addD.get(j));
+                        }
+                        println("true");
                     }
-                    println("true");
                 }
 
                 // other functions
 
                 case "readFile" -> { // reads file for all apts that match the given name
                     String name = params[0];
-                    Patient.serverReadFile(name, this);
+                    synchronized (obj) {
+                        Patient.serverReadFile(name, this);
+                    }
                 }
 
                 default -> {
-                    clientConnected = false;
+                    synchronized (obj) {
+                        clientConnected = false;
+                    }
                 }
 
             }

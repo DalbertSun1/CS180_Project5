@@ -82,6 +82,7 @@ public class DentistOffice {
 
     public boolean addDoctor(Doctor doctor) {
         try {
+            //System.out.println("Adding Doctor:");
             BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", true));
 
             int counter = 0;
@@ -100,20 +101,19 @@ public class DentistOffice {
             }
 
             if (counter == 0) {
-                doctorList.add(doctor);
-                writer.write(doctor + "\n");
-                JOptionPane.showMessageDialog(null, "Successfully added doctor " + doctor.getName() + " to " + this.name);
-                writer.close();
-                reader.close();
-                return true;
-
+                //doctorList.add(doctor);
+                writer.write(doctor.getName() + "\n");
             } else {
                 JOptionPane.showMessageDialog(null,"Doctor " + doctor.getName() + " is already in " + this.name);
             }
+            writer.flush();
+            writer.close();
+            reader.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
 
     }
 
@@ -121,29 +121,36 @@ public class DentistOffice {
         try {
             boolean repeat = false;
             int doctorNum = -1;
+            ArrayList<String> doctorList1 = new ArrayList<>();
 
-            for (int i = 0; i < doctorList.size(); i++) {
-                if (String.valueOf(doctorList.get(i)).equals(String.valueOf(doctor))) {
+            BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", false));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (String.valueOf(doctor).equals(line)) {
                     repeat = true;
-                    doctorNum = i;
+                }
+                else {
+                    doctorList1.add(line);
                 }
             }
-            if (repeat) {
-                BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", false));
 
-                doctorList.remove(doctorNum);
-                for (Doctor s : doctorList) {
+            if (repeat) {
+                //doctorList.remove(doctorNum);
+                for (String s : doctorList1) {
                     writer.write(String.valueOf(s));
                     writer.newLine();
                 }
 
-                writer.close();
-                JOptionPane.showMessageDialog(null, "Successfully removed doctor " + doctor.getName() + " from " + this.name);
-                return true;
+                //writer.close();
             } else {
                 JOptionPane.showMessageDialog(null, "Doctor " + doctor.getName() + " is not in " + this.name);
-                return false;
             }
+            writer.flush();
+            writer.close();
+            reader.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
