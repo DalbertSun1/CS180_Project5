@@ -149,7 +149,6 @@ public class DentistServer implements Runnable {
                     }
                 }
                 case "rescheduleAppointment" -> {
-                    Scanner scan = new Scanner(System.in);
                     synchronized (obj) {
                         try {
                             println(String.valueOf(Patient.serverRescheduleAppointment(params[0],
@@ -175,7 +174,16 @@ public class DentistServer implements Runnable {
                 case "readFile" -> { // reads file for all apts that match the given name
                     String name = params[0];
                     synchronized (obj) {
-                        Patient.serverReadFile(name, this);
+                        String[] approvedList = Patient.serverReadFile(name,this);
+                        String approvedLine = "";
+                        for (int j = 0; j < approvedList.length; j++) {
+                            if (j == 0) {
+                                approvedLine = approvedList[i];
+                            } else {
+                                approvedLine = (approvedLine + ";" + approvedList[i]);
+                            }
+                        }
+                        println(approvedLine);
                     }
                 }
 
