@@ -79,10 +79,9 @@ public class DentistServer implements Runnable {
                 }
 
                 case "cancelAppointment" -> {
-                    String name = params[0];
-                    String choice = params[1];
+                    String choice = (params[0] + "," + params[1] + "," + params[2] + "," + params[3]);
                     synchronized (obj) {
-                        println(Patient.cancelAppointment(name, choice) + "");
+                        println(Boolean.toString(Patient.cancelAppointment(choice)));
                     }
                 }
 

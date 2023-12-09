@@ -213,10 +213,7 @@ public class Patient extends Login {
 
                                     //checking for valid choice
                                     int counter = 1;
-                                    for (int i = 1; i < a.length; i++) {
-                                        if (Integer.parseInt(cancelOption) == i) {
-                                            counter = 0;
-                                        }
+                                    for (int i = 0; i < a.length; i++) {
                                         if (a[i] != null) {
                                             if (a[i].equals(cancelOption)) {
                                                 counter = 0;
@@ -225,7 +222,7 @@ public class Patient extends Login {
                                     }
                                     if (counter == 0) {
                                         //TODO : add gui asking for name
-                                        clientCancelAppointment(name, cancelOption, client);
+                                        clientCancelAppointment(cancelOption, client);
                                         JOptionPane.showMessageDialog(null, "Appointment canceled.", "Cancel an appointment",
                                                 JOptionPane.INFORMATION_MESSAGE);
 
@@ -301,6 +298,7 @@ public class Patient extends Login {
     }
 
 
+    /*
     public static boolean cancelAppointment(String patientName, String cancelOption) {
         try {
             ArrayList<String> initialAppointments = new ArrayList<>(Arrays.asList(DentistOffice.serverGetAppointments()));
@@ -349,6 +347,34 @@ public class Patient extends Login {
         return false;
     }
 
+     */
+
+    public static boolean cancelAppointment(String cancelOption) {
+        try {
+            ArrayList<String> list1 = new ArrayList<String>();
+            BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
+            String line = bfr.readLine();
+            while (line != null) {
+                if (!(line.equals(cancelOption))) {
+                    list1.add(line);
+                }
+                line = bfr.readLine();
+            }
+            bfr.close();
+
+            File f = new File("approved.txt");
+            FileOutputStream fos = new FileOutputStream(f);
+            PrintWriter pw = new PrintWriter(fos);
+            for (int i = 0; i < list1.size(); i++) {
+                pw.println(list1.get(i));
+            }
+            pw.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public static void serverReadFile(String name, DentistServer server) { // reads file and returns printList to client
         try {
@@ -414,18 +440,17 @@ public class Patient extends Login {
 
         ArrayList<String> aptList = new ArrayList<>();
 
-
         String input = client.readLine();
 
         if (!input.isEmpty()) {
             for (String apt : input.split(";")) {
                 aptList.add(apt);
             }
-            JOptionPane.showMessageDialog(null, "Oops try again.", "Approved appointments",
-                    JOptionPane.ERROR_MESSAGE);
-        } else {
             JOptionPane.showMessageDialog(null, aptList, "Approved appointments",
                     JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "You have no approved appointments at this time.", "Approved appointments",
+                    JOptionPane.ERROR_MESSAGE);
         }
         return aptList.toArray(new String[0]);
 
@@ -587,10 +612,6 @@ public class Patient extends Login {
         }
 
 
-
-
-
-
         String newApt = patientName + "," + day + "," + time + "," + doctorName;
         lines.set(fileIndex, newApt);
 
@@ -683,9 +704,9 @@ public class Patient extends Login {
         }
     }
 
-    public static boolean clientCancelAppointment(String name, String choice, DentistClient client) {
+    public static boolean clientCancelAppointment(String choice, DentistClient client) {
 
-        client.println("cancelAppointment::" + name + "," + choice);
+        client.println("cancelAppointment::" + choice);
 
         if (client.readLine().equals("true")) {
             return true;
