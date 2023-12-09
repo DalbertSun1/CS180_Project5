@@ -1,11 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.sql.Array;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.io.PrintWriter;
 
 /**
  * Project 4
@@ -117,15 +119,16 @@ public class DentistOffice {
 
     }
 
-    public boolean removeDoctor(Doctor doctor) {
+    /*public boolean removeDoctor(Doctor doctor) {
         try {
+            System.out.println("Removing Doctor:");
+            BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", false));
+
             boolean repeat = false;
             int doctorNum = -1;
             ArrayList<String> doctorList1 = new ArrayList<>();
 
             BufferedReader reader = new BufferedReader(new FileReader("doctors.txt"));
-            BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", false));
-
             String line;
             while ((line = reader.readLine()) != null) {
                 if (String.valueOf(doctor).equals(line)) {
@@ -156,9 +159,39 @@ public class DentistOffice {
             return false;
 
         }
+    }
+    */
 
+    public boolean removeDoctor(Doctor doctor) throws IOException {
+        try {
+            ArrayList<String> list = new ArrayList<>();
+            String docName = String.valueOf(doctor);
+            BufferedReader bfr = new BufferedReader(new FileReader("doctors.txt"));
+            String line = bfr.readLine();
+            while (line != null) {
+                if (!(line.equals(docName))) {
+                    list.add(line);
+                }
+                line = bfr.readLine();
+            }
+            bfr.close();
+
+            File f = new File("doctors.txt");
+            FileOutputStream fos = new FileOutputStream(f);
+            PrintWriter pw = new PrintWriter(fos);
+            for (int i = 0; i < list.size(); i++) {
+                pw.println(list.get(i));
+            }
+            pw.flush();
+            pw.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
     }
+
 
     // displays approved appointments
 
@@ -342,6 +375,7 @@ public class DentistOffice {
             JOptionPane.showConfirmDialog(null, pendingAppointments, "Pending appointments",
                     JOptionPane.OK_CANCEL_OPTION);
         }
+        reader.close();
         return pendingAppointments;
     }
 

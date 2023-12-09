@@ -100,7 +100,12 @@ public class DentistServer implements Runnable {
                 }
                 case "removeDoctor" -> {
                     synchronized (obj) {
-                        boolean result = d.removeDoctor(new Doctor(params[0]));
+                        boolean result = false;
+                        try {
+                            result = d.removeDoctor(new Doctor(params[0]));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         println(String.valueOf(result));
                     }
                 }

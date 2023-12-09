@@ -300,6 +300,10 @@ public class Login extends JComponent{
                                                         JOptionPane.INFORMATION_MESSAGE);
                                                 // TODO TURN PRINTLN INTO DIALOG
                                             }
+                                            else {
+                                                JOptionPane.showMessageDialog(null, "Error Removing Doctor.", "Remove Doctor",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+                                            }
                                         }
                                         else if (loginResult1 == JOptionPane.CANCEL_OPTION) {
                                             JOptionPane.showMessageDialog(null, "Back to menu:");
