@@ -399,7 +399,7 @@ public class DentistOffice {
 
     // TODO: Implement storage of doctor names as well
 
-    public static boolean approveAppointment(String approve) throws IOException {
+    /*public static boolean approveAppointment(String approve) throws IOException {
         List<String> pendingAppointments = new ArrayList<>();
 
         try (BufferedWriter approvedWriter = new BufferedWriter(new FileWriter("approved.txt", true));
@@ -407,6 +407,8 @@ public class DentistOffice {
 
             String line1;
             int lineNum = 1;
+            ArrayList<String> approvedList = new ArrayList<>();
+            ArrayList<String> pendingList = new ArrayList<>();
 
             while ((line1 = pendingReader.readLine()) != null) {
                 if (line1.equals(approve)) {
@@ -431,6 +433,53 @@ public class DentistOffice {
         }
     }
 
+     */
+
+    public static boolean approveAppointment(String approve) throws IOException {
+        try {
+            System.out.println(approve);
+            ArrayList<String> approvedList = new ArrayList<>();
+            ArrayList<String> pendingList = new ArrayList<>();
+
+            BufferedReader pendingReader = new BufferedReader(new FileReader("pending.txt"));
+            BufferedReader approvedReader = new BufferedReader(new FileReader("approved.txt"));
+            String line2 = approvedReader.readLine();
+            while (line2 != null) {
+                approvedList.add(line2);
+                line2 = approvedReader.readLine();
+            }
+
+            String line = pendingReader.readLine();
+            while (line != null) {
+                if (line.equals(approve)) {
+                    approvedList.add(line);
+                } else {
+                    pendingList.add(line);
+                }
+                line = pendingReader.readLine();
+            }
+
+            File approvedFile = new File("approved.txt");
+            File pendingFile = new File("pending.txt");
+            FileOutputStream fos1 = new FileOutputStream(approvedFile);
+            FileOutputStream fos2 = new FileOutputStream(pendingFile);
+            PrintWriter pw1 = new PrintWriter(fos1);
+            PrintWriter pw2 = new PrintWriter(fos2);
+            for (int i = 0; i < approvedList.size(); i++) {
+                pw1.println(approvedList.get(i));
+            }
+            pw1.close();
+            for (int i = 0; i < pendingList.size(); i++) {
+                pw2.println(pendingList.get(i));
+            }
+            pw2.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static boolean clientApproveAppointment(String choice, DentistClient client) {
         client.println("approveAppointment::" + choice);
 
@@ -450,7 +499,7 @@ public class DentistOffice {
             int lineNum = 1;
 
             while ((line1 = pendingReader.readLine()) != null) {
-                if (line1.equals(decline)) {
+                if (!(line1.equals(decline))) {
                     pendingAppointments.add(line1);
                 }
                 lineNum++;

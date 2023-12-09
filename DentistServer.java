@@ -130,7 +130,7 @@ public class DentistServer implements Runnable {
                     }
                 }
                 case "approveAppointment" -> {
-                    String line = (params[0]);
+                    String line = (params[0] + "," + params[1] + "," + params[2] + "," + params[3]);
                     synchronized (obj) {
                         try {
                             println(DentistOffice.approveAppointment(line) + "");
@@ -140,7 +140,7 @@ public class DentistServer implements Runnable {
                     }
                 }
                 case "declineAppointment" -> {
-                    String line = (params[0]);
+                    String line = (params[0] + "," + params[1] + "," + params[2] + "," + params[3]);
                     synchronized (obj) {
                         try {
                             println(DentistOffice.declineAppointment(line) + "");
