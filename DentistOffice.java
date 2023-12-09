@@ -101,19 +101,19 @@ public class DentistOffice {
 
             if (counter == 0) {
                 doctorList.add(doctor);
-                writer.write(String.valueOf(doctor) + "\n");
+                writer.write(doctor + "\n");
                 JOptionPane.showMessageDialog(null, "Successfully added doctor " + doctor.getName() + " to " + this.name);
+                writer.close();
+                reader.close();
+                return true;
 
             } else {
                 JOptionPane.showMessageDialog(null,"Doctor " + doctor.getName() + " is already in " + this.name);
             }
-            writer.close();
-            reader.close();
-            return true;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
 
     }
 

@@ -273,6 +273,8 @@ public class Login extends JComponent{
                                             client.println("addDoctor::" + fullName);
                                             if (client.readLine().equals("true")) {
                                                 // TODO - dialog that confirms doctor was added successfully;
+                                                JOptionPane.showMessageDialog(null, "Successfully Added Doctor.", "Add Doctor",
+                                                        JOptionPane.INFORMATION_MESSAGE);
                                             }
                                         }
                                         else if (loginResult == JOptionPane.CANCEL_OPTION) {
@@ -294,7 +296,8 @@ public class Login extends JComponent{
                                             fullName = fullNameField1.getText();
                                             client.println("removeDoctor::" + fullName);
                                             if (client.readLine().equals("true")) {
-                                                System.out.println("Successfully removed Doctor");
+                                                JOptionPane.showMessageDialog(null, "Successfully Removed Doctor.", "Remove Doctor",
+                                                        JOptionPane.INFORMATION_MESSAGE);
                                                 // TODO TURN PRINTLN INTO DIALOG
                                             }
                                         }
@@ -318,7 +321,6 @@ public class Login extends JComponent{
                                             if ((approveOption == null) || (approveOption.isEmpty())) {
                                                 //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
                                                 menu3 = true;
-                                                break;
                                             } else {
                                                 DentistOffice.clientApproveAppointment(approveOption, client);
                                                 JOptionPane.showMessageDialog(null, "Appointment approved.", "Approve appointment",
