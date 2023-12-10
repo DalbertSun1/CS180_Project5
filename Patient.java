@@ -56,7 +56,7 @@ public class Patient extends Login {
         return name;
     }
 
-    public synchronized void go(Scanner scan, ArrayList<Doctor> doctors, DentistOffice d, DentistClient client) throws IOException {
+    public void go(Scanner scan, ArrayList<Doctor> doctors, DentistOffice d, DentistClient client) throws IOException {
         boolean menu2 = false;
         boolean menu3 = false;
         int sum = 1;
@@ -180,61 +180,63 @@ public class Patient extends Login {
                         do {
                             String[] a = clientReadFile(scan, client); //display approved appointments
                             ArrayList<String> apptList = new ArrayList<String>();
-                            for (int i = 0; i < a.length; i++) {
-                                if (a[i] != null) {
-                                    apptList.add(a[i]);
-                                }
-                            }
-                            String[] b = new String[apptList.size()];
-                            for (int i = 0; i < apptList.size(); i++) {
-                                b[i] = apptList.get(i);
-                            }
-                            if (a.length == 0) {
 
-                                JOptionPane.showMessageDialog(null, "You have no approved appointments to cancel.", "Cancel an appointment",
-                                        JOptionPane.ERROR_MESSAGE);
+                            if (a == null) {
 
-                            } else if (b.length == 0) {
+                                //JOptionPane.showMessageDialog(null, "You have no approved appointments to cancel.", "Cancel an appointment",
+                                //        JOptionPane.ERROR_MESSAGE);
                                 menu2 = true;
 
                             } else {
-
-                                String cancelOption = (String) JOptionPane.showInputDialog(null, "Choose an appointment to cancel.",
-                                        "Cancel an appointment", JOptionPane.QUESTION_MESSAGE, null, b,
-                                        b[0]);
-                                if ((cancelOption == null) || (cancelOption.isEmpty())) {
-                                    JOptionPane.showMessageDialog(null, "Back to menu:", "Error", JOptionPane.ERROR_MESSAGE);
-                                    break;
+                                for (int i = 0; i < a.length; i++) {
+                                    if (a[i] != null) {
+                                        apptList.add(a[i]);
+                                    }
+                                }
+                                String[] b = new String[apptList.size()];
+                                for (int i = 0; i < apptList.size(); i++) {
+                                    b[i] = apptList.get(i);
                                 }
 
-                                try {
-                                    //String input5 = scan.nextLine();
-                                    //int cancel = Integer.parseInt(input5);
+                                if (b.length == 0) {
+                                    menu2 = true;
 
-                                    //checking for valid choice
-                                    int counter = 1;
-                                    for (int i = 0; i < a.length; i++) {
-                                        if (a[i] != null) {
-                                            if (a[i].equals(cancelOption)) {
-                                                counter = 0;
-                                            }
-                                        }
-                                    }
-                                    if (counter == 0) {
-                                        //TODO : add gui asking for name
-                                        clientCancelAppointment(cancelOption, client);
-                                        JOptionPane.showMessageDialog(null, "Appointment canceled.", "Cancel an appointment",
-                                                JOptionPane.INFORMATION_MESSAGE);
-
-                                    } else {
-                                        JOptionPane.showMessageDialog(null, "Please select a valid option!", "Cancel an appointment",
-                                                JOptionPane.ERROR_MESSAGE);
-                                        menu3 = true;
+                                } else {
+                                    String cancelOption = (String) JOptionPane.showInputDialog(null, "Choose an appointment to cancel.",
+                                            "Cancel an appointment", JOptionPane.QUESTION_MESSAGE, null, b,
+                                            b[0]);
+                                    if ((cancelOption == null) || (cancelOption.isEmpty())) {
+                                        JOptionPane.showMessageDialog(null, "Back to menu:", "Error", JOptionPane.ERROR_MESSAGE);
                                         break;
                                     }
-                                } catch (NumberFormatException e) {
-                                    System.out.println("Please enter an integer.");
-                                    menu3 = true;
+
+                                    try {
+                                        //checking for valid choice
+                                        int counter = 1;
+                                        for (int i = 0; i < a.length; i++) {
+                                            if (a[i] != null) {
+                                                if (a[i].equals(cancelOption)) {
+                                                    counter = 0;
+                                                }
+                                            }
+                                        }
+                                        if (counter == 0) {
+                                            //TODO : add gui asking for name
+                                            clientCancelAppointment(cancelOption, client);
+                                            JOptionPane.showMessageDialog(null, "Appointment canceled.", "Cancel an appointment",
+                                                    JOptionPane.INFORMATION_MESSAGE);
+
+                                        } else {
+                                            JOptionPane.showMessageDialog(null, "Please select a valid option!", "Cancel an appointment",
+                                                    JOptionPane.ERROR_MESSAGE);
+                                            menu3 = true;
+                                            break;
+                                        }
+
+                                    } catch (NumberFormatException e) {
+                                        System.out.println("Please enter an integer.");
+                                        menu3 = true;
+                                    }
                                 }
                             }
                         } while (menu3);
@@ -298,57 +300,6 @@ public class Patient extends Login {
     }
 
 
-    /*
-    public static boolean cancelAppointment(String patientName, String cancelOption) {
-        try {
-            ArrayList<String> initialAppointments = new ArrayList<>(Arrays.asList(DentistOffice.serverGetAppointments()));
-
-            int cancelIndex = -1;
-            int nameCounter = 0;
-            for (int i = 0; i < initialAppointments.size(); i++) {
-                String[] lineSplit = initialAppointments.get(i). split(",");
-                if (lineSplit[0].equals(patientName)) {
-                    nameCounter++;
-                    if (nameCounter == Integer.parseInt(cancelOption)) {
-                        cancelIndex = i;
-                        break;
-                    }
-                }
-            }
-            if (cancelIndex == -1) {
-                return false;
-            }
-
-            ArrayList<String> updatedAppointments = new ArrayList<>();
-            BufferedReader bfr = new BufferedReader(new FileReader("approved.txt"));
-            String line;
-            int counter = 0;
-            while ((line = bfr.readLine()) != null) {
-                if (counter != cancelIndex) {
-                    updatedAppointments.add(line);
-                }
-                counter++;
-            }
-            bfr.close();
-
-// Write updatedAppointments to file
-            File f = new File("approved.txt");
-            PrintWriter pw = new PrintWriter(new FileOutputStream(f, false));
-            for (String appointment : updatedAppointments) {
-                pw.println(appointment);
-            }
-            pw.close();
-
-            return true;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-     */
-
     public static boolean cancelAppointment(String cancelOption) {
         try {
             ArrayList<String> list1 = new ArrayList<String>();
@@ -376,7 +327,7 @@ public class Patient extends Login {
         }
     }
 
-    public static String[] serverReadFile(String name, DentistServer server) { // reads file and returns printList to client
+    public static void serverReadFile(String name, DentistServer server) { // reads file and returns printList to client
         try {
             ArrayList<String[]> list = new ArrayList<String[]>();
             ArrayList<String> list2 = new ArrayList<String>(); // stores each line of the file, only for printing purposes
@@ -406,9 +357,9 @@ public class Patient extends Login {
                 doctors[i] = list.get(i)[3];
             }
 
-            /*
+
             ArrayList<String> aptList = new ArrayList<String>();
-            //System.out.println("Approved appointments:");
+            System.out.println("Approved appointments:");
             //displays the approved appointments for that person
             for (int i = 0; i < list2.size(); i++) {
                 if (name.equals(names[i])) {
@@ -416,74 +367,94 @@ public class Patient extends Login {
                 }
             }
 
-             */
-
-            /*// send aptList to client
+            // send aptList to client
             StringBuilder output = new StringBuilder();
             for (String apt : aptList) {
                 output.append(apt + ";");
             }
             server.println(output.toString());
 
-             */
 
-            String[] printList = new String[list2.size()];
-            //System.out.println("Enter your name:");
-            //String checkName = scan.nextLine();
-            String checkName = JOptionPane.showInputDialog(null, "Enter your name",
-                    "Appointments", JOptionPane.QUESTION_MESSAGE);
-            //System.out.println("Approved appointments:");
-            //displays the approved appointments for that person
-            if (checkName != null) {
-                for (int i = 0; i < printList.length; i++) {
-                    if (checkName.equals(names[i])) {
-                        printList[i] = list2.get(i);
-                        //System.out.println((i + 1) + ". " + printList[i]);
-                    }
-                }
-            }
-            return printList;
+
+
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+
         }
     }
-    public static String[] clientReadFile(Scanner scan, DentistClient client) { // returns a list of the apts corresponding to
+    public static String[] clientReadFile(Scanner scan, DentistClient client) throws IOException { // returns a list of the apts corresponding to
         // the Patient's name
 
         String name = JOptionPane.showInputDialog(null, "Enter your name",
                 "Appointments", JOptionPane.QUESTION_MESSAGE);
         client.println("readFile::" + name);
 
+        String[] approvedList = new String[0];
+
+        if (name == null) {
+            approvedList = null;
+        } else {
+
+            ArrayList<String> aptList = new ArrayList<>();
+
+            String input = client.readLine();
+
+
+            if (!input.isEmpty()) {
+                for (String apt : input.split(";")) {
+                    aptList.add(apt);
+                }
+
+                approvedList = new String[aptList.size()];
+                for (int i = 0; i < aptList.size(); i++) {
+                    approvedList[i] = aptList.get(i);
+                }
+
+                JOptionPane.showMessageDialog(null, approvedList, "Approved appointments",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "You have no approved appointments at this time.", "Approved appointments",
+                        JOptionPane.ERROR_MESSAGE);
+                ArrayList<Doctor> doctors = new ArrayList<>();
+                DentistOffice d = new DentistOffice(name);
+                Patient p = new Patient(name);
+                p.go(scan, doctors, d, client);
+            }
+        }
+        return approvedList;
+
+    }
+
+
+    public static boolean clientRescheduleAppointment(Scanner scan, DentistClient client) throws IOException {
+        String name = JOptionPane.showInputDialog(null, "Enter your name:",
+                "Reschedule appointment", JOptionPane.QUESTION_MESSAGE);
+
+        client.println("readFile::" + name);
+
         ArrayList<String> aptList = new ArrayList<>();
+        int num = 0;
 
         String input = client.readLine();
 
         if (!input.isEmpty()) {
             for (String apt : input.split(";")) {
                 aptList.add(apt);
+                num++;
             }
-            JOptionPane.showMessageDialog(null, aptList, "Approved appointments",
-                    JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, "You have no approved appointments at this time.", "Approved appointments",
-                    JOptionPane.ERROR_MESSAGE);
         }
-        return aptList.toArray(new String[0]);
+
+        //System.out.println("Approved appointments:");
+        //System.out.println("Choice #, Patient Name, Day of Month, Time, Doctor Name");
+        //displays the approved appointments for that person
+
+        String[] approvedList = new String[num]; // converts to Array, adds a number before
+        for (int i = 0; i < approvedList.length; i++) {
+            approvedList[i] = num + ":" + aptList.get(i);
+        }
 
 
-    }
-
-
-    public static boolean clientRescheduleAppointment(Scanner scan, DentistClient client) throws IOException {
-        String name = JOptionPane.showInputDialog(null, "Enter your name",
-                "Reschedule appointment", JOptionPane.QUESTION_MESSAGE);
-
-        String[] approvedList = clientReadFile(scan, client);
-        client.println("readFile::" + name);
-        boolean found1 = false;
-
-        if (!found1) {
+        if (aptList.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Back to menu:",
                     "Reschedule appointment", JOptionPane.ERROR_MESSAGE);
         } else {
@@ -494,19 +465,19 @@ public class Patient extends Login {
             if ((rescheduleOption == null) || (rescheduleOption.isEmpty())) {
                 JOptionPane.showMessageDialog(null, "Back to Menu:", "Reschedule appointment",
                         JOptionPane.ERROR_MESSAGE);
-                return false;
+                // TODO: Fix later
+                // return;
             }
 
             try {
-                //String input1 = scan.nextLine();
-                //int userIndex = Integer.parseInt(input1) - 1;
+
                 boolean timeIsBooked;
                 do {
                     timeIsBooked = false;
-                    //System.out.println("What day would you like to change it to?");
+
 
                     try {
-                        //String input2 = scan.nextLine();
+
                         String[] dateList = new String[31];
                         int j = 1;
                         for (int i = 0; i < 31; i++) {
@@ -514,14 +485,15 @@ public class Patient extends Login {
                             j++;
                         }
                         String date;
-                        do {
+                        do { // gets String date from the user
                             date = (String) JOptionPane.showInputDialog(null, "What date would you like to change it to?",
                                     "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, dateList, dateList[0]);
                             if ((date == null) || (date.isEmpty())) {
                                 JOptionPane.showMessageDialog(null, "Back to Menu:");
-                                return false;
+                                //return;
+                                // TODO: Fix Later
                             }
-                        } while ((date == null)  || (date.isEmpty()));
+                        } while ((date == null) || (date.isEmpty()));
                         int newDate = Integer.parseInt(date);
 
                         String[] timeslots = new String[9];
@@ -540,81 +512,41 @@ public class Patient extends Login {
                                 timeslots[0]);
                         if ((newTime == null) || (newTime.isEmpty())) {
                             JOptionPane.showMessageDialog(null, "Back to Menu:");
-                            return false;
+                            //TODO: Fix This
+                            //return;
                         }
-                         for (int i = 0; i < approvedList.length; i++) {
 
-                         }
-
-
-                        // check if given time is already taken
                         String line = rescheduleOption;
-                        //line = lines.get(userIndex);
-                        String[] lineSplit = line.split(",");
-                        // get this line, turn into a list, switch
+                        int userIndex = Integer.parseInt(line.substring(0, line.indexOf(":")));
+                        String lineWithoutNum = line.substring(line.indexOf(":"));
 
-                        ArrayList<String> lines = new ArrayList<>();
-                        for (int i = 0; i < approvedList.length; i++) {
-                            lines.add(approvedList[i]);
-                        }
+                        String doctorName = line.split(",")[3];
 
-                        String doctorName = lineSplit[3];
 
-                        for (String thisLine : lines) {
-                            lineSplit = thisLine.split(",");
-                            if (lineSplit[3].equals(doctorName)) {
-                                if (lineSplit[1].equals(Integer.toString(newDate))) {
-                                    if (lineSplit[2].equals(newTime)) {
-                                        //System.out.println("Time unavailable. Try again.");
-                                        JOptionPane.showMessageDialog(null, "Time unavailable. Try again.", "Reschedule appointment",
-                                                JOptionPane.ERROR_MESSAGE);
-                                        timeIsBooked = true;
-                                    }
-                                }
-                            }
-                        }
 
-                        int userIndex = 0;
-                        for (int i = 0; i < lines.size(); i++) {
-                            if (lines.get(i).equals(rescheduleOption)) {
-                                userIndex = i;
-                            }
-                        }
+                        //String doctorName = aptList.get(userIndex).split(",")[3];
 
-                        if (!timeIsBooked) {
-                            JOptionPane.showMessageDialog(null, "Appointment rescheduled.", "Reschedule appointment",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                            lineSplit[2] = newTime;
-                            lineSplit[1] = Integer.toString(newDate);
-                            lineSplit[0] = name;
-                            String newApt = "";
-                            for (String x : lineSplit) {
-                                newApt += x + ",";
-                            }
-                            newApt = newApt.substring(0, newApt.length() - 1);
-                            lines.set(userIndex, newApt);
-                            BufferedWriter writer1 = new BufferedWriter(new FileWriter("approved.txt"));
-                            for (String thisLine : lines) {
-                                writer1.write(thisLine + "\n");
-                            }
-                            writer1.close();
+                        client.println("rescheduleAppointment::" + name + ","
+                                + newDate + "," + newTime + "," + doctorName + "," + userIndex);
+                        if (!Boolean.parseBoolean(client.readLine())) {
+                            timeIsBooked = true;
+                            System.out.println("That time and day is already taken. Please choose another.");
+                        } else {
                             return true;
-
                         }
+
                     } catch (NumberFormatException e) {
-                        //System.out.println("Please enter an integer.");
                         JOptionPane.showMessageDialog(null, "Please enter a valid input.", "Error",
                                 JOptionPane.ERROR_MESSAGE);
-                        return false;
                     }
                 } while (timeIsBooked);
             } catch (NumberFormatException e) {
-                //System.out.println("Please enter an integer.");
                 JOptionPane.showMessageDialog(null, "Please enter a valid input.", "Error",
                         JOptionPane.ERROR_MESSAGE);
-                return false;
+
             }
         }
+
         return false;
     }
     public static boolean serverRescheduleAppointment(String patientName, String day, String time, String doctorName, int userIndex) throws IOException {
@@ -677,8 +609,6 @@ public class Patient extends Login {
                 fullList.add(apt);
             }
         }
-
-
 
         for (int i = 0; i < fullList.size(); i++) {
             String[] split = fullList.get(i).split(",");

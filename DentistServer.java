@@ -10,39 +10,42 @@ import java.util.Scanner;
 public class DentistServer implements Runnable {
 
     static final int port = 6000;
-    ServerSocket serverSocket;
-    Socket socket;
+    //Socket serverSocket;
+    private final Socket clientSocket;
     BufferedReader reader;
     PrintWriter writer;
     public static Object obj = new Object();
 
     public DentistServer(Socket socket) {
-        this.socket = socket;
-
-
+        this.clientSocket = socket;
     }
 
-    public void run() {
+    public void run() throws NullPointerException{
         try {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            writer = new PrintWriter(socket.getOutputStream(), true);
+            reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            writer = new PrintWriter(clientSocket.getOutputStream(), true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         boolean clientConnected = true;
         int i = 0;
         while (clientConnected) {
+            String methodChoice = "";
+            String[] params = new String[0];
+
             System.out.println("Loop " + i);
             System.out.println("Waiting for client input...");
             String rawMessage = readLine();
-            System.out.println("rawMessage = " + rawMessage);
-            String methodChoice = rawMessage.split("::")[0];
-            System.out.println("methodChoice = " + methodChoice);
-            String[] params = new String[0];
-            try {
-                params = rawMessage.split("::")[1].split(",");
-            } catch (ArrayIndexOutOfBoundsException ignored) {};
-
+            if (rawMessage != null) {
+                System.out.println("rawMessage = " + rawMessage);
+                methodChoice = rawMessage.split("::")[0];
+                System.out.println("methodChoice = " + methodChoice);
+                try {
+                    params = rawMessage.split("::")[1].split(",");
+                } catch (ArrayIndexOutOfBoundsException ignored) {
+                }
+                ;
+            }
 
             DentistOffice d = new DentistOffice("My Dentist Office");
 
@@ -149,6 +152,7 @@ public class DentistServer implements Runnable {
                     }
                 }
                 case "rescheduleAppointment" -> {
+                    Scanner scan = new Scanner(System.in);
                     synchronized (obj) {
                         try {
                             println(String.valueOf(Patient.serverRescheduleAppointment(params[0],
@@ -174,16 +178,7 @@ public class DentistServer implements Runnable {
                 case "readFile" -> { // reads file for all apts that match the given name
                     String name = params[0];
                     synchronized (obj) {
-                        String[] approvedList = Patient.serverReadFile(name,this);
-                        String approvedLine = "";
-                        for (int j = 0; j < approvedList.length; j++) {
-                            if (j == 0) {
-                                approvedLine = approvedList[i];
-                            } else {
-                                approvedLine = (approvedLine + ";" + approvedList[i]);
-                            }
-                        }
-                        println(approvedLine);
+                        Patient.serverReadFile(name, this);
                     }
                 }
 
@@ -214,7 +209,5 @@ public class DentistServer implements Runnable {
         writer.flush();
         System.out.println("Wrote to client -> " + input);
     }
-
-
 
 }
