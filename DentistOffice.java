@@ -244,10 +244,13 @@ public class DentistOffice {
                 output.append(apt + ";");
             }
             server.println(output.toString());
-
+        } catch (FileNotFoundException e) {
+            server.println("");
         } catch (IOException e) {
             e.printStackTrace(); // Handle the IOException appropriately
         }
+
+
     }
     public static void serverReadDoctorPendingFile(DentistServer server) {
         try {
@@ -357,11 +360,17 @@ public class DentistOffice {
     public static boolean approveAppointment(String approve) throws IOException {
         try {
             System.out.println(approve);
+            File approved = new File("approved.txt");
+            File pending = new File("pending.txt");
             ArrayList<String> approvedList = new ArrayList<>();
             ArrayList<String> pendingList = new ArrayList<>();
+            if (!approved.exists()) {
+                approved.createNewFile();
+            }
+            if (!pending.exists()) {pending.createNewFile();}
 
-            BufferedReader pendingReader = new BufferedReader(new FileReader("pending.txt"));
-            BufferedReader approvedReader = new BufferedReader(new FileReader("approved.txt"));
+            BufferedReader pendingReader = new BufferedReader(new FileReader(pending));
+            BufferedReader approvedReader = new BufferedReader(new FileReader(approved));
             String line2 = approvedReader.readLine();
             while (line2 != null) {
                 approvedList.add(line2);
@@ -466,7 +475,7 @@ public class DentistOffice {
         //System.out.println("Choice #, Patient Name, Day of Month, Time, Doctor Name");
         //displays the approved appointments for that person
 
-        String[] approvedList = new String[num];
+        String[] approvedList = new String[num]; // converts to Array, adds a number before
         for (int i = 0; i < approvedList.length; i++) {
             approvedList[i] = num + ":" + aptList.get(i);
         }
@@ -488,15 +497,14 @@ public class DentistOffice {
             }
 
             try {
-                //String input1 = scan.nextLine();
-                //int userIndex = Integer.parseInt(input1) - 1;
+
                 boolean timeIsBooked;
                 do {
                     timeIsBooked = false;
-                    //System.out.println("What day would you like to change it to?");
+
 
                     try {
-                        //String input2 = scan.nextLine();
+
                         String[] dateList = new String[31];
                         int j = 1;
                         for (int i = 0; i < 31; i++) {
@@ -504,7 +512,7 @@ public class DentistOffice {
                             j++;
                         }
                         String date;
-                        do {
+                        do { // gets String date from the user
                             date = (String) JOptionPane.showInputDialog(null, "What date would you like to change it to?",
                                     "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, dateList, dateList[0]);
                             if ((date == null) || (date.isEmpty())) {
@@ -536,17 +544,17 @@ public class DentistOffice {
                         }
 
                         String line = rescheduleOption;
-                        String[] lineSplit = line.split(":");
-                        String info = lineSplit[1];
-                        String[] lineSplit2 = info.split(",");
+                        int userIndex = Integer.parseInt(line.substring(0, line.indexOf(":")));
+                        String lineWithoutNum = line.substring(line.indexOf(":"));
 
-                        String doctorName = lineSplit2[3];
+                        String doctorName = line.split(",")[3];
+
 
 
                         //String doctorName = aptList.get(userIndex).split(",")[3];
 
                         client.println("rescheduleAppointment::" + name + ","
-                                + newDate + "," + newTime + "," + doctorName + "," + lineSplit[0]);
+                                + newDate + "," + newTime + "," + doctorName + "," + userIndex);
                         if (!Boolean.parseBoolean(client.readLine())) {
                             timeIsBooked = true;
                             System.out.println("That time and day is already taken. Please choose another.");
