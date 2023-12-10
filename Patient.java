@@ -427,9 +427,9 @@ public class Patient extends Login {
 
 
     public static boolean clientRescheduleAppointment(Scanner scan, DentistClient client) throws IOException {
-
-        String name = JOptionPane.showInputDialog(null, "Enter your name",
+        String name = JOptionPane.showInputDialog(null, "Enter your name:",
                 "Reschedule appointment", JOptionPane.QUESTION_MESSAGE);
+
         client.println("readFile::" + name);
 
         ArrayList<String> aptList = new ArrayList<>();
@@ -448,7 +448,7 @@ public class Patient extends Login {
         //System.out.println("Choice #, Patient Name, Day of Month, Time, Doctor Name");
         //displays the approved appointments for that person
 
-        String[] approvedList = new String[num];
+        String[] approvedList = new String[num]; // converts to Array, adds a number before
         for (int i = 0; i < approvedList.length; i++) {
             approvedList[i] = num + ":" + aptList.get(i);
         }
@@ -470,15 +470,14 @@ public class Patient extends Login {
             }
 
             try {
-                //String input1 = scan.nextLine();
-                //int userIndex = Integer.parseInt(input1) - 1;
+
                 boolean timeIsBooked;
                 do {
                     timeIsBooked = false;
-                    //System.out.println("What day would you like to change it to?");
+
 
                     try {
-                        //String input2 = scan.nextLine();
+
                         String[] dateList = new String[31];
                         int j = 1;
                         for (int i = 0; i < 31; i++) {
@@ -486,7 +485,7 @@ public class Patient extends Login {
                             j++;
                         }
                         String date;
-                        do {
+                        do { // gets String date from the user
                             date = (String) JOptionPane.showInputDialog(null, "What date would you like to change it to?",
                                     "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, dateList, dateList[0]);
                             if ((date == null) || (date.isEmpty())) {
@@ -494,7 +493,7 @@ public class Patient extends Login {
                                 //return;
                                 // TODO: Fix Later
                             }
-                        } while ((date == null)  || (date.isEmpty()));
+                        } while ((date == null) || (date.isEmpty()));
                         int newDate = Integer.parseInt(date);
 
                         String[] timeslots = new String[9];
@@ -518,17 +517,17 @@ public class Patient extends Login {
                         }
 
                         String line = rescheduleOption;
-                        String[] lineSplit = line.split(":");
-                        String info = lineSplit[1];
-                        String[] lineSplit2 = info.split(",");
+                        int userIndex = Integer.parseInt(line.substring(0, line.indexOf(":")));
+                        String lineWithoutNum = line.substring(line.indexOf(":"));
 
-                        String doctorName = lineSplit2[3];
+                        String doctorName = line.split(",")[3];
+
 
 
                         //String doctorName = aptList.get(userIndex).split(",")[3];
 
                         client.println("rescheduleAppointment::" + name + ","
-                                + newDate + "," + newTime + "," + doctorName + "," + lineSplit[0]);
+                                + newDate + "," + newTime + "," + doctorName + "," + userIndex);
                         if (!Boolean.parseBoolean(client.readLine())) {
                             timeIsBooked = true;
                             System.out.println("That time and day is already taken. Please choose another.");
@@ -549,7 +548,6 @@ public class Patient extends Login {
         }
 
         return false;
-
     }
     public static boolean serverRescheduleAppointment(String patientName, String day, String time, String doctorName, int userIndex) throws IOException {
         ArrayList<String> lines = new ArrayList<String>(Arrays.asList(DentistOffice.serverGetAppointments()));
