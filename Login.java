@@ -15,7 +15,7 @@ import java.awt.event.*;
  */
 
 
-public class Login extends JComponent{
+public class Login extends JComponent {
 
     static Scanner scan;
 
@@ -57,7 +57,7 @@ public class Login extends JComponent{
                     case 0: // log in
                         boolean menu2;
                         do {
-                            String[] userMenu = {"Patient", "Doctor"};
+                            String[] userMenu = {"Patient", "DentistOffice"};
                             String userOption;
                             try {
 
@@ -72,7 +72,7 @@ public class Login extends JComponent{
                                 int testOption;
                                 if (userOption.equals("Patient")) {
                                     testOption = 1;
-                                } else if (userOption.equals("Doctor")) {
+                                } else if (userOption.equals("DentistOffice")) {
                                     testOption = 2;
                                 } else {
                                     testOption = 3;
@@ -299,9 +299,8 @@ public class Login extends JComponent{
                                                 JOptionPane.showMessageDialog(null, "Successfully Removed Doctor.", "Remove Doctor",
                                                         JOptionPane.INFORMATION_MESSAGE);
                                                 // TODO TURN PRINTLN INTO DIALOG
-                                            }
-                                            else {
-                                                JOptionPane.showMessageDialog(null, "Error Removing Doctor.", "Remove Doctor",
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "The doctor you specified does not exist.", "Remove Doctor",
                                                         JOptionPane.INFORMATION_MESSAGE);
                                             }
                                         }

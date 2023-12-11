@@ -126,9 +126,12 @@ public class DentistOffice {
             String docName = String.valueOf(doctor);
             BufferedReader bfr = new BufferedReader(new FileReader("doctors.txt"));
             String line = bfr.readLine();
+            boolean doctorIsFound = false;
             while (line != null) {
                 if (!(line.equals(docName))) {
                     list.add(line);
+                } else { // if this line is the Doctor to be removed
+                    doctorIsFound = true;
                 }
                 line = bfr.readLine();
             }
@@ -142,7 +145,12 @@ public class DentistOffice {
             }
             pw.flush();
             pw.close();
-            return true;
+            if (!doctorIsFound) {
+                return false;
+            } else {
+                return true;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
