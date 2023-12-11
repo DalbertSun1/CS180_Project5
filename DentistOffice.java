@@ -477,12 +477,12 @@ public class DentistOffice {
 
         String[] approvedList = new String[num]; // converts to Array, adds a number before
         for (int i = 0; i < approvedList.length; i++) {
-            approvedList[i] = num + ":" + aptList.get(i);
+            approvedList[i] = (i + 1) + ":" + aptList.get(i);
         }
 
 
         if (aptList.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Back to menu:",
+            JOptionPane.showMessageDialog(null, "Name entered does not match any approved appointments",
                     "Reschedule appointment", JOptionPane.ERROR_MESSAGE);
         } else {
             //System.out.println("Which appointment would you like to change?");
@@ -494,6 +494,7 @@ public class DentistOffice {
                         JOptionPane.ERROR_MESSAGE);
                 // TODO: Fix later
                 // return;
+                return false;
             }
 
             try {

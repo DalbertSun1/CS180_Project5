@@ -40,7 +40,7 @@ class Server {
                 Socket client = serverSocket.accept();
 
                 // Displaying that new client is connected to server
-                System.out.println("New client connected" + client.getInetAddress().getHostAddress());
+                System.out.println("New client connected " + client.getInetAddress().getHostAddress());
 
                 // create a new thread object
                 DentistServer clientSocket = new DentistServer(client);

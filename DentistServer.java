@@ -12,12 +12,14 @@ public class DentistServer implements Runnable {
     static final int port = 6000;
     //Socket serverSocket;
     private final Socket clientSocket;
+    private final String clientInfo; // Field to store client information
     BufferedReader reader;
     PrintWriter writer;
     public static Object obj = new Object();
 
     public DentistServer(Socket socket) {
         this.clientSocket = socket;
+        this.clientInfo = clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort();
     }
 
     public void run() throws NullPointerException{
@@ -33,22 +35,22 @@ public class DentistServer implements Runnable {
             String methodChoice = "";
             String[] params = new String[0];
 
-            synchronized (obj) {
-                System.out.println("Loop " + i);
-                System.out.println("Waiting for client input...");
-                String rawMessage = readLine();
-                if (rawMessage != null) {
-                    System.out.println("rawMessage = " + rawMessage);
-                    methodChoice = rawMessage.split("::")[0];
-                    System.out.println("methodChoice = " + methodChoice);
-                    try {
-                        params = rawMessage.split("::")[1].split(",");
-                    } catch (ArrayIndexOutOfBoundsException ignored) {
-                    }
-                    ;
-                }
+
+            System.out.println("Client : " + clientInfo);
+            System.out.println("Loop " + i);
+            System.out.println("Waiting for client input...");
+            String rawMessage = readLine();
+            if (rawMessage != null) {
+                System.out.println("rawMessage = " + rawMessage);
+                methodChoice = rawMessage.split("::")[0];
+                System.out.println("methodChoice = " + methodChoice);
+                try {
+                    params = rawMessage.split("::")[1].split(",");
+                } catch (ArrayIndexOutOfBoundsException ignored) {}; // we are ignoring this because it is working alright
 
             }
+
+
 
             DentistOffice d = new DentistOffice("My Dentist Office");
 
