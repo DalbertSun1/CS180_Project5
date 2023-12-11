@@ -252,7 +252,8 @@ public class OurStatistics { // handles the statistics section of our projection
                     String timeString = doctorTimeData.get(doctor);
 
                     for (int i = 0; i< approved.length; i++) {
-                        String line = "";
+                        //System.out.println(approved[i]);
+                        String line = approved[i];
                         String[] split = line.split(",");
                         if (split[3].equals(doctor.getName())){
                             count++;
@@ -326,7 +327,7 @@ public class OurStatistics { // handles the statistics section of our projection
                     for (String d : doctors) {
                         int count = 0;
                         for (int i = 0; i<approved.length; i++) {
-                            String line = "";
+                            String line = approved[i];
                             String[] split = line.split(",");
                             if (split[3].equals(d)){
                                 count++;
@@ -374,7 +375,7 @@ public class OurStatistics { // handles the statistics section of our projection
                         String d = doctors.get(i);
                         int count = 0;
                         for (int j = 0; j< approved.length; j++) {
-                            String line = "";
+                            String line = approved[j];
                             String[] split = line.split(",");
                             if (split[3].equals(d)) {
                                 count++;
@@ -448,7 +449,7 @@ public class OurStatistics { // handles the statistics section of our projection
                         String p = patientList.get(i);
                         int count = 0;
                         for (int j = 0; j < approved.length; j++) {
-                            String line = "";
+                            String line = approved[j];
                             String[] split = line.split(",");
                             if (split[0].equals(p)) {
                                 count++;
@@ -513,7 +514,7 @@ public class OurStatistics { // handles the statistics section of our projection
                         //System.out.println(p);
                         int count = 0;
                         for (int j = 0; j < approved.length; j++) {
-                            String line = "";
+                            String line = approved[j];
                             String[] split = line.split(",");
                             if (split[0].equals(p)){
                                 count++;
