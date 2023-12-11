@@ -354,7 +354,13 @@ public class Login extends JComponent{
                                         break;
                                     case "Reschedule Appointment":
                                         //d.rescheduleAppointment(scan);
-                                        DentistOffice.clientRescheduleAppointment(scan, client);
+                                        if (DentistOffice.clientRescheduleAppointment(scan, client)) {
+                                            JOptionPane.showMessageDialog(null, "Rescheduled successfully.");
+                                        }
+                                        else {
+                                            JOptionPane.showMessageDialog(null, "Could not reschedule appointment.", "Error",
+                                                    JOptionPane.ERROR_MESSAGE);
+                                        }
                                         break;
                                     case "View Statistics":
                                         OurStatistics.dentistOfficeDashboard(d, scan, client);

@@ -73,8 +73,6 @@ public class Patient extends Login {
                 super.start(client);
                 return;
             }
-            //System.out.println("1. Make a new appointment\n2. Cancel an appointment\n3. View approved appointments\n4. Reschedule an appointment\n" +
-            //"5. View Statistics\n6. Log out");
 
             try {
                 //String input1 = scan.nextLine();
@@ -90,19 +88,15 @@ public class Patient extends Login {
                                 continue;
                             }
                             clientPending(cal.getResult(), client);
-                            //System.out.println(cal.viewCalendar()); // display calendar
-                            //System.out.println("Select a day to view available doctors:");
                             try {
                                 String input2 = scan.nextLine();
                                 date = Integer.parseInt(input2);
                                 if (date <= 0 || date > 31) {
                                     invalidInput = true;
-                                    //System.out.println("Choose a day between 0 and 31");
                                 } else {
                                     invalidInput = false;
                                 }
                             } catch (NumberFormatException e) {
-                                //System.out.println("Please enter an integer.");
                                 invalidInput = true;
                             }
                         } while (invalidInput);
@@ -110,11 +104,8 @@ public class Patient extends Login {
                         Day selectedDay = new Day(cal.getIndividualDay(date).getDate());
                         selectedDay.setDoctors(doctors);
 
-                        System.out.println(selectedDay.showDoctorList() + "\n"); //display doctor list
 
                         while (selectedDay.getDoctors().isEmpty()) {
-                            //System.out.println(cal.viewCalendar());
-                            //System.out.println("Select another day to view available doctors:");
                             try {
                                 String input3 = scan.nextLine();
                                 date = Integer.parseInt(input3);
@@ -122,40 +113,31 @@ public class Patient extends Login {
                                 selectedDay = cal.getIndividualDay(date);
 
 
-                                System.out.println(selectedDay.showDoctorList() + "\n");
                             } catch (NumberFormatException e) {
-                                //System.out.println("Please enter an integer.");
                             }
 
                         }
 
-                        //System.out.println("Choose a doctor to view available appointments:");
                         try {
                             String input4 = scan.nextLine();
                             int doctor = Integer.parseInt(input4);
 
 
                             Doctor doc = selectedDay.getIndividualDoctor(doctor - 1);
-                            //System.out.println("\nDr. " + doc.getName());
 
 
                             ArrayList<String> show = printAppointments(selectedDay, doc, client);
                             for (int i = 0; i < show.size(); i++) {
-                                //System.out.println(sum + ": " + show.get(i));
                                 sum++;
                             }
                             sum = 1;
 
-                            //System.out.println("Select a time:");
                             try {
                                 String input6 = scan.nextLine();
                                 int appt = Integer.parseInt(input6);
 
                                 String chosenTime = show.get(appt - 1);
 
-
-//                                System.out.println("Enter your name:");
-//                                this.name = scan.nextLine();
                                 Appointment appointment = new Appointment(chosenTime);
                                 appointment.bookAppointment(name);
 
@@ -234,7 +216,8 @@ public class Patient extends Login {
                                         }
 
                                     } catch (NumberFormatException e) {
-                                        System.out.println("Please enter an integer.");
+                                        JOptionPane.showMessageDialog(null, "Please enter an integer.", "Cancel an appointment",
+                                                JOptionPane.ERROR_MESSAGE);
                                         menu3 = true;
                                     }
                                 }
@@ -249,10 +232,11 @@ public class Patient extends Login {
                         break;
                     case "Reschedule an appointment":
                         if (clientRescheduleAppointment(scan, client)) {
-                            System.out.println("Rescheduled successfully.");
+                            JOptionPane.showMessageDialog(null, "Rescheduled successfully.");
                         }
                         else {
-                            System.out.println("Could not reschedule appointment.");
+                            JOptionPane.showMessageDialog(null, "Could not reschedule appointment.", "Error",
+                                    JOptionPane.ERROR_MESSAGE);
                         }
                         menu2 = true;
                         break;
@@ -267,14 +251,12 @@ public class Patient extends Login {
                         l.menu(scan, client);
                         break;
                     default:
-                        //System.out.println("Please enter a valid choice.");
                         JOptionPane.showMessageDialog(null, "Please select a valid option!", "Menu",
                                 JOptionPane.ERROR_MESSAGE);
                         menu2 = true;
                         break;
                 }
             } catch (NumberFormatException e) {
-                //System.out.println("Please enter an integer.");
                 JOptionPane.showMessageDialog(null, "Please enter a valid input.", "Error",
                         JOptionPane.ERROR_MESSAGE);
                 menu2 = true;
@@ -359,7 +341,7 @@ public class Patient extends Login {
 
 
             ArrayList<String> aptList = new ArrayList<String>();
-            System.out.println("Approved appointments:");
+            //System.out.println("Approved appointments:");
             //displays the approved appointments for that person
             for (int i = 0; i < list2.size(); i++) {
                 if (name.equals(names[i])) {
@@ -444,9 +426,6 @@ public class Patient extends Login {
             }
         }
 
-        //System.out.println("Approved appointments:");
-        //System.out.println("Choice #, Patient Name, Day of Month, Time, Doctor Name");
-        //displays the approved appointments for that person
 
         String[] approvedList = new String[num]; // converts to Array, adds a number before
         for (int i = 0; i < approvedList.length; i++) {
@@ -458,7 +437,6 @@ public class Patient extends Login {
             JOptionPane.showMessageDialog(null, "Back to menu:",
                     "Reschedule appointment", JOptionPane.ERROR_MESSAGE);
         } else {
-            //System.out.println("Which appointment would you like to change?");
             String rescheduleOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to reschedule?",
                     "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, approvedList,
                     approvedList[0]);
@@ -530,7 +508,8 @@ public class Patient extends Login {
                                 + newDate + "," + newTime + "," + doctorName + "," + userIndex);
                         if (!Boolean.parseBoolean(client.readLine())) {
                             timeIsBooked = true;
-                            System.out.println("That time and day is already taken. Please choose another.");
+                            JOptionPane.showMessageDialog(null, "That time and day is already taken. Please choose another time.", "Error",
+                                    JOptionPane.ERROR_MESSAGE);
                         } else {
                             return true;
                         }
@@ -619,7 +598,6 @@ public class Patient extends Login {
 
         for (int i = 0; i < dayList.size(); i++) {
             if (day.getDate() == dayList.get(i) && doctor.getName().equals(doctorList.get(i))) {
-                System.out.println("This time must not be shown: " + timeList.get(i));
                 isBookedAppointmentList.add(timeList.get(i));
             }
         }
