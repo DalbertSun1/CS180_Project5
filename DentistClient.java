@@ -1,41 +1,75 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import javax.management.relation.RoleUnresolved;
+import java.io.*;
 import java.net.*;
 
+import javax.swing.*;
 
 /**
+ * Project 5
  * DentistClient, which will connect to the server and run the login method
+ * <p>
  * hostname = localhost
- * port = 6969
- * @author Jack White
- * @version 11-29-23
+ * port = 6000
+ *
+ * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
+ * @version December 11th, 2023
  */
 public class DentistClient {
-    static final int port = 5000;
-    static final String hostname = "localhost";
-
+    static final int port = 6000;
+    static String hostname;
+    public static BufferedReader reader;
+    public static PrintWriter writer;
+    public static Object obj = new Object();
 
     public static void main(String[] args) {
-        try (Socket socket = new Socket(hostname, port);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter writer = new PrintWriter(socket.getOutputStream())) {
+        String message = "Enter the hostname (default is 'localhost'):";
 
-            writer.println("Hello server!");
-            System.out.println(reader.readLine());
+        // Show input dialog with a default message
+        hostname = JOptionPane.showInputDialog(null, message);
 
-            Login.main(new String[0]);
+        // Check if input is null or empty and set default
+        if (hostname == null || hostname.isEmpty()) {
+            hostname = "localhost";
+        }
 
+        try (Socket socket = new Socket(hostname, port)) {
+            // writing to server
+            writer = new PrintWriter(socket.getOutputStream(), true);
 
+            // reading from server
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            DentistClient thisClient = new DentistClient();
+            synchronized (obj) {
+                Login.main(new String[0], thisClient);
+            }
+            //thisClient.run();
         } catch (UnknownHostException e) {
-            System.out.println(e.getMessage());
-            System.out.println("Client could not connect. Server not running currently, or incorrect port, or incorrect hostname");
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(null, "Client could not connect to server. Likely, the server is not online, the port is already taken, or the host name is incorrect.", "Connection Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (ConnectException e) {
+            JOptionPane.showMessageDialog(null, "Client could not connect to server. Likely, the server is not online or the port is already taken.", "Connection Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception r) {
+            r.printStackTrace();
         }
     }
 
+    public synchronized String readLine() {
+        try {
+            String line = reader.readLine();
+            // This print statement is extremely useful for understanding the program and bug testing
+            // System.out.println("Read from server -> " + line);
+            return line;
+        } catch (IOException e) {
+            return e.getMessage();
+        }
 
+    }
+
+    public synchronized void println(String input) {
+        // This print statement is extremely useful for understanding the program and bug testing
+        // System.out.println("Wrote to server -> " + input);
+        writer.println(input);
+        writer.flush();
+    }
 }
