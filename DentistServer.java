@@ -7,6 +7,17 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Project 5
+ * DentistServer, which will connect to the client and run the login method
+ *
+ * hostname = localhost
+ * port = 6000
+ *
+ * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
+ * @version December 11th, 2023
+ */
+
 public class DentistServer implements Runnable {
 
     static final int port = 6000;

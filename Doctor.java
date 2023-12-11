@@ -3,11 +3,11 @@ import java.util.HashMap;
 import java.io.IOException;
 
 /**
- * Project 4
+ * Project 5
  * Dentist Office Calendar Marketplace
  *
  * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
- * @version November 13th, 2023
+ * @version December 11th, 2023
  */
 
 public class Doctor { // a doctor is equivalent to a store in the project handout

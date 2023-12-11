@@ -8,6 +8,14 @@ import java.awt.event.WindowListener;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * Project 5
+ * Dentist Office Calendar Marketplace
+ *
+ * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
+ * @version December 11th, 2023
+ */
+
 public class MyCalendar extends Login {
     boolean menu = false;
 

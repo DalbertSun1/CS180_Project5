@@ -2,11 +2,14 @@ import javax.management.relation.RoleUnresolved;
 import java.io.*;
 import java.net.*;
 /**
+ * Project 5
  * DentistClient, which will connect to the server and run the login method
+ *
  * hostname = localhost
  * port = 6000
- * @author Jack White
- * @version 11-29-23
+ *
+ * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
+ * @version December 11th, 2023
  */
 public class DentistClient {
     static final int port = 6000;
