@@ -363,7 +363,27 @@ public class Login extends JComponent{
                                         }
                                         break;
                                     case "View Statistics":
-                                        OurStatistics.dentistOfficeDashboard(d, scan, client);
+                                        client.println("readDocStats::");
+
+                                        ArrayList<String> aptList = new ArrayList<>();
+                                        String input = client.readLine();
+                                        String[] approvedList = new String[0];
+
+                                        if (!input.isEmpty()) {
+                                            for (String apt: input.split(";")) {
+                                                aptList.add(apt);
+                                            }
+
+                                            approvedList = new String[aptList.size()];
+                                            for (int i = 0; i < aptList.size(); i++) {
+                                                approvedList[i] = aptList.get(i);
+                                            }
+
+                                            OurStatistics.dentistOfficeDashboard(approvedList, d, scan, client);
+                                        } else {
+                                            JOptionPane.showMessageDialog(null, "There are no approved appointments at this time.", "Approved Appointments", JOptionPane.ERROR_MESSAGE);
+                                        }
+
                                         break;
                                     case "Import Calendar":
                                         //try {

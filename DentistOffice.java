@@ -192,6 +192,9 @@ public class DentistOffice {
             for (String apt : input.split(";")) {
                 aptList.add(apt);
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "There are no pending appointments", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
         return aptList.toArray(new String[0]);
     }
@@ -414,7 +417,7 @@ public class DentistOffice {
 
     public static boolean approveAppointment(String approve) throws IOException {
         try {
-            System.out.println(approve);
+            //System.out.println(approve);
             File approved = new File("approved.txt");
             File pending = new File("pending.txt");
             ArrayList<String> approvedList = new ArrayList<>();
