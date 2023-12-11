@@ -118,6 +118,51 @@ public class Doctor { // a doctor is equivalent to a store in the project handou
 
     }
 
+    public HashMap[] getStatistics(String[] approved) { //USED FOR STATS
+        // returns an array of two hashmaps.
+        // Map 1: a list of customers and corresponding # of appointments per customer
+        // Map 2: a list of String time and corresponding # of appointments
+        bookedAppointments = new ArrayList<>();
+        for (String a : approved) {
+            String[] line = a.split(",");
+            String patientName = line[0];
+            String time = line[2];
+            String doctorName = line[3];
+
+            if (name.equals(doctorName)) {
+                Appointment newApt = new Appointment(time);
+                newApt.bookAppointment(patientName);
+                bookedAppointments.add(newApt);
+            }
+
+        }
+
+
+        HashMap<String, Integer> customerData = new HashMap<String, Integer>(); // maps customer names to integer # of appointments
+        HashMap<String, Integer> timeData = new HashMap<String, Integer>(); // maps times to frequency of appointment slot
+
+        for (Appointment apt : bookedAppointments) {
+            String cusName = apt.getCustomerName();
+            String thisTime = apt.getTime();
+            if (apt.isBooked()) {
+                if (customerData.containsKey(cusName)) { // if the customer is already in database, increase by 1
+                    customerData.replace(cusName, customerData.get(cusName) + 1);
+                } else { // add customer to database
+                    customerData.put(cusName, 1);
+                }
+                if (timeData.containsKey(thisTime)) { // if the time is already in database, increase by 1
+                    timeData.replace(thisTime, timeData.get(thisTime) + 1);
+                } else { // add time to database
+                    timeData.put(thisTime, 1);
+                }
+
+            }
+        }
+        HashMap[] output = {customerData, timeData};
+        return output;
+
+    }
+
     @Override
     public String toString() {
         return name;
