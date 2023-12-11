@@ -337,4 +337,16 @@ Steps:
 Expected Result: If the file path exists, the calendar will be imported. 
 Test Status: Passed.
 
+Test 28
+
+Steps:
+
+1. User logs in as a patient through test 1.
+2. User selects the "View Log Out" dropdown.
+3. User selects the "OK" button.
+
+Expected Result: A message will appear telling the user they have successfully logged out. They will then be returned to the homepage.
+
+Test Status: Passed.
+
 
