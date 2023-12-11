@@ -3,7 +3,6 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
-import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 /**
@@ -56,7 +55,7 @@ public class Patient extends Login {
         return name;
     }
 
-    public void go(Scanner scan, ArrayList<Doctor> doctors, DentistOffice d, DentistClient client) throws IOException {
+    public void go(ArrayList<Doctor> doctors, DentistOffice d, DentistClient client) throws IOException {
         boolean menu2 = false;
         boolean menu3 = false;
         int sum = 1;
@@ -75,92 +74,21 @@ public class Patient extends Login {
             }
 
             try {
-                //String input1 = scan.nextLine();
-                //int choice = Integer.parseInt(input1);
+
 
                 switch (patientOption) {
                     case "Make a new appointment":
                         boolean invalidInput = false;
                         int date = 0;
-                        do {
-                            cal.viewCalendar(client);
-                            while(cal.getResultComplete() == false) {
-                                continue;
-                            }
-                            clientPending(cal.getResult(), client);
-                            try {
-                                String input2 = scan.nextLine();
-                                date = Integer.parseInt(input2);
-                                if (date <= 0 || date > 31) {
-                                    invalidInput = true;
-                                } else {
-                                    invalidInput = false;
-                                }
-                            } catch (NumberFormatException e) {
-                                invalidInput = true;
-                            }
-                        } while (invalidInput);
-
-                        Day selectedDay = new Day(cal.getIndividualDay(date).getDate());
-                        selectedDay.setDoctors(doctors);
-
-
-                        while (selectedDay.getDoctors().isEmpty()) {
-                            try {
-                                String input3 = scan.nextLine();
-                                date = Integer.parseInt(input3);
-
-                                selectedDay = cal.getIndividualDay(date);
-
-
-                            } catch (NumberFormatException e) {
-                            }
-
+                        cal.viewCalendar(client);
+                        while(cal.getResultComplete() == false) {
+                            continue;
                         }
-
-                        try {
-                            String input4 = scan.nextLine();
-                            int doctor = Integer.parseInt(input4);
-
-
-                            Doctor doc = selectedDay.getIndividualDoctor(doctor - 1);
-
-
-                            ArrayList<String> show = printAppointments(selectedDay, doc, client);
-                            for (int i = 0; i < show.size(); i++) {
-                                sum++;
-                            }
-                            sum = 1;
-
-                            try {
-                                String input6 = scan.nextLine();
-                                int appt = Integer.parseInt(input6);
-
-                                String chosenTime = show.get(appt - 1);
-
-                                Appointment appointment = new Appointment(chosenTime);
-                                appointment.bookAppointment(name);
-
-
-                                clientPending(name, date, doc, appointment, client);
-
-                                if (clientPending(name, date, doc, appointment, client)) {  // send info to server
-                                    JOptionPane.showMessageDialog(null, "Appointment booked!");
-                                } else {
-                                    JOptionPane.showMessageDialog(null, "Error during appointment booking!");
-                                }
-                                menu2 = true;
-                            } catch (NumberFormatException e) {
-                                JOptionPane.showMessageDialog(null, "Please enter an integer.");
-                            }
-                        } catch (NumberFormatException e) {
-                            JOptionPane.showMessageDialog(null, "Please enter an integer.");
-                        }
-
+                        clientPending(cal.getResult(), client);
                         break;
                     case "Cancel an appointment":
                         do {
-                            String[] a = clientReadFile(scan, client); //display approved appointments
+                            String[] a = clientReadFile(client); //display approved appointments
                             ArrayList<String> apptList = new ArrayList<String>();
 
                             if (a == null) {
@@ -226,12 +154,12 @@ public class Patient extends Login {
                         menu2 = true;
                         break;
                     case "View approved appointments":
-                        clientReadFile(scan, client);
+                        clientReadFile(client);
 
                         menu2 = true;
                         break;
                     case "Reschedule an appointment":
-                        if (clientRescheduleAppointment(scan, client)) {
+                        if (clientRescheduleAppointment(client)) {
                             JOptionPane.showMessageDialog(null, "Rescheduled successfully.");
                         }
                         else {
@@ -241,14 +169,14 @@ public class Patient extends Login {
                         menu2 = true;
                         break;
                     case "View Statistics":
-                        OurStatistics.patientDashboard(d, scan, client);
+                        OurStatistics.patientDashboard(d, client);
 
                         break;
                     case "Log Out":
                         JOptionPane.showMessageDialog(null, "You have logged out.");
                         Login l = new Login();
 
-                        l.menu(scan, client);
+                        menu(client);
                         break;
                     default:
                         JOptionPane.showMessageDialog(null, "Please select a valid option!", "Menu",
@@ -364,7 +292,7 @@ public class Patient extends Login {
 
         }
     }
-    public static String[] clientReadFile(Scanner scan, DentistClient client) throws IOException { // returns a list of the apts corresponding to
+    public static String[] clientReadFile(DentistClient client) throws IOException { // returns a list of the apts corresponding to
         // the Patient's name
 
         String name = JOptionPane.showInputDialog(null, "Enter your name",
@@ -400,7 +328,7 @@ public class Patient extends Login {
                 ArrayList<Doctor> doctors = new ArrayList<>();
                 DentistOffice d = new DentistOffice(name);
                 Patient p = new Patient(name);
-                p.go(scan, doctors, d, client);
+                p.go(doctors, d, client);
             }
         }
         return approvedList;
@@ -408,7 +336,7 @@ public class Patient extends Login {
     }
 
 
-    public static boolean clientRescheduleAppointment(Scanner scan, DentistClient client) throws IOException {
+    public static boolean clientRescheduleAppointment(DentistClient client) throws IOException {
         String name = JOptionPane.showInputDialog(null, "Enter your name:",
                 "Reschedule appointment", JOptionPane.QUESTION_MESSAGE);
 

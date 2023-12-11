@@ -17,7 +17,7 @@ import java.awt.event.*;
 
 public class Login extends JComponent {
 
-    static Scanner scan;
+
 
     public static void main(String[] args, DentistClient client) throws IOException {
         int welcome1  = JOptionPane.showConfirmDialog(null, "Welcome to Dentist Office!", "Welcome", JOptionPane.OK_CANCEL_OPTION);
@@ -25,9 +25,9 @@ public class Login extends JComponent {
             JOptionPane.showMessageDialog(null, "Thank you for using the Dentist Office", "Dentist Office", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        scan = new Scanner(System.in);
+
         try {
-            menu(scan, client);
+            menu(client);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -39,9 +39,9 @@ public class Login extends JComponent {
         return textField;
     }
     public void start(DentistClient client) throws IOException {
-        menu(scan, client);
+        menu(client);
     }
-    public static void menu(Scanner scan, DentistClient client) throws IOException {
+    public static void menu(DentistClient client) throws IOException {
         boolean menu1 = false; //counter to rerun the loop if invalid choice is entered
         do {
             String[] options = {"Log in", "Create an Account", "Exit"};
@@ -65,7 +65,7 @@ public class Login extends JComponent {
                                         "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
                                 if ((userOption == null) || (userOption.isEmpty())) {
 //                                    JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
-                                    menu(scan, client);
+                                    menu(client);
                                     return;
                                 }
 
@@ -95,13 +95,13 @@ public class Login extends JComponent {
                                     String username = usernameField.getText();
                                     String password = new String(passwordField.getPassword());
 
-                                    postLoginMenu(fullName, testOption, username, password, scan, client);
+                                    postLoginMenu(fullName, testOption, username, password, client);
 
                                 } else if (loginResult == JOptionPane.CANCEL_OPTION) {
-                                    menu(scan, client);
+                                    menu(client);
                                 }
                                 else {
-                                    menu(scan, client);
+                                    menu(client);
                                     return;
                                 }
                             } catch (NumberFormatException e) {
@@ -121,7 +121,7 @@ public class Login extends JComponent {
                                 userOption2 = (String) JOptionPane.showInputDialog(null, "Create an account as",
                                         "Dentist Office", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
                                 if ((userOption2 == null) || (userOption2.isEmpty())) {
-                                    menu(scan, client);
+                                    menu(client);
                                     return;
                                 }
 
@@ -165,12 +165,12 @@ public class Login extends JComponent {
                                     String email = emailField.getText();
                                     String number = numberField.getText();
 
-                                    clientCreateAccount(testOption, fullName, username, password, email, number, scan, client);
+                                    clientCreateAccount(testOption, fullName, username, password, email, number, client);
 
                                 }
                                 else {
                                     //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
-                                    menu(scan, client);
+                                    menu(client);
                                     return;
                                 }
                             } catch (NumberFormatException e) {
@@ -195,12 +195,12 @@ public class Login extends JComponent {
         } while (menu1);
     }
 
-    public static void postLoginMenu(String fullName, int identity, String username, String password, Scanner scan, DentistClient client) throws IOException {
+    public static void postLoginMenu(String fullName, int identity, String username, String password, DentistClient client) throws IOException {
         DentistOffice d = new DentistOffice("My Dentist Office", client);
         if (clientAuthenticate(username, password, client)) {
             int welcome = JOptionPane.showConfirmDialog(null, "Welcome!", "Dentist Office", JOptionPane.OK_CANCEL_OPTION);
             if (welcome != JOptionPane.OK_OPTION) {
-                menu(scan, client);
+                menu(client);
                 return;
             }
             boolean menu2 = false;
@@ -208,7 +208,7 @@ public class Login extends JComponent {
                 switch (identity) {
                     case 1:
                         Patient p = new Patient(fullName); // continue as a patient
-                        p.go(scan, d.getDoctorList(), d, client);
+                        p.go(d.getDoctorList(), d, client);
                         break;
                     case 2:
                         // continue as a doctor
@@ -226,7 +226,7 @@ public class Login extends JComponent {
                                         "Menu", JOptionPane.QUESTION_MESSAGE, null, userMenu, userMenu[0]);
                                 if ((userOption == null) || (userOption.isEmpty())) {
                                     //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
-                                    menu(scan, client);
+                                    menu(client);
                                     return;
                                 }
 
@@ -352,8 +352,7 @@ public class Login extends JComponent {
                                         }
                                         break;
                                     case "Reschedule Appointment":
-                                        //d.rescheduleAppointment(scan);
-                                        if (DentistOffice.clientRescheduleAppointment(scan, client)) {
+                                        if (DentistOffice.clientRescheduleAppointment(client)) {
                                             JOptionPane.showMessageDialog(null, "Rescheduled successfully.");
                                         }
                                         else {
@@ -362,7 +361,7 @@ public class Login extends JComponent {
                                         }
                                         break;
                                     case "View Statistics":
-                                        OurStatistics.dentistOfficeDashboard(d, scan, client);
+                                        OurStatistics.dentistOfficeDashboard(d, client);
                                         break;
                                     case "Import Calendar":
                                         //try {
@@ -400,7 +399,7 @@ public class Login extends JComponent {
                                         break;
                                     case "Log Out":
                                         JOptionPane.showMessageDialog(null, "You have logged out.");
-                                        menu(scan, client);
+                                        menu(client);
 
                                         menu3 = false;
                                         break;
@@ -425,7 +424,7 @@ public class Login extends JComponent {
             } while (menu2);
         } else {
             JOptionPane.showMessageDialog(null, "Error! Account doesn't exist.", "Dentist Office", JOptionPane.ERROR_MESSAGE);
-            menu(scan, client);
+            menu(client);
         }
 
     }
@@ -446,7 +445,7 @@ public class Login extends JComponent {
     //creates a new account
     //prints error if account already exists - to do
     public static void clientCreateAccount(int identity, String fullName, String username,
-                                           String password, String email, String phoneNumber, Scanner scan, DentistClient client) {
+                                           String password, String email, String phoneNumber, DentistClient client) {
         try {
 
             if (clientAuthenticate(username, password, client)) {
@@ -457,7 +456,7 @@ public class Login extends JComponent {
                 if (Boolean.parseBoolean(client.readLine())) {
                     int success  = JOptionPane.showConfirmDialog(null, "Account successfully created!", "Create an Account", JOptionPane.OK_CANCEL_OPTION);
                     if (success != JOptionPane.OK_OPTION) {
-                        menu(scan, client);
+                        menu(client);
                         return;
                     }
                 } else {
@@ -466,7 +465,7 @@ public class Login extends JComponent {
 
             }
 
-            menu(scan, client);
+            menu(client);
 
         } catch (IOException e) {
             e.printStackTrace();

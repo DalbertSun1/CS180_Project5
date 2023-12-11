@@ -6,7 +6,6 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 import java.io.PrintWriter;
 
 /**
@@ -461,7 +460,7 @@ public class DentistOffice {
         }
     }
 
-    public static boolean clientRescheduleAppointment(Scanner scan, DentistClient client) throws IOException {
+    public static boolean clientRescheduleAppointment(DentistClient client) throws IOException {
         String name = JOptionPane.showInputDialog(null, "Enter the patient's name:",
                 "Reschedule appointment", JOptionPane.QUESTION_MESSAGE);
 

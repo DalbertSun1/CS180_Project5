@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
+
 
 /**
  * Project 5
@@ -160,7 +160,7 @@ public class DentistServer implements Runnable {
                     }
                 }
                 case "rescheduleAppointment" -> {
-                    Scanner scan = new Scanner(System.in);
+
                     synchronized (obj) {
                         try {
                             println(String.valueOf(Patient.serverRescheduleAppointment(params[0],
