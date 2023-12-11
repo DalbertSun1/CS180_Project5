@@ -384,7 +384,9 @@ public class Login extends JComponent {
 
                                             client.println("importCalendar::" + path);
                                             if (client.readLine().equals("true")) {
-                                                System.out.println("Calendar imported successfully!");
+                                                JOptionPane.showMessageDialog(null, "Calendar imported successfully!");
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "Calendar could not be imported due to invalid filepath.", "Error", JOptionPane.ERROR_MESSAGE);
                                             }
                                         }
                                         else if (loginResult2 == JOptionPane.CANCEL_OPTION) {

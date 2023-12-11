@@ -448,7 +448,6 @@ public class Patient extends Login {
                 JOptionPane.showMessageDialog(null, "Back to Menu:", "Reschedule appointment",
                         JOptionPane.ERROR_MESSAGE);
                 // TODO: Fix later
-                // return;
                 return false;
             }
 
@@ -473,7 +472,7 @@ public class Patient extends Login {
                                     "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, dateList, dateList[0]);
                             if ((date == null) || (date.isEmpty())) {
                                 JOptionPane.showMessageDialog(null, "Back to Menu:");
-                                //return;
+                                return false;
                                 // TODO: Fix Later
                             }
                         } while ((date == null) || (date.isEmpty()));
@@ -495,14 +494,11 @@ public class Patient extends Login {
                                 timeslots[0]);
                         if ((newTime == null) || (newTime.isEmpty())) {
                             JOptionPane.showMessageDialog(null, "Back to Menu:");
-                            //TODO: Fix This
-                            //return;
+                            return false;
                         }
 
                         String line = rescheduleOption;
                         int userIndex = Integer.parseInt(line.substring(0, line.indexOf(":")));
-                        String lineWithoutNum = line.substring(line.indexOf(":"));
-
                         String doctorName = line.split(",")[3];
 
 
