@@ -449,7 +449,7 @@ public class Login extends JComponent{
         try {
 
             if (clientAuthenticate(username, password, client)) {
-                JOptionPane.showMessageDialog(null, "Error! Account doesn't exist.", "Create an Account", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error! Account already exists.", "Create an Account", JOptionPane.ERROR_MESSAGE);
             } else {
                 //adding the account details to the file
                 client.println("createAccount::" + fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
