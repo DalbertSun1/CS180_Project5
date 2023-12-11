@@ -74,3 +74,5 @@ DentistClient serves as a proxy before calling our Login method, essentially rec
 **Testing Done** 
 Our testing done is covered comprehensively in Tests.MD, but the following is a general summary. There are 28 separate routes through our program that must be tested. These include logging in, making and removing appointments, viewing approved and pending appointments, rescheduling, canceling, viewing statistics, and importing .csv files.
 
+**Note:** 
+We turned in the project with the template empty txt files. However, the project also works without these txt files too.
