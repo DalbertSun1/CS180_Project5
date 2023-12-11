@@ -98,12 +98,18 @@ public class DentistServer implements Runnable {
                         println(Boolean.toString(Patient.cancelAppointment(choice)));
                     }
                 }
+                case "readStats" -> {
+                    Patient.serverReadFile(this);
 
-
+                }
 
 
 
                 // DentistOffice functions
+
+                case "readDocStats" -> {
+                    d.serverReadFile(this);
+                }
 
                 case "addDoctor" -> {
                     synchronized (obj) {
