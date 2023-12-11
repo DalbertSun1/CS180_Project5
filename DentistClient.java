@@ -43,6 +43,9 @@ public class DentistClient {
                 Login.main(new String[0], thisClient);
             }
             //thisClient.run();
+        } catch (UnknownHostException e) {
+            JOptionPane.showMessageDialog(null, "Client could not connect to server. Likely, the server is not online, the port is already taken, or the host name is incorrect.", "Connection Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (ConnectException e) {
             JOptionPane.showMessageDialog(null, "Client could not connect to server. Likely, the server is not online or the port is already taken.", "Connection Error",
                     JOptionPane.ERROR_MESSAGE);
