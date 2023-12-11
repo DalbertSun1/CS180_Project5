@@ -108,7 +108,7 @@ public class DentistServer implements Runnable {
                 // DentistOffice functions
 
                 case "readDocStats" -> {
-                    d.serverReadFile(this);
+                    d.serverReadFileStats(this);
                 }
 
                 case "addDoctor" -> {
