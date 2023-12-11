@@ -1,6 +1,9 @@
 import javax.management.relation.RoleUnresolved;
 import java.io.*;
 import java.net.*;
+
+import javax.swing.*;
+
 /**
  * Project 5
  * DentistClient, which will connect to the server and run the login method
@@ -29,8 +32,9 @@ public class DentistClient {
                 Login.main(new String[0], thisClient);
             }
             //thisClient.run();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (ConnectException e) {
+            JOptionPane.showMessageDialog(null, "Client could not connect to server. Likely, the server is not online or the port is already taken.", "Connection Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception r) {
             r.printStackTrace();
         }
