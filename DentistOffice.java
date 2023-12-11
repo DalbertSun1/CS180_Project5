@@ -6,7 +6,6 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 import java.io.PrintWriter;
 
 /**
@@ -126,9 +125,12 @@ public class DentistOffice {
             String docName = String.valueOf(doctor);
             BufferedReader bfr = new BufferedReader(new FileReader("doctors.txt"));
             String line = bfr.readLine();
+            boolean doctorIsFound = false;
             while (line != null) {
                 if (!(line.equals(docName))) {
                     list.add(line);
+                } else { // if this line is the Doctor to be removed
+                    doctorIsFound = true;
                 }
                 line = bfr.readLine();
             }
@@ -142,7 +144,12 @@ public class DentistOffice {
             }
             pw.flush();
             pw.close();
-            return true;
+            if (!doctorIsFound) {
+                return false;
+            } else {
+                return true;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -511,7 +518,7 @@ public class DentistOffice {
         }
     }
 
-    public static boolean clientRescheduleAppointment(Scanner scan, DentistClient client) throws IOException {
+    public static boolean clientRescheduleAppointment(DentistClient client) throws IOException {
         String name = JOptionPane.showInputDialog(null, "Enter the patient's name:",
                 "Reschedule appointment", JOptionPane.QUESTION_MESSAGE);
 

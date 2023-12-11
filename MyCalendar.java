@@ -76,7 +76,7 @@ public class MyCalendar extends Login {
         this.file = file;
     }
 
-    public ArrayList<Doctor> importCalendar() {
+    public ArrayList<Doctor> importCalendar() throws FileNotFoundException {
         ArrayList<Doctor> doctors = new ArrayList<Doctor>();
         String result = "";
         File f = new File(file);
@@ -143,11 +143,8 @@ public class MyCalendar extends Login {
 
             }
             //System.out.print(days[d].showDoctorList());
-
-
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw e;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

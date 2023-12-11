@@ -16,11 +16,21 @@ import javax.swing.*;
  */
 public class DentistClient {
     static final int port = 6000;
-    static final String hostname = "localhost";
+    static String hostname;
     public static BufferedReader reader;
     public static PrintWriter writer;
     public static Object obj = new Object();
     public static void main(String[] args) {
+        String message = "Enter the hostname (default is 'localhost'):";
+
+        // Show input dialog with a default message
+        hostname = JOptionPane.showInputDialog(null, message);
+
+        // Check if input is null or empty and set default
+        if (hostname == null || hostname.isEmpty()) {
+            hostname = "localhost";
+        }
+
         try (Socket socket = new Socket(hostname, port)) {
             // writing to server
             writer = new PrintWriter(socket.getOutputStream(), true);

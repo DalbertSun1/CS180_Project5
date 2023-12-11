@@ -42,7 +42,8 @@ public class OurStatistics { // handles the statistics section of our projection
 
 //    public OurStatistics
 
-    public static void dentistOfficeDashboard(String[] app, DentistOffice dentistOffice, Scanner scanner, DentistClient client) {
+
+    public static void dentistOfficeDashboard(String[] app, DentistOffice dentistOffice, DentistClient client) {
         approved = app;
         HashMap<String, Integer> patientFrequency = new HashMap<>(); // maps patient names to # of apts
         HashMap<Doctor, String> doctorTimeData = new HashMap<>(); // maps Doctors to their most frequent time
@@ -79,7 +80,7 @@ public class OurStatistics { // handles the statistics section of our projection
 
 
         }
-        printDentistOfficeDashboard(patientFrequency, doctorTimeData, scanner);
+        printDentistOfficeDashboard(patientFrequency, doctorTimeData);
 
 
         // patientDatawill include a list of patients with the number of approved appointments they made
@@ -89,7 +90,7 @@ public class OurStatistics { // handles the statistics section of our projection
 
     }
 
-    private static void printDentistOfficeDashboard(HashMap<String, Integer> patientFrequency, HashMap<Doctor, String> doctorTimeData, Scanner scanner) {
+    private static void printDentistOfficeDashboard(HashMap<String, Integer> patientFrequency, HashMap<Doctor, String> doctorTimeData) {
         boolean printing = true;
         int userChoice = 0;
 
@@ -153,56 +154,15 @@ public class OurStatistics { // handles the statistics section of our projection
                 }
             }
             doctorStats();
-//            JFrame frame = new JFrame("Statistics");
-//            JTextArea textArea = new JTextArea(output.toString());
-//            textArea.setLineWrap(true);
-//            textArea.setWrapStyleWord(true);
-//            JScrollPane scrollPane = new JScrollPane(textArea);
-//            frame.setLayout(new BorderLayout());
-//            frame.add(scrollPane, BorderLayout.CENTER);
-//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//            frame.setSize(600, 400);
-//            frame.setVisible(true);
-            System.out.println(output.toString());
-            do {
-                //System.out.println("Would you like to 1) Sort by patient's name, 2) Sort by # of appointments, 3) Sort by doctor's name, 4) exit?");
-                try {
-                    userChoice = scanner.nextInt();
-                    scanner.nextLine();
-                } catch (Exception e) {
-                    userChoice = 5;
-                    scanner.nextLine();
-                }
 
-                switch (userChoice) {
-                    case 1 -> {
-                        // sort map by patient's name
-                        patientList.sort(null);
-                    }
-                    case 2 -> {
-                        // sort map by # of appointments
-                        sortedPatientEntries.sort(Map.Entry.comparingByValue());
-                    }
-                    case 3 -> {
-                        // sort by doctor's name
-                        doctorList.sort(Comparator.comparing(Doctor::getName));
-                    }
-
-                    case 4 -> {
-                        printing = false;
-                    }
-                    case 5 -> {
-                        //System.out.println("Not an available option. Type either 1, 2, or 3.");
-                    }
-                }
-            } while (userChoice == 5);
 
         } while (printing);
 
     }
 
 
-    public static void patientDashboard(String[] app, DentistOffice dentistOffice, Scanner scanner, DentistClient client) {
+    public static void patientDashboard(String[] app, DentistOffice dentistOffice, DentistClient client) {
+
         // patientDatawill include a list of Doctors by number of patients and the most popular appointment windows by Doctor.
         // Customers can choose to sort the dashboard.
         approved = app;
@@ -236,7 +196,7 @@ public class OurStatistics { // handles the statistics section of our projection
 
         }
 
-        printPatientDashboard(doctorPatientData, doctorTimeData, scanner);
+        printPatientDashboard(doctorPatientData, doctorTimeData);
 
 
         // 1: Dr James | 4 patients
@@ -246,7 +206,7 @@ public class OurStatistics { // handles the statistics section of our projection
     }
 
 
-    private static void printPatientDashboard(HashMap<Doctor, Integer> doctorPatientData, HashMap<Doctor, String> doctorLebronTimeData, Scanner scanner) {
+    private static void printPatientDashboard(HashMap<Doctor, Integer> doctorPatientData, HashMap<Doctor, String> doctorLebronTimeData) {
         boolean printing = true;
         int userChoice = 0;
 
@@ -329,38 +289,6 @@ public class OurStatistics { // handles the statistics section of our projection
                 patientStats();
             }
 
-            //System.out.println(output.toString());
-
-            do {
-                //System.out.println("Would you like to 1) Sort by Doctor's name, 2) Sort by # of patients, 3) exit?");
-                try {
-                    userChoice = scanner.nextInt();
-                    scanner.nextLine();
-                } catch (Exception e) {
-                    scanner.nextLine();
-                    userChoice = 5;
-                }
-
-                switch (userChoice) {
-                    case 1 -> {
-                        // sort map by Doctor's name
-
-
-
-
-                    }
-                    case 2 -> {
-                        // sort map by # of patients
-                        sortedEntriesByPatients.sort(Map.Entry.comparingByValue());
-                    }
-                    case 3 -> {
-                        printing = false;
-                    }
-                    default -> {
-                        //System.out.println("Not an available option. Type either 1, 2, or 3.");
-                    }
-                }
-            } while (userChoice == 5);
 
         } while (printing);
     }

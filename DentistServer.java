@@ -1,11 +1,8 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
+
 
 /**
  * Project 5
@@ -169,7 +166,7 @@ public class DentistServer implements Runnable {
                     }
                 }
                 case "rescheduleAppointment" -> {
-                    Scanner scan = new Scanner(System.in);
+
                     synchronized (obj) {
                         try {
                             println(String.valueOf(Patient.serverRescheduleAppointment(params[0],
@@ -182,11 +179,17 @@ public class DentistServer implements Runnable {
                 case "importCalendar" -> {
                     synchronized (obj) {
                         MyCalendar calendar = new MyCalendar(params[0]);
-                        ArrayList<Doctor> addD = calendar.importCalendar();
-                        for (int j = 0; j < addD.size(); j++) {
-                            d.addDoctor(addD.get(j));
+                        try {
+                            ArrayList<Doctor> addD = calendar.importCalendar();
+                            for (int j = 0; j < addD.size(); j++) {
+                                d.addDoctor(addD.get(j));
+                            }
+                            println("true");
+
+                        } catch (FileNotFoundException e) {
+                            println("false");
                         }
-                        println("true");
+
                     }
                 }
 
