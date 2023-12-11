@@ -29,7 +29,8 @@ public class MyCalendar extends Login {
     int day;
     String username;
     JTextField name;
-    JFrame frame;;
+    JFrame frame;
+    ;
     JFrame newFrame = new JFrame();
     JFrame timeFrame = new JFrame();
     Doctor selectedDoctor;
@@ -41,7 +42,7 @@ public class MyCalendar extends Login {
 
     JButton nameButton;
 
-    private  Day[] days;
+    private Day[] days;
     private String file;
     private String month;
     private int numberMonth;
@@ -98,12 +99,7 @@ public class MyCalendar extends Login {
                     stop = true;
                     break;
                 }
-                //System.out.println(entry[0]);
                 Doctor addDoctor = new Doctor(entry[0]);
-//				for (int i = 0; i < entry.length; i++) {
-//					System.out.print(entry[i] + ", ");
-//				}
-//				System.out.println();
                 String m = entry[1].substring(0, entry[1].indexOf('/'));
                 checkMonth(Integer.parseInt(m));
                 if (Integer.parseInt(entry[1].split("/")[2]) < 2000) {
@@ -266,7 +262,7 @@ public class MyCalendar extends Login {
 
     }
 
-    private  JPanel createPanel(String text) {
+    private JPanel createPanel(String text) {
         JPanel panel = new JPanel();
 
         JLabel label = new JLabel(text);
@@ -274,9 +270,11 @@ public class MyCalendar extends Login {
 
         return panel;
     }
+
     public String getResult() {
         return result;
     }
+
     public boolean getResultComplete() {
         return resultComplete;
     }
@@ -288,8 +286,8 @@ public class MyCalendar extends Login {
             if (e.getSource() instanceof JButton source) {
                 if (isInt(source.getText())) {
                     openNewFrame("July " + source.getText() + ", 2023", Integer.parseInt(source.getText()));
-                } else if (source.getText().substring(0,4).equals("Dr. ")){
-                    for (Doctor d : doctors){
+                } else if (source.getText().substring(0, 4).equals("Dr. ")) {
+                    for (Doctor d : doctors) {
 
                         if (d.getName().equals(source.getText().substring(4))) {
 
@@ -299,14 +297,17 @@ public class MyCalendar extends Login {
                     openDoctorFrame(source.getText().substring(4));
 
 
-                } else if (source.getText().length() > 12 && isInt(source.getText().substring(11,12))) {
-                    for (int i = 0; i < selectedDoctor.getAppointments().size(); i++){
+                } else if (source.getText().length() > 12 && isInt(source.getText().substring(11, 12))) {
+                    for (int i = 0; i < selectedDoctor.getAppointments().size(); i++) {
                         Appointment a = selectedDoctor.getAppointments().get(i);
 
-                        if (a.getTime().equals(source.getText().substring(11))) { apptIndex = i; selectedAppointment = a; }
+                        if (a.getTime().equals(source.getText().substring(11))) {
+                            apptIndex = i;
+                            selectedAppointment = a;
+                        }
                     }
                     openTimeFrame(source.getText());
-                } else if (source == nameButton){
+                } else if (source == nameButton) {
                     frame.dispose();
                     timeFrame.dispose();
                     newFrame.dispose();
@@ -334,7 +335,6 @@ public class MyCalendar extends Login {
                     request.setLocationRelativeTo(null);
                     request.setVisible(true);
                 } else if (source.getText().equals("Exit")) {
-                    //System.out.println("menu is true fucker");
                     request.dispose();
                     JOptionPane.showMessageDialog(null, "Thank you for creating an appointment! \nPlease login in again to check if it's been approved.", "Create an Appointment", JOptionPane.INFORMATION_MESSAGE);
                     System.exit(0);
@@ -367,9 +367,9 @@ public class MyCalendar extends Login {
         tempButton.addActionListener(actionListener);
 
 
-
         return tempButton;
     }
+
     private void openNewFrame(String title, int date) {
         day = date;
         //doctors = days[date-1].getDoctors();
@@ -382,12 +382,12 @@ public class MyCalendar extends Login {
         JPanel buttons = new JPanel();
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
 
-        days[date-1].setDoctors(doctors);
+        days[date - 1].setDoctors(doctors);
         int height = 0;
         if (doctors.size() < 5) {
             height = 70;
         } else {
-            height = 400/doctors.size();
+            height = 400 / doctors.size();
         }
         if (doctors.isEmpty()) {
             JOptionPane.showMessageDialog(null, "There are no doctors at this time. \nPlease check back later to see if any doctors are available.", "Make an appointment", JOptionPane.INFORMATION_MESSAGE);
@@ -419,6 +419,7 @@ public class MyCalendar extends Login {
         newFrame.setLocationRelativeTo(null);
         newFrame.setVisible(true);
     }
+
     private void openDoctorFrame(String doctor) {
         //File f = new File("doctors.txt");
 
@@ -429,9 +430,9 @@ public class MyCalendar extends Login {
 
 
         ArrayList<Appointment> times = new ArrayList<Appointment>();
-        for (int i = 9; i < 11; i++){
+        for (int i = 9; i < 11; i++) {
             String a = "";
-            a+= (i + ":00 AM - " + (i+1) + ":00 AM");
+            a += (i + ":00 AM - " + (i + 1) + ":00 AM");
             Appointment ap = new Appointment(a);
             ap.setCustomerName(username);
             ap.setDoctor(selectedDoctor.getName());
@@ -449,9 +450,9 @@ public class MyCalendar extends Login {
         apt2.setDoctor(selectedDoctor.getName());
         apt2.setDay(day);
         selectedDoctor.getAppointments().add(apt2);
-        for (int i = 1; i < 6; i++){
+        for (int i = 1; i < 6; i++) {
             String a = "";
-            a+= (i + ":00 PM - " + (i+1) + ":00 PM");
+            a += (i + ":00 PM - " + (i + 1) + ":00 PM");
             Appointment ap = new Appointment(a);
             ap.setCustomerName(username);
             ap.setDoctor(selectedDoctor.getName());
@@ -463,15 +464,12 @@ public class MyCalendar extends Login {
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
 
 
-
-
-
-        int height = 400/9;
+        int height = 400 / 9;
 
 
         for (int i = 0; i < 9; i++) {
 
-            if (!selectedDoctor.getAppointments().get(i).toString().substring(0,1).equals("B") && !selectedDoctor.getAppointments().get(i).toString().substring(0,1).equals("P")){
+            if (!selectedDoctor.getAppointments().get(i).toString().substring(0, 1).equals("B") && !selectedDoctor.getAppointments().get(i).toString().substring(0, 1).equals("P")) {
                 JButton button;
                 button = new JButton(selectedDoctor.getAppointments().get(i).toString());
                 button.addActionListener(actionListener);
@@ -490,13 +488,10 @@ public class MyCalendar extends Login {
             }
 
 
-
-
         }
 
 
         timeFrame.add(buttons);
-
 
 
         timeFrame.setLocationRelativeTo(null);
@@ -504,7 +499,7 @@ public class MyCalendar extends Login {
 
     }
 
-    public  boolean isInt(String str) {
+    public boolean isInt(String str) {
         try {
             // Attempt to parse the string as a int
             Integer.parseInt(str);
@@ -514,7 +509,8 @@ public class MyCalendar extends Login {
             return false;
         }
     }
-    private void openTimeFrame(String time){
+
+    private void openTimeFrame(String time) {
         pending.setTitle("Enter your name:");
         pending.setSize(300, 100);
 

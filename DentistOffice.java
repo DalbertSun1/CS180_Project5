@@ -25,6 +25,7 @@ public class DentistOffice {
         this.name = name;
         this.setDoctorList(readDoctors());
     }
+
     public DentistOffice(String name, DentistClient client) {
         this.name = name;
         this.setDoctorList(clientReadDoctors(client));
@@ -70,6 +71,7 @@ public class DentistOffice {
             return null;
         }
     }
+
     public ArrayList<Doctor> clientReadDoctors(DentistClient client) {
         client.println("readDoctors::");
         ArrayList<Doctor> doctorList = new ArrayList<>();
@@ -83,7 +85,6 @@ public class DentistOffice {
 
     public boolean addDoctor(Doctor doctor) {
         try {
-            //System.out.println("Adding Doctor:");
             BufferedWriter writer = new BufferedWriter(new FileWriter("doctors.txt", true));
 
             int counter = 0;
@@ -176,6 +177,7 @@ public class DentistOffice {
 
         return appointments;
     }
+
     public static String[] clientGetAppointments(DentistClient client) {
         client.println("readDoctorFile::");
 
@@ -188,6 +190,7 @@ public class DentistOffice {
         }
         return aptList.toArray(new String[0]);
     }
+
     public static String[] clientGetPendingAppointments(DentistClient client) {
         client.println("readDoctorPendingFile::");
 
@@ -262,6 +265,7 @@ public class DentistOffice {
 
 
     }
+
     public static void serverReadDoctorPendingFile(DentistServer server) {
         try {
             // read pending apts
@@ -287,6 +291,7 @@ public class DentistOffice {
             e.printStackTrace(); // Handle the IOException appropriately
         }
     }
+
     public static void clientReadDoctorPendingFile(DentistClient client) {
         client.println("readDoctorPendingFile::");
 
@@ -348,7 +353,6 @@ public class DentistOffice {
 
 
             ArrayList<String> aptList = new ArrayList<String>();
-            System.out.println("Approved appointments:");
             //displays the approved appointments for that person
             for (int i = 0; i < list2.size(); i++) {
                 aptList.add(list2.get(i));
@@ -361,8 +365,6 @@ public class DentistOffice {
                 output.append(apt + ";");
             }
             server.println(output.toString());
-
-
 
 
         } catch (Exception e) {
@@ -407,11 +409,9 @@ public class DentistOffice {
         String line = reader.readLine();
         int num = 1;
         if (line == null) {
-            System.out.println("You have no pending appointments.");
             num = 0;
         } else {
             while (line != null) {
-                System.out.println(num + ": " + line);
                 num++;
                 line = reader.readLine();
             }
@@ -424,7 +424,6 @@ public class DentistOffice {
 
     public static boolean approveAppointment(String approve) throws IOException {
         try {
-            //System.out.println(approve);
             File approved = new File("approved.txt");
             File pending = new File("pending.txt");
             ArrayList<String> approvedList = new ArrayList<>();
@@ -432,7 +431,9 @@ public class DentistOffice {
             if (!approved.exists()) {
                 approved.createNewFile();
             }
-            if (!pending.exists()) {pending.createNewFile();}
+            if (!pending.exists()) {
+                pending.createNewFile();
+            }
 
             BufferedReader pendingReader = new BufferedReader(new FileReader(pending));
             BufferedReader approvedReader = new BufferedReader(new FileReader(approved));
@@ -536,8 +537,6 @@ public class DentistOffice {
             }
         }
 
-        //System.out.println("Approved appointments:");
-        //System.out.println("Choice #, Patient Name, Day of Month, Time, Doctor Name");
         //displays the approved appointments for that person
 
         String[] approvedList = new String[num]; // converts to Array, adds a number before
@@ -550,7 +549,6 @@ public class DentistOffice {
             JOptionPane.showMessageDialog(null, "Name entered does not match any approved appointments",
                     "Reschedule appointment", JOptionPane.ERROR_MESSAGE);
         } else {
-            //System.out.println("Which appointment would you like to change?");
             String rescheduleOption = (String) JOptionPane.showInputDialog(null, "Which appointment would you like to reschedule?",
                     "Reschedule appointment", JOptionPane.QUESTION_MESSAGE, null, approvedList,
                     approvedList[0]);
@@ -616,14 +614,14 @@ public class DentistOffice {
                         String doctorName = line.split(",")[3];
 
 
-
                         //String doctorName = aptList.get(userIndex).split(",")[3];
 
                         client.println("rescheduleAppointment::" + name + ","
                                 + newDate + "," + newTime + "," + doctorName + "," + userIndex);
                         if (!Boolean.parseBoolean(client.readLine())) {
                             timeIsBooked = true;
-                            System.out.println("That time and day is already taken. Please choose another.");
+                            JOptionPane.showMessageDialog(null, "That time and day is already taken. Please choose another.", "Error",
+                                    JOptionPane.ERROR_MESSAGE);
                         } else {
                             return true;
                         }

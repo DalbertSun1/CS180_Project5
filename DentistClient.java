@@ -7,7 +7,7 @@ import javax.swing.*;
 /**
  * Project 5
  * DentistClient, which will connect to the server and run the login method
- *
+ * <p>
  * hostname = localhost
  * port = 6000
  *
@@ -20,6 +20,7 @@ public class DentistClient {
     public static BufferedReader reader;
     public static PrintWriter writer;
     public static Object obj = new Object();
+
     public static void main(String[] args) {
         String message = "Enter the hostname (default is 'localhost'):";
 
@@ -53,15 +54,18 @@ public class DentistClient {
     public synchronized String readLine() {
         try {
             String line = reader.readLine();
-            System.out.println("Read from server -> " + line);
+            // This print statement is extremely useful for understanding the program and bug testing
+            // System.out.println("Read from server -> " + line);
             return line;
         } catch (IOException e) {
             return e.getMessage();
         }
 
     }
+
     public synchronized void println(String input) {
-        System.out.println("Wrote to server -> " + input);
+        // This print statement is extremely useful for understanding the program and bug testing
+        // System.out.println("Wrote to server -> " + input);
         writer.println(input);
         writer.flush();
     }

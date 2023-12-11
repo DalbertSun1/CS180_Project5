@@ -18,9 +18,8 @@ import java.awt.event.*;
 public class Login extends JComponent {
 
 
-
     public static void main(String[] args, DentistClient client) throws IOException {
-        int welcome1  = JOptionPane.showConfirmDialog(null, "Welcome to Dentist Office!", "Welcome", JOptionPane.OK_CANCEL_OPTION);
+        int welcome1 = JOptionPane.showConfirmDialog(null, "Welcome to Dentist Office!", "Welcome", JOptionPane.OK_CANCEL_OPTION);
         if (welcome1 != JOptionPane.OK_OPTION) {
             JOptionPane.showMessageDialog(null, "Thank you for using the Dentist Office", "Dentist Office", JOptionPane.INFORMATION_MESSAGE);
             return;
@@ -38,9 +37,11 @@ public class Login extends JComponent {
         textField.setEditable(false);
         return textField;
     }
+
     public void start(DentistClient client) throws IOException {
         menu(client);
     }
+
     public static void menu(DentistClient client) throws IOException {
         boolean menu1 = false; //counter to rerun the loop if invalid choice is entered
         do {
@@ -99,8 +100,7 @@ public class Login extends JComponent {
 
                                 } else if (loginResult == JOptionPane.CANCEL_OPTION) {
                                     menu(client);
-                                }
-                                else {
+                                } else {
                                     menu(client);
                                     return;
                                 }
@@ -167,8 +167,7 @@ public class Login extends JComponent {
 
                                     clientCreateAccount(testOption, fullName, username, password, email, number, client);
 
-                                }
-                                else {
+                                } else {
                                     //JOptionPane.showMessageDialog(null, "Thank you for using Dentist Office!");
                                     menu(client);
                                     return;
@@ -231,7 +230,6 @@ public class Login extends JComponent {
                                 }
 
 
-
                                 int testOption;
                                 if (userOption.equals("Add Doctor")) {
                                     testOption = 1;
@@ -239,17 +237,17 @@ public class Login extends JComponent {
                                     testOption = 2;
                                 } else if (userOption.equals("View Approved Appointments")) {
                                     testOption = 3;
-                                }else if (userOption.equals("View Pending Appointments")) {
+                                } else if (userOption.equals("View Pending Appointments")) {
                                     testOption = 4;
-                                }else if (userOption.equals("Approve Appointment")) {
+                                } else if (userOption.equals("Approve Appointment")) {
                                     testOption = 5;
-                                }else if (userOption.equals("Decline Appointment")) {
+                                } else if (userOption.equals("Decline Appointment")) {
                                     testOption = 6;
-                                }else if (userOption.equals("Reschedule Appointment")) {
+                                } else if (userOption.equals("Reschedule Appointment")) {
                                     testOption = 7;
                                 } else if (userOption.equals("View Statistics")) {
                                     testOption = 8;
-                                }else if (userOption.equals("Import Calendar")) {
+                                } else if (userOption.equals("Import Calendar")) {
                                     testOption = 9;
                                 } else {
                                     testOption = 10;
@@ -276,8 +274,7 @@ public class Login extends JComponent {
                                                 JOptionPane.showMessageDialog(null, "Successfully Added Doctor.", "Add Doctor",
                                                         JOptionPane.INFORMATION_MESSAGE);
                                             }
-                                        }
-                                        else if (loginResult == JOptionPane.CANCEL_OPTION) {
+                                        } else if (loginResult == JOptionPane.CANCEL_OPTION) {
                                             JOptionPane.showMessageDialog(null, "Back to menu:");
                                         }
                                         break;
@@ -303,8 +300,7 @@ public class Login extends JComponent {
                                                 JOptionPane.showMessageDialog(null, "The doctor you specified does not exist.", "Remove Doctor",
                                                         JOptionPane.INFORMATION_MESSAGE);
                                             }
-                                        }
-                                        else if (loginResult1 == JOptionPane.CANCEL_OPTION) {
+                                        } else if (loginResult1 == JOptionPane.CANCEL_OPTION) {
                                             JOptionPane.showMessageDialog(null, "Back to menu:");
                                         }
                                         break;
@@ -354,8 +350,7 @@ public class Login extends JComponent {
                                     case "Reschedule Appointment":
                                         if (DentistOffice.clientRescheduleAppointment(client)) {
                                             JOptionPane.showMessageDialog(null, "Rescheduled successfully.");
-                                        }
-                                        else {
+                                        } else {
                                             JOptionPane.showMessageDialog(null, "Could not reschedule appointment.", "Error",
                                                     JOptionPane.ERROR_MESSAGE);
                                         }
@@ -369,7 +364,7 @@ public class Login extends JComponent {
                                         String[] approvedList = new String[0];
 
                                         if (!input.isEmpty()) {
-                                            for (String apt: input.split(";")) {
+                                            for (String apt : input.split(";")) {
                                                 aptList.add(apt);
                                             }
 
@@ -409,8 +404,7 @@ public class Login extends JComponent {
                                             } else {
                                                 JOptionPane.showMessageDialog(null, "Calendar could not be imported due to invalid filepath.", "Error", JOptionPane.ERROR_MESSAGE);
                                             }
-                                        }
-                                        else if (loginResult2 == JOptionPane.CANCEL_OPTION) {
+                                        } else if (loginResult2 == JOptionPane.CANCEL_OPTION) {
                                             JOptionPane.showMessageDialog(null, "Back to Menu:", "Error", JOptionPane.ERROR_MESSAGE);
                                         }
                                         /*}
@@ -476,7 +470,7 @@ public class Login extends JComponent {
                 //adding the account details to the file
                 client.println("createAccount::" + fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
                 if (Boolean.parseBoolean(client.readLine())) {
-                    int success  = JOptionPane.showConfirmDialog(null, "Account successfully created!", "Create an Account", JOptionPane.OK_CANCEL_OPTION);
+                    int success = JOptionPane.showConfirmDialog(null, "Account successfully created!", "Create an Account", JOptionPane.OK_CANCEL_OPTION);
                     if (success != JOptionPane.OK_OPTION) {
                         menu(client);
                         return;
@@ -493,6 +487,7 @@ public class Login extends JComponent {
             e.printStackTrace();
         }
     }
+
     public static boolean serverCreateAccount(String fullName, String username,
                                               String password, String email, String phoneNumber) {
         try {
@@ -503,7 +498,6 @@ public class Login extends JComponent {
             //if the username and password match a case in accounts.txt, then new account will not be created
 
             pw.println(fullName + "," + username + "," + password + "," + email + "," + phoneNumber);
-            System.out.println("Account successfully created!");
             pw.close();
             return true;
         } catch (IOException e) {

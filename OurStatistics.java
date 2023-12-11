@@ -98,7 +98,7 @@ public class OurStatistics { // handles the statistics section of our projection
             String[] columns = {String.format(doctorNameFormat, "Doctor Name"), String.format(doctorApptFormat, "Most Frequent Apt. Time")};
             doctorColumnNames = columns;
 
-            doctorData= new ArrayList<Object[]>();
+            doctorData = new ArrayList<Object[]>();
             //output.append(String.format(doctorFormat, "Doctor Name", "Most Frequent Apt. Time"));
             for (Doctor doctor : patDoctorList) {
                 String doctorName = doctor.getName();
@@ -134,15 +134,7 @@ public class OurStatistics { // handles the statistics section of our projection
             }
             doctorStats();
 
-            System.out.println(output.toString());
             do {
-//                try {
-//                    userChoice = scanner.nextInt();
-//                    scanner.nextLine();
-//                } catch (Exception e) {
-//                    userChoice = 5;
-//                    scanner.nextLine();
-//                }
 
                 switch (userChoice) {
                     case 1 -> {
@@ -162,7 +154,6 @@ public class OurStatistics { // handles the statistics section of our projection
                         printing = false;
                     }
                     case 5 -> {
-                        //System.out.println("Not an available option. Type either 1, 2, or 3.");
                     }
                 }
             } while (userChoice == 5);
@@ -224,7 +215,7 @@ public class OurStatistics { // handles the statistics section of our projection
             //output.append(String.format(format, "Doctor Name", "# of Patients", "Most Common Time"));
             String[] columns = {String.format(formatD, "Doctor Name"), String.format(formatP, "# of Patients"), String.format(formatT, "Most Common Time")};
             patientColumnNames = columns;
-            patientData= new ArrayList<Object[]>();
+            patientData = new ArrayList<Object[]>();
             if (userChoice == 2) { // if sorted by # of patients
                 for (Map.Entry<Doctor, Integer> entry : sortedEntriesByPatients) {
 
@@ -248,14 +239,13 @@ public class OurStatistics { // handles the statistics section of our projection
             } else { // if unsorted or sorted by Doctor's name
                 for (Doctor doctor : doctorList) {
                     int numPatients = doctorPatientData.get(doctor);
-                    int count =0;
+                    int count = 0;
                     String timeString = doctorTimeData.get(doctor);
 
-                    for (int i = 0; i< approved.length; i++) {
-                        //System.out.println(approved[i]);
+                    for (int i = 0; i < approved.length; i++) {
                         String line = approved[i];
                         String[] split = line.split(",");
-                        if (split[3].equals(doctor.getName())){
+                        if (split[3].equals(doctor.getName())) {
                             count++;
                         }
 
@@ -309,11 +299,12 @@ public class OurStatistics { // handles the statistics section of our projection
 
         } while (printing);
     }
+
     static ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() instanceof JButton source){
-                if (source.getText().equals("Sort by Doctor's Name")){
+            if (e.getSource() instanceof JButton source) {
+                if (source.getText().equals("Sort by Doctor's Name")) {
                     doctorList.sort(Comparator.comparing(Doctor::getName));
                     ArrayList<String> doctors = new ArrayList<String>();
                     String timeString = "";
@@ -323,13 +314,13 @@ public class OurStatistics { // handles the statistics section of our projection
 
                     Collections.sort(doctors);
 
-                    patientData= new ArrayList<Object[]>();
+                    patientData = new ArrayList<Object[]>();
                     for (String d : doctors) {
                         int count = 0;
-                        for (int i = 0; i<approved.length; i++) {
+                        for (int i = 0; i < approved.length; i++) {
                             String line = approved[i];
                             String[] split = line.split(",");
-                            if (split[3].equals(d)){
+                            if (split[3].equals(d)) {
                                 count++;
                             }
                         }
@@ -363,7 +354,6 @@ public class OurStatistics { // handles the statistics section of our projection
                     ArrayList<String> doctors = new ArrayList<String>();
                     String timeString = "";
                     for (Doctor d : doctorList) {
-                        ////System.out.println(d.getName());
                         doctors.add(d.getName());
                     }
                     ArrayList<Integer> temp = new ArrayList<Integer>();
@@ -374,7 +364,7 @@ public class OurStatistics { // handles the statistics section of our projection
 
                         String d = doctors.get(i);
                         int count = 0;
-                        for (int j = 0; j< approved.length; j++) {
+                        for (int j = 0; j < approved.length; j++) {
                             String line = approved[j];
                             String[] split = line.split(",");
                             if (split[3].equals(d)) {
@@ -399,7 +389,7 @@ public class OurStatistics { // handles the statistics section of our projection
                         for (int j = 0; j < anotherTemp.length; j++) {
                             String f = "";
                             f += count;
-                            if (Integer.parseInt(anotherTemp[j][1]) == count){
+                            if (Integer.parseInt(anotherTemp[j][1]) == count) {
 
                                 d = anotherTemp[j][0];
                                 anotherTemp[j][0] = "";
@@ -472,11 +462,7 @@ public class OurStatistics { // handles the statistics section of our projection
 
                         for (int j = 0; j < anotherTemp.length; j++) {
 
-                            if (Integer.parseInt(anotherTemp[j][1]) == count){
-                                //System.out.println("anotherTemp[" + j + "][0]: " + anotherTemp[j][0]);
-                                //System.out.println("anotherTemp[" + j + "][1]: " + anotherTemp[j][1]);
-
-                                //System.out.println();
+                            if (Integer.parseInt(anotherTemp[j][1]) == count) {
                                 p = anotherTemp[j][0];
                                 anotherTemp[j][0] = "";
                                 anotherTemp[j][1] = "-1";
@@ -509,14 +495,13 @@ public class OurStatistics { // handles the statistics section of our projection
                     ArrayList<String> temp = new ArrayList<String>();
                     ArrayList<String> tempPatients = patientList;
                     Collections.sort(tempPatients);
-                    doctorPatData= new ArrayList<Object[]>();
+                    doctorPatData = new ArrayList<Object[]>();
                     for (String p : tempPatients) {
-                        //System.out.println(p);
                         int count = 0;
                         for (int j = 0; j < approved.length; j++) {
                             String line = approved[j];
                             String[] split = line.split(",");
-                            if (split[0].equals(p)){
+                            if (split[0].equals(p)) {
                                 count++;
                             }
                         }
@@ -551,7 +536,7 @@ public class OurStatistics { // handles the statistics section of our projection
     public static void patientStats() {
 
         String[][] daaaata = patientData.toArray(new String[0][]);
-        DefaultTableModel tableModel = new DefaultTableModel(daaaata, patientColumnNames){
+        DefaultTableModel tableModel = new DefaultTableModel(daaaata, patientColumnNames) {
             public boolean isCellEditable(int row, int column) {
                 // Make all cells uneditable
                 return false;
@@ -580,9 +565,10 @@ public class OurStatistics { // handles the statistics section of our projection
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
+
     public static void doctorStats() {
         String[][] daaaata = doctorData.toArray(new String[0][]);
-        DefaultTableModel tableModel = new DefaultTableModel(daaaata, doctorColumnNames){
+        DefaultTableModel tableModel = new DefaultTableModel(daaaata, doctorColumnNames) {
             public boolean isCellEditable(int row, int column) {
                 // Make all cells uneditable
                 return false;
@@ -593,7 +579,7 @@ public class OurStatistics { // handles the statistics section of our projection
         table.setEnabled(false);
         JScrollPane scrollPane = new JScrollPane(table);
         String[][] daata = doctorPatData.toArray(new String[0][]);
-        DefaultTableModel patTableModel = new DefaultTableModel(daata, doctorPatColumnNames){
+        DefaultTableModel patTableModel = new DefaultTableModel(daata, doctorPatColumnNames) {
             public boolean isCellEditable(int row, int column) {
                 // Make all cells uneditable
                 return false;
@@ -604,7 +590,7 @@ public class OurStatistics { // handles the statistics section of our projection
         patTable.setEnabled(false);
 
         JScrollPane scrollPane2 = new JScrollPane(patTable);
-        JPanel panel = new JPanel(new GridLayout(2,1));
+        JPanel panel = new JPanel(new GridLayout(2, 1));
         panel.add(scrollPane);
         panel.add(scrollPane2);
 

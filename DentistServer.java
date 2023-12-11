@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Project 5
  * DentistServer, which will connect to the client and run the login method
- *
+ * <p>
  * hostname = localhost
  * port = 6000
  *
@@ -28,7 +28,7 @@ public class DentistServer implements Runnable {
         this.clientSocket = socket;
     }
 
-    public void run() throws NullPointerException{
+    public void run() throws NullPointerException {
         try {
             reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             writer = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -41,13 +41,17 @@ public class DentistServer implements Runnable {
             String methodChoice = "";
             String[] params = new String[0];
 
-            System.out.println("Loop " + i);
-            System.out.println("Waiting for client input...");
+
+            // This print statement is extremely useful for understanding the program and bug testing
+            // System.out.println("Loop " + i);
+            // System.out.println("Waiting for client input...");
             String rawMessage = readLine();
             if (rawMessage != null) {
-                System.out.println("rawMessage = " + rawMessage);
+                // This print statement is extremely useful for understanding the program and bug testing
+                // System.out.println("rawMessage = " + rawMessage);
                 methodChoice = rawMessage.split("::")[0];
-                System.out.println("methodChoice = " + methodChoice);
+                // This print statement is extremely useful for understanding the program and bug testing
+                // System.out.println("methodChoice = " + methodChoice);
                 try {
                     params = rawMessage.split("::")[1].split(",");
                 } catch (ArrayIndexOutOfBoundsException ignored) {
@@ -99,7 +103,6 @@ public class DentistServer implements Runnable {
                     Patient.serverReadFile(this);
 
                 }
-
 
 
                 // DentistOffice functions
@@ -216,7 +219,8 @@ public class DentistServer implements Runnable {
     public synchronized String readLine() {
         try {
             String line = reader.readLine();
-            System.out.println("Read from client -> " + line);
+            // This print statement is extremely useful for understanding the program and bug testing
+            // System.out.println("Read from client -> " + line);
             return line;
         } catch (IOException e) {
             return e.getMessage();
@@ -227,7 +231,8 @@ public class DentistServer implements Runnable {
     public synchronized void println(String input) {
         writer.println(input);
         writer.flush();
-        System.out.println("Wrote to client -> " + input);
+        // This print statement is extremely useful for understanding the program and bug testing
+        // System.out.println("Wrote to client -> " + input);
     }
 
 }
