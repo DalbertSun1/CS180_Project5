@@ -297,11 +297,36 @@ Steps:
 
 1. User logs in as a dentist office through test 2.
 2. User selects the "View Statistics".
-3. 
 
-Expected Result: If the patient's name does not have any approved appointments, an error will appear stating so. Otherwise, the rescheduled appointment will changed to the new day and time.
+Expected Result: The statistics menu will show up, listing the number of appointments per patient and most popular time for each doctor.
 
 Test Status: Passed.
+
+Test 25
+
+Steps:
+
+1. User logs in as a patient through test 1.
+2. User selects the "View Statistics" dropdown.
+3. User selects the "Sort by patient's name" button.
+
+Expected Result: The statistics will sort by the patient's name alphabetically.
+
+Test Status: Passed.
+
+Test 26
+
+Steps:
+
+1. User logs in as a patient through test 1.
+2. User selects the "View Statistics" dropdown.
+3. User selects the "Sort by # of appointments" button.
+
+Expected Result: The statistics will sort by the number of appointments per patient from most to least.
+
+Test Status: Passed.
+
+
 
 
 
