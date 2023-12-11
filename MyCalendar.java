@@ -237,7 +237,7 @@ public class MyCalendar extends Login {
 
         JPanel title = new JPanel();
         title.setLayout(new BoxLayout(title, BoxLayout.Y_AXIS));
-        JPanel label = createPanel("July 2023");
+        JPanel label = createPanel("December 2023");
         title.add(label);
 
         for (int i = 0; i < 5; i++) {
