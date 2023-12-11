@@ -13,13 +13,14 @@ import java.util.List;
  * Dentist Office Calendar Marketplace
  *
  * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
- * @version December 11th, 2023
+ * @version November 13th, 2023
  */
 
 public class OurStatistics { // handles the statistics section of our projection
     static JFrame frame = new JFrame("Statistics");
     static ArrayList<Object[]> patientData;
     static ArrayList<Object[]> doctorData;
+    static String[] approved;
 
     static ArrayList<Object[]> doctorPatData;
     static String[] patientColumnNames;
@@ -41,7 +42,8 @@ public class OurStatistics { // handles the statistics section of our projection
 
 //    public OurStatistics
 
-    public static void dentistOfficeDashboard(DentistOffice dentistOffice, Scanner scanner, DentistClient client) {
+    public static void dentistOfficeDashboard(String[] app, DentistOffice dentistOffice, Scanner scanner, DentistClient client) {
+        approved = app;
         HashMap<String, Integer> patientFrequency = new HashMap<>(); // maps patient names to # of apts
         HashMap<Doctor, String> doctorTimeData = new HashMap<>(); // maps Doctors to their most frequent time
 
@@ -49,8 +51,8 @@ public class OurStatistics { // handles the statistics section of our projection
             HashMap<String, Integer> patientData; // maps patient names to integer # of appointments
             HashMap<String, Integer> timeData; // maps string time to frequency of appointment slot
 
-            patientData = doctor.getStatistics(client)[0];
-            timeData = doctor.getStatistics(client)[1];
+            patientData = doctor.getStatistics(approved)[0];
+            timeData = doctor.getStatistics(approved)[1];
 
 
             for (String name : patientData.keySet()) {
@@ -93,7 +95,13 @@ public class OurStatistics { // handles the statistics section of our projection
 
         patientFrequencyLebron = patientFrequency;
 
+
+
         patientList = new ArrayList<>(patientFrequency.keySet());
+
+        for (String name : patientList) {
+            System.out.println(name);
+        }
         patDoctorList = new ArrayList<>(doctorTimeData.keySet());
 
         List<Map.Entry<String, Integer>> sortedPatientEntries = new ArrayList<>(patientFrequency.entrySet());
@@ -194,9 +202,10 @@ public class OurStatistics { // handles the statistics section of our projection
     }
 
 
-    public static void patientDashboard(DentistOffice dentistOffice, Scanner scanner, DentistClient client) {
+    public static void patientDashboard(String[] app, DentistOffice dentistOffice, Scanner scanner, DentistClient client) {
         // patientDatawill include a list of Doctors by number of patients and the most popular appointment windows by Doctor.
         // Customers can choose to sort the dashboard.
+        approved = app;
 
 
         // get necessary data
@@ -206,8 +215,8 @@ public class OurStatistics { // handles the statistics section of our projection
             HashMap<String, Integer> patientData; // maps patient names to integer # of appointments
             HashMap<String, Integer> timeData; // maps String time to frequency of appointment slot
 
-            patientData = doctor.getStatistics(client)[0];
-            timeData = doctor.getStatistics(client)[1];
+            patientData = doctor.getStatistics(approved)[0];
+            timeData = doctor.getStatistics(approved)[1];
 
             // create a hashmap with key Doctor, value = # of patients
             doctorPatientData.put(doctor, patientData.keySet().size());
@@ -284,9 +293,8 @@ public class OurStatistics { // handles the statistics section of our projection
                     int count =0;
                     String timeString = doctorTimeData.get(doctor);
                     try {
-                        BufferedReader bf = new BufferedReader(new FileReader(new File("approved.txt")));
-                        String line = "";
-                        while ((line = bf.readLine()) != null) {
+                        for (int i = 0; i < approved.length; i++) {
+                            String line = approved[i];
                             String[] split = line.split(",");
                             if (split[3].equals(doctor.getName())){
                                 count++;
@@ -391,18 +399,12 @@ public class OurStatistics { // handles the statistics section of our projection
                     patientData= new ArrayList<Object[]>();
                     for (String d : doctors) {
                         int count = 0;
-                        try {
-                            BufferedReader bf = new BufferedReader(new FileReader(new File("approved.txt")));
-                            String line = "";
-                            while ((line = bf.readLine()) != null) {
-                                String[] split = line.split(",");
-                                if (split[3].equals(d)){
-                                    count++;
-                                }
+                        for (int i = 0; i < approved.length; i++) {
+                            String line = approved[i];
+                            String[] split = line.split(",");
+                            if (split[3].equals(d)){
+                                count++;
                             }
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                            //add popup saying things
                         }
                         String[] add = new String[3];
                         add[0] = d;
@@ -445,18 +447,13 @@ public class OurStatistics { // handles the statistics section of our projection
 
                         String d = doctors.get(i);
                         int count = 0;
-                        try {
-                            BufferedReader bf = new BufferedReader(new FileReader(new File("approved.txt")));
-                            String line = "";
-                            while ((line = bf.readLine()) != null) {
-                                String[] split = line.split(",");
-                                if (split[3].equals(d)) {
-                                    count++;
-                                }
+                        for (int j = 0; j < approved.length; j++) {
+                            String line = approved[j];
+
+                            String[] split = line.split(",");
+                            if (split[3].equals(d)) {
+                                count++;
                             }
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                            //add popup saying things
                         }
                         temp.add(count);
                         String ahh = "";
@@ -529,18 +526,12 @@ public class OurStatistics { // handles the statistics section of our projection
 
                         String p = patientList.get(i);
                         int count = 0;
-                        try {
-                            BufferedReader bf = new BufferedReader(new FileReader(new File("approved.txt")));
-                            String line = "";
-                            while ((line = bf.readLine()) != null) {
-                                String[] split = line.split(",");
-                                if (split[0].equals(p)) {
-                                    count++;
-                                }
+                        for (int j = 0; j < approved.length; j++) {
+                            String line = approved[j];
+                            String[] split = line.split(",");
+                            if (split[0].equals(p)) {
+                                count++;
                             }
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                            //add popup saying things
                         }
                         temp.add(count);
                         String ahh = "";
@@ -628,18 +619,12 @@ public class OurStatistics { // handles the statistics section of our projection
                     for (String p : tempPatients) {
                         //System.out.println(p);
                         int count = 0;
-                        try {
-                            BufferedReader bf = new BufferedReader(new FileReader(new File("approved.txt")));
-                            String line = "";
-                            while ((line = bf.readLine()) != null) {
-                                String[] split = line.split(",");
-                                if (split[0].equals(p)){
-                                    count++;
-                                }
+                        for (int i = 0; i < approved.length; i++) {
+                            String line = approved[i];
+                            String[] split = line.split(",");
+                            if (split[0].equals(p)){
+                                count++;
                             }
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                            //add popup saying things
                         }
                         String[] add = new String[2];
                         add[0] = p;
