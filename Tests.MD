@@ -326,8 +326,15 @@ Expected Result: The statistics will sort by the number of appointments per pati
 
 Test Status: Passed.
 
+Test 27 
 
+Steps:
 
+1. User logs in as a patient through test 1.
+2. User selects the "Import Calendar" dropdown.
+3. User enters the file path of the csv file they wish to import.
 
+Expected Result: If the file path exists, the calendar will be imported. 
+Test Status: Passed.
 
 
