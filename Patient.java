@@ -1,8 +1,6 @@
 import java.io.*;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import javax.swing.JOptionPane;
 
 /**
@@ -389,7 +387,7 @@ public class Patient extends Login {
 
     }
 
-    public static String[] clientFileStats(DentistOffice d, Scanner scan, DentistClient client) { // returns a list of the apts approved
+    public static String[] clientFileStats(DentistOffice d, DentistClient client) { // returns a list of the apts approved
 
 
         client.println("readStats::");
@@ -410,7 +408,7 @@ public class Patient extends Login {
                 approvedList[i] = aptList.get(i);
             }
 
-            OurStatistics.patientDashboard(approvedList, d, scan, client);
+            OurStatistics.patientDashboard(approvedList, d, client);
 
 
         } else {

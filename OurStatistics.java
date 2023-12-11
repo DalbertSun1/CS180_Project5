@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.sql.Array;
 import java.util.*;
 import java.util.List;
 
@@ -13,14 +12,13 @@ import java.util.List;
  * Dentist Office Calendar Marketplace
  *
  * @author Dalbert Sun, Vihaan Chadha, Jack White, Himaja Narajala, Aaryan Bondre
- * @version November 13th, 2023
+ * @version December 11th, 2023
  */
 
 public class OurStatistics { // handles the statistics section of our projection
     static JFrame frame = new JFrame("Statistics");
     static ArrayList<Object[]> patientData;
     static ArrayList<Object[]> doctorData;
-    static String[] approved;
 
     static ArrayList<Object[]> doctorPatData;
     static String[] patientColumnNames;
@@ -36,15 +34,9 @@ public class OurStatistics { // handles the statistics section of our projection
     static HashMap<String, Integer> patientFrequencyLebron;
 
 
-
-
-
-
 //    public OurStatistics
 
-
-    public static void dentistOfficeDashboard(String[] app, DentistOffice dentistOffice, DentistClient client) {
-        approved = app;
+    public static void dentistOfficeDashboard(DentistOffice dentistOffice, DentistClient client) {
         HashMap<String, Integer> patientFrequency = new HashMap<>(); // maps patient names to # of apts
         HashMap<Doctor, String> doctorTimeData = new HashMap<>(); // maps Doctors to their most frequent time
 
@@ -52,8 +44,8 @@ public class OurStatistics { // handles the statistics section of our projection
             HashMap<String, Integer> patientData; // maps patient names to integer # of appointments
             HashMap<String, Integer> timeData; // maps string time to frequency of appointment slot
 
-            patientData = doctor.getStatistics(approved)[0];
-            timeData = doctor.getStatistics(approved)[1];
+            patientData = doctor.getStatistics(client)[0];
+            timeData = doctor.getStatistics(client)[1];
 
 
             for (String name : patientData.keySet()) {
@@ -83,11 +75,6 @@ public class OurStatistics { // handles the statistics section of our projection
         printDentistOfficeDashboard(patientFrequency, doctorTimeData);
 
 
-        // patientDatawill include a list of patients with the number of approved appointments they made
-        // get data
-        // and the most popular appointment windows by Doctor.
-        // Sellers can choose to sort the dashboard.
-
     }
 
     private static void printDentistOfficeDashboard(HashMap<String, Integer> patientFrequency, HashMap<Doctor, String> doctorTimeData) {
@@ -96,13 +83,7 @@ public class OurStatistics { // handles the statistics section of our projection
 
         patientFrequencyLebron = patientFrequency;
 
-
-
         patientList = new ArrayList<>(patientFrequency.keySet());
-
-        for (String name : patientList) {
-            System.out.println(name);
-        }
         patDoctorList = new ArrayList<>(doctorTimeData.keySet());
 
         List<Map.Entry<String, Integer>> sortedPatientEntries = new ArrayList<>(patientFrequency.entrySet());
@@ -115,8 +96,6 @@ public class OurStatistics { // handles the statistics section of our projection
             String[] columns = {String.format(doctorNameFormat, "Doctor Name"), String.format(doctorApptFormat, "Most Frequent Apt. Time")};
             doctorColumnNames = columns;
 
-            // first, add doctor | most frequent time
-
             doctorData= new ArrayList<Object[]>();
             //output.append(String.format(doctorFormat, "Doctor Name", "Most Frequent Apt. Time"));
             for (Doctor doctor : patDoctorList) {
@@ -128,8 +107,6 @@ public class OurStatistics { // handles the statistics section of our projection
                 doctorData.add(add);
             }
 
-            //output.append("---------------------------------------------------------\n");
-            //output.append(String.format(patientFormat, "Patient Name", "# of Appointments"));
             String[] patColumns = {String.format(patientNameFormat, "Patient Name"), String.format(patientApptFormat, "# of Appointments")};
             doctorPatColumnNames = patColumns;
             doctorPatData = new ArrayList<Object[]>();
@@ -155,19 +132,45 @@ public class OurStatistics { // handles the statistics section of our projection
             }
             doctorStats();
 
+            System.out.println(output.toString());
+            do {
+//                try {
+//                    userChoice = scanner.nextInt();
+//                    scanner.nextLine();
+//                } catch (Exception e) {
+//                    userChoice = 5;
+//                    scanner.nextLine();
+//                }
+
+                switch (userChoice) {
+                    case 1 -> {
+                        // sort map by patient's name
+                        patientList.sort(null);
+                    }
+                    case 2 -> {
+                        // sort map by # of appointments
+                        sortedPatientEntries.sort(Map.Entry.comparingByValue());
+                    }
+                    case 3 -> {
+                        // sort by doctor's name
+                        doctorList.sort(Comparator.comparing(Doctor::getName));
+                    }
+
+                    case 4 -> {
+                        printing = false;
+                    }
+                    case 5 -> {
+                        //System.out.println("Not an available option. Type either 1, 2, or 3.");
+                    }
+                }
+            } while (userChoice == 5);
 
         } while (printing);
 
     }
 
 
-    public static void patientDashboard(String[] app, DentistOffice dentistOffice, DentistClient client) {
-
-        // patientDatawill include a list of Doctors by number of patients and the most popular appointment windows by Doctor.
-        // Customers can choose to sort the dashboard.
-        approved = app;
-
-
+    public static void patientDashboard(DentistOffice dentistOffice, DentistClient client) {
         // get necessary data
         HashMap<Doctor, Integer> doctorPatientData = new HashMap<>(); // maps Doctors to # of patients
         HashMap<Doctor, String> doctorTimeData = new HashMap<>(); // maps Doctors to most frequent time
@@ -175,8 +178,8 @@ public class OurStatistics { // handles the statistics section of our projection
             HashMap<String, Integer> patientData; // maps patient names to integer # of appointments
             HashMap<String, Integer> timeData; // maps String time to frequency of appointment slot
 
-            patientData = doctor.getStatistics(approved)[0];
-            timeData = doctor.getStatistics(approved)[1];
+            patientData = doctor.getStatistics(client)[0];
+            timeData = doctor.getStatistics(client)[1];
 
             // create a hashmap with key Doctor, value = # of patients
             doctorPatientData.put(doctor, patientData.keySet().size());
@@ -198,13 +201,7 @@ public class OurStatistics { // handles the statistics section of our projection
 
         printPatientDashboard(doctorPatientData, doctorTimeData);
 
-
-        // 1: Dr James | 4 patients
-        // 2: Dr Henry | 1 patient
-
-
     }
-
 
     private static void printPatientDashboard(HashMap<Doctor, Integer> doctorPatientData, HashMap<Doctor, String> doctorLebronTimeData) {
         boolean printing = true;
@@ -243,9 +240,7 @@ public class OurStatistics { // handles the statistics section of our projection
 
                     String timeString = doctorTimeData.get(doctor);
                     add[1] = patientCount;
-//                    add[2] = timeString;
-//                    patientData.add(add);
-                    //output.append(String.format(format, doctor.getName(), patientCount, timeString));
+
                 }
             } else { // if unsorted or sorted by Doctor's name
                 for (Doctor doctor : doctorList) {
@@ -253,8 +248,9 @@ public class OurStatistics { // handles the statistics section of our projection
                     int count =0;
                     String timeString = doctorTimeData.get(doctor);
                     try {
-                        for (int i = 0; i < approved.length; i++) {
-                            String line = approved[i];
+                        BufferedReader bf = new BufferedReader(new FileReader(new File("approved.txt")));
+                        String line = "";
+                        while ((line = bf.readLine()) != null) {
                             String[] split = line.split(",");
                             if (split[3].equals(doctor.getName())){
                                 count++;
@@ -279,16 +275,36 @@ public class OurStatistics { // handles the statistics section of our projection
                     add[2] = timeString;
                     patientData.add(add);
 
-                    //output.append(String.format(format, doctor.getName(), patientCount, timeString));
                 }
             }
 
-
-            // Create a JTable with the model
             if (sort == false) {
                 patientStats();
             }
+            do {
+//                try {
+//                    userChoice = scanner.nextInt();
+//                    scanner.nextLine();
+//                } catch (Exception e) {
+//                    scanner.nextLine();
+//                    userChoice = 5;
+//                }
 
+                switch (userChoice) {
+                    case 1 -> {
+
+                    }
+                    case 2 -> {
+
+                        sortedEntriesByPatients.sort(Map.Entry.comparingByValue());
+                    }
+                    case 3 -> {
+                        printing = false;
+                    }
+                    default -> {
+                    }
+                }
+            } while (userChoice == 5);
 
         } while (printing);
     }
@@ -304,35 +320,23 @@ public class OurStatistics { // handles the statistics section of our projection
                         doctors.add(d.getName());
                     }
 
-//                    ArrayList<String> temp = new ArrayList<String>();
-//                    for (int i = 0; i < doctors.size(); i+=0) {
-//                        int max = Integer.MIN_VALUE;
-//                        int index = -1;
-//                        for (int j = 0; j < doctors.size(); j++) {
-//                            String s = doctors.get(j);
-//                                if (max < ((int) s.charAt(0))) {
-//                                    max = ((int) s.charAt(0));
-//
-//                                    index = i;
-//                                }
-//
-//                        }
-//                        ////System.out.println(doctors.get(index));
-//                        temp.add(doctors.get(index));
-//                        doctors.remove(index);
-//                    }
-//                    doctors = temp;
                     Collections.sort(doctors);
 
                     patientData= new ArrayList<Object[]>();
                     for (String d : doctors) {
                         int count = 0;
-                        for (int i = 0; i < approved.length; i++) {
-                            String line = approved[i];
-                            String[] split = line.split(",");
-                            if (split[3].equals(d)){
-                                count++;
+                        try {
+                            BufferedReader bf = new BufferedReader(new FileReader(new File("approved.txt")));
+                            String line = "";
+                            while ((line = bf.readLine()) != null) {
+                                String[] split = line.split(",");
+                                if (split[3].equals(d)){
+                                    count++;
+                                }
                             }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            //add popup saying things
                         }
                         String[] add = new String[3];
                         add[0] = d;
@@ -375,21 +379,24 @@ public class OurStatistics { // handles the statistics section of our projection
 
                         String d = doctors.get(i);
                         int count = 0;
-                        for (int j = 0; j < approved.length; j++) {
-                            String line = approved[j];
-
-                            String[] split = line.split(",");
-                            if (split[3].equals(d)) {
-                                count++;
+                        try {
+                            BufferedReader bf = new BufferedReader(new FileReader(new File("approved.txt")));
+                            String line = "";
+                            while ((line = bf.readLine()) != null) {
+                                String[] split = line.split(",");
+                                if (split[3].equals(d)) {
+                                    count++;
+                                }
                             }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            //add popup saying things
                         }
                         temp.add(count);
                         String ahh = "";
                         ahh += count;
                         anotherTemp[i][0] = d;
-//                        //System.out.println(anotherTemp[i][0]);
                         anotherTemp[i][1] = ahh;
-//                        //System.out.println(anotherTemp[i][1]);
                     }
                     int[] array = new int[temp.size()];
                     for (int i = 0; i < temp.size(); i++) {
@@ -404,10 +411,7 @@ public class OurStatistics { // handles the statistics section of our projection
                             String f = "";
                             f += count;
                             if (Integer.parseInt(anotherTemp[j][1]) == count){
-                                //System.out.println("anotherTemp[" + j + "][0]: " + anotherTemp[j][0]);
-                                //System.out.println("anotherTemp[" + j + "][1]: " + anotherTemp[j][1]);
 
-                                //System.out.println();
                                 d = anotherTemp[j][0];
                                 anotherTemp[j][0] = "";
                                 anotherTemp[j][1] = "-1";
@@ -443,6 +447,7 @@ public class OurStatistics { // handles the statistics section of our projection
                 }
                 if (source.getText().equals("Exit")) {
                     frame.dispose();
+                    JOptionPane.showMessageDialog(null, "Thank you for viewing statistics! \nPlease log in again to check any updates.", "Dentist Office", JOptionPane.INFORMATION_MESSAGE);
                     System.exit(0);
                 }
                 if (source.getText().equals("Sort by # of Appointments")) {
@@ -454,20 +459,24 @@ public class OurStatistics { // handles the statistics section of our projection
 
                         String p = patientList.get(i);
                         int count = 0;
-                        for (int j = 0; j < approved.length; j++) {
-                            String line = approved[j];
-                            String[] split = line.split(",");
-                            if (split[0].equals(p)) {
-                                count++;
+                        try {
+                            BufferedReader bf = new BufferedReader(new FileReader(new File("approved.txt")));
+                            String line = "";
+                            while ((line = bf.readLine()) != null) {
+                                String[] split = line.split(",");
+                                if (split[0].equals(p)) {
+                                    count++;
+                                }
                             }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            //add popup saying things
                         }
                         temp.add(count);
                         String ahh = "";
                         ahh += count;
                         anotherTemp[i][0] = p;
-//                        //System.out.println(anotherTemp[i][0]);
                         anotherTemp[i][1] = ahh;
-//                        //System.out.println(anotherTemp[i][1]);
                     }
                     int[] array = new int[temp.size()];
                     for (int i = 0; i < temp.size(); i++) {
@@ -516,43 +525,23 @@ public class OurStatistics { // handles the statistics section of our projection
                 if (source.getText().equals("Sort by Patient's Name")) {
                     ArrayList<String> temp = new ArrayList<String>();
                     ArrayList<String> tempPatients = patientList;
-//                    for (int i = 0; i < tempPatients.size(); i+=0) {
-//                        System.out.println(i + ": " + tempPatients.get(i));
-//                        int min = Integer.MAX_VALUE;
-//                        int index = -1;
-//                        for (int j = 0; j < tempPatients.size(); j++) {
-//
-//                            String s = tempPatients.get(j);
-//                            s = s.toUpperCase();
-//                            if (min > ((int) s.charAt(0))) {
-//                                min = ((int) s.charAt(0));
-//                                index = j;
-//                                System.out.println(tempPatients.get(index));
-//                            }
-//
-//                        }
-//                        ////System.out.println(doctors.get(index));
-//                        temp.add(tempPatients.get(index));
-//                        tempPatients.remove(index);
-//                    }
-
-                    //tempPatients = temp;
                     Collections.sort(tempPatients);
-//                    for (int i = 0; i<temp.size(); i++) {
-//                        System.out.println(i + ": " + temp.get(i));
-//                    }
-//                    tempPatients = temp;
-
                     doctorPatData= new ArrayList<Object[]>();
                     for (String p : tempPatients) {
                         //System.out.println(p);
                         int count = 0;
-                        for (int i = 0; i < approved.length; i++) {
-                            String line = approved[i];
-                            String[] split = line.split(",");
-                            if (split[0].equals(p)){
-                                count++;
+                        try {
+                            BufferedReader bf = new BufferedReader(new FileReader(new File("approved.txt")));
+                            String line = "";
+                            while ((line = bf.readLine()) != null) {
+                                String[] split = line.split(",");
+                                if (split[0].equals(p)){
+                                    count++;
+                                }
                             }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            //add popup saying things
                         }
                         String[] add = new String[2];
                         add[0] = p;
@@ -583,12 +572,7 @@ public class OurStatistics { // handles the statistics section of our projection
 
 
     public static void patientStats() {
-        //frame.dispose();
 
-//            JTextArea textArea = new JTextArea(output.toString());
-//            textArea.setEditable(false);
-//            textArea.setLineWrap(true);
-//            textArea.setWrapStyleWord(true);
         String[][] daaaata = patientData.toArray(new String[0][]);
         DefaultTableModel tableModel = new DefaultTableModel(daaaata, patientColumnNames){
             public boolean isCellEditable(int row, int column) {
