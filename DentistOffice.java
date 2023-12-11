@@ -306,7 +306,7 @@ public class DentistOffice {
         }
     }
 
-    public static void serverReadFile(DentistServer server) { // reads file and returns printList to client
+    public static void serverReadFileStats(DentistServer server) { // reads file and returns printList to client
         try {
             ArrayList<String[]> list = new ArrayList<String[]>();
             ArrayList<String> list2 = new ArrayList<String>(); // stores each line of the file, only for printing purposes
